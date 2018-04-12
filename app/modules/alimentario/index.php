@@ -1,8 +1,14 @@
 <?php
-include('../../hooks/head.php');
-?>
+    include('../../hooks/head.php');
 
-    <div class="container-fluid">
+    if(isset($_POST['buscar'])){
+        echo "<script>alert('OK');</script>";
+    }
+
+?>
+<script src="js/script.js" type="text/javascript"></script>
+
+    <div class="container-fluid" id="alimentario">
 
         <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
         <div class="card border-dark-blue">
@@ -11,12 +17,12 @@ include('../../hooks/head.php');
             </div>
             <div class="card-body">
                 <div class="col-md-12">
-                    <form action="" class="form-row">
+                    <form method="POST" class="form-row">
 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="ruta"><strong>Código DANE</strong></label>
-                                <input type="search" class="form-control" id="ruta" placeholder="Nombre de la Ruta" 
+                                <input type="search" class="form-control-custom" id="ruta" placeholder="Código DANE" 
                                        name="ruta"/>
                             </div>
                         </div>
@@ -24,13 +30,21 @@ include('../../hooks/head.php');
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="institucion"><strong>Institución Educativa y/o Sede</strong></label>
-                                <input type="search" class="form-control" id="institucion" placeholder="Nombre de la Institución" 
-                                       name="institucion"/>
+                                <select class="form-control-custom" id="institucion" name="institucion">
+                                    <option value="999">TODOS</option>
+                                    <?php 
+                                        $sql = "SELECT coddane DANE, descripcion NOMBRE FROM mat_instituciones ORDER BY NOMBRE ASC";
+                                        $resultado = $db->sql_exec($sql);
+                                        while($row = mysqli_fetch_object($resultado)){
+                                    ?>
+                                        <option value="<?= $row->DANE; ?>"><?= $row->NOMBRE; ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>  
                         </div> 
-                        
+
                         <div class="col-md-12 text-right">
-                            <button type="submit" class="btn btn-dark-blue mb-2">
+                            <button type="submit" name="buscar" id="buscar" class="btn btn-dark-blue mb-2">
                                 <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
                                 Buscar
                             </button>
