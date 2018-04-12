@@ -8,7 +8,7 @@ $( document ).ready(function() {
 			if (status == "error") {
 				var msg = "<div class='alert alert-danger' role='alert'>" +
                           "	<span class='oi oi-circle-x' title='icon name' aria-hidden='true'></span>" +
-                          "	Error al cargar el formulario: " + xhr.status + " " + xhr.statusText;
+                          "	Error al cargar el formulario: " + xhr.status + " " + xhr.statusText +
                           "</div>";
 				$(".modal-body").html(msg);
 			}
