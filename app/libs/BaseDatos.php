@@ -9,13 +9,11 @@ class BaseDatos
 
     public function conectar()
     {
-        $this->conexion = mysqli_connect(HOST, USER, PASS);
+        $this->conexion = mysqli_connect(HOST, USER, PASS, DBNAME);
 
-        if ($this->conexion == 0) DIE("Lo sentimos, no se ha podido conectar con MySQL: " . mysqli_error());
+        if (mysqli_connect_errno()) DIE("Lo sentimos, no se ha podido conectar con MySQL: " . mysqli_connect_error());
 
-        $this->db = mysqli_select_db(DBNAME, $this->conexion);
-
-        if ($this->db == 0) DIE("Lo sentimos, no se ha podido conectar con la base datos: " . DBNAME);
+        mysqli_set_charset($this->conexion,"utf8");    
 
         return true;
 
@@ -29,17 +27,27 @@ class BaseDatos
 
     }
 
-    public function pruebadb($query)
-    {
-        $tabla = "TU_TABLA";
-        $query = mysqli_query($query, $this->conexion);
-        if ($query == 0) echo "Sentencia incorrecta llamado a tabla: $tabla.";
-        else {
-            $nregistrostotal = mysqli_result($query, 0, 0);
-            echo "Hay $nregistrostotal registros en la tabla: $tabla.";
-            mysqli_free_result($query);
+    //Ejecuta sentencias SQL
+    function query_exec($query) {
+        if($this->conectar()){
+            $result = mysqli_query($this->conexion, $query);
+            return $result;
         }
     }
+
+    //Función Insertar
+     function insert($tblname, $form_data){
+        $fields = array_keys($form_data);
+        $sql = "INSERT INTO " . $tblname . "(" . implode(',', $fields) . ")  VALUES('" . implode("','", $form_data) . "')";
+        
+        return $this->query_exec($sql);
+    }
+
+    //Función para Select y update
+     function sql_exec($query){    
+        return $this->query_exec($query);
+    }
+
 }
 
 ?>
