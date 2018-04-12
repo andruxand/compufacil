@@ -2,13 +2,38 @@
     include('../../hooks/head.php');
 
     if(isset($_POST['buscar'])){
-        echo "<script>alert('OK');</script>";
+
+        $sql = " SELECT coddane DANE, descripcion NOMBRE FROM mat_instituciones WHERE 1=1 ";
+
+        if(!empty($_POST['dane'])){
+            $sql .= sprintf(" AND coddane = '%s' ", $_POST['dane']);
+        }
+
+        if(!empty($_POST['institucion'])){
+            $sql .= sprintf(" AND coddane = '%s'", $_POST['institucion']);
+        }
+
+        $resultado = $db->sql_exec($sql);
+
+        if($resultado){
+            $num_rows = mysqli_num_rows($resultado); 
+
+            if($num_rows > 0){
+                echo "numeros " . $num_rows;
+            }
+        }
+
     }
 
 ?>
 <script src="js/script.js" type="text/javascript"></script>
 
     <div class="container-fluid" id="alimentario">
+        <?php
+            if(!empty($db->db_error)){
+                echo $db->show_db_error();
+            }
+        ?>
 
         <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
         <div class="card border-dark-blue">
@@ -22,8 +47,8 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="ruta"><strong>Código DANE</strong></label>
-                                <input type="search" class="form-control-custom" id="ruta" placeholder="Código DANE" 
-                                       name="ruta"/>
+                                <input type="search" class="form-control-custom" id="dane" placeholder="Código DANE" 
+                                       name="dane"/>
                             </div>
                         </div>
 
@@ -31,7 +56,7 @@
                             <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="institucion"><strong>Institución Educativa y/o Sede</strong></label>
                                 <select class="form-control-custom" id="institucion" name="institucion">
-                                    <option value="999">TODOS</option>
+                                    <option value="">TODOS</option>
                                     <?php 
                                         $sql = "SELECT coddane DANE, descripcion NOMBRE FROM mat_instituciones ORDER BY NOMBRE ASC";
                                         $resultado = $db->sql_exec($sql);
