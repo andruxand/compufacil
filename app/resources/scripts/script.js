@@ -1,6 +1,6 @@
 $( document ).ready(function() {
           
-    $( "[data-toggle='modal']" ).on( "click", function(e) {
+    $( document ).on( "click", "[data-toggle='modal']", function(e) {
     	var url = $(this).attr("data-url");
     	var title = $(this).attr("data-title");
 
