@@ -63,3 +63,16 @@ body {
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
+.select2 {
+    width: 100% !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.border-label {
+    border-bottom: 1px solid #ccc;
+    padding: 2px;
+}
