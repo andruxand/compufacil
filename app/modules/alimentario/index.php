@@ -1,29 +1,7 @@
 <?php
+
+    require_once "../../config/autoload.php";
     include('../../hooks/head.php');
-
-    if(isset($_POST['buscar'])){
-
-        $sql = " SELECT coddane DANE, descripcion NOMBRE FROM mat_instituciones WHERE 1=1 ";
-
-        if(!empty($_POST['dane'])){
-            $sql .= sprintf(" AND coddane = '%s' ", $_POST['dane']);
-        }
-
-        if(!empty($_POST['institucion'])){
-            $sql .= sprintf(" AND coddane = '%s'", $_POST['institucion']);
-        }
-
-        $resultado = $db->sql_exec($sql);
-
-        if($resultado){
-            $num_rows = mysqli_num_rows($resultado); 
-
-            if($num_rows > 0){
-                echo "numeros " . $num_rows;
-            }
-        }
-
-    }
 
 ?>
 <script src="js/script.js" type="text/javascript"></script>
@@ -42,40 +20,48 @@
             </div>
             <div class="card-body">
                 <div class="col-md-12">
-                    <form method="POST" class="form-row">
+                    <div class="form-row">
 
-                        <div class="col-md-4">
+                        <div class="col-md-8">
                             <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="ruta"><strong>Código DANE</strong></label>
-                                <input type="search" class="form-control-custom" id="dane" placeholder="Código DANE" 
-                                       name="dane"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="institucion"><strong>Institución Educativa y/o Sede</strong></label>
+                                <label class="mb-2 mr-sm-2" for="institucion"><strong>Código DANE , Institución Educativa y/o Sede</strong></label>
                                 <select class="form-control-custom" id="institucion" name="institucion">
                                     <option value="">TODOS</option>
                                     <?php 
-                                        $sql = "SELECT coddane DANE, descripcion NOMBRE FROM mat_instituciones ORDER BY NOMBRE ASC";
+                                        $sql = "SELECT i.coddane DANE, CONCAT(i.coddane, ' - ', CONCAT(i.descripcion, ' / ', sc.descripcion) ) NOMBRE
+                                                FROM mat_instituciones i, ali_contrato c, mat_sedes sc
+                                                WHERE
+                                                sc.id_instituciones = i.id
+                                                AND c.sede_id = sc.id ORDER BY NOMBRE ASC";
                                         $resultado = $db->sql_exec($sql);
                                         while($row = mysqli_fetch_object($resultado)){
+                                            $selected = "";
+                                            if( isset($_POST['institucion']) ){
+                                                if( $_POST['institucion'] ==  $row->NOMBRE){
+                                                    $selected = 'selected="selected"';
+                                                }
+                                            }
                                     ?>
-                                        <option value="<?= $row->DANE; ?>"><?= $row->NOMBRE; ?></option>
+                                        <option value="<?= $row->DANE; ?>" <?= $selected; ?> ><?= $row->NOMBRE; ?></option>
                                     <?php } ?>
                                 </select>
                             </div>  
                         </div> 
 
                         <div class="col-md-12 text-right">
+
+                            <button type="submit" name="reset" id="reset" class="btn btn-dark-blue mb-2">
+                                <span class="oi oi-loop-circular text-blue" title="icon name" aria-hidden="true"></span>
+                                Reiniciar
+                            </button>
+
                             <button type="submit" name="buscar" id="buscar" class="btn btn-dark-blue mb-2">
                                 <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
                                 Buscar
                             </button>
                         </div>        
 
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,48 +80,37 @@
                     </ul>
                     <div class="tab-content resultados" id="myTabContent">
                         <div class="tab-pane fade show active" id="resultados" role="tabpanel" aria-labelledby="resultados-tab">
-                            <div class="alert alert-info alert-dismissible fade show animated bounceInDown" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <span class="oi oi-info" title="icon name" aria-hidden="true"></span>
-                                Esta es una alerta de inforación!
-                            </div>
-                            <div class="alert alert-warning alert-dismissible fade show animated bounceInDown" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <span class="oi oi-warning" title="icon name" aria-hidden="true"></span>
-                                    Esta es una alerta de Advertencia!
-                            </div>
+                            <?php if(!isset($instituciones)){ ?>
+                                <div class="alert alert-info alert-dismissible fade show animated bounceInDown" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <span class="oi oi-info" title="icon name" aria-hidden="true"></span>
+                                    Por favor utilice los filtros superiores para una búsqueda especifica y el filtro inferior para una búsqueda global de los datos.
+                                </div>
+                            <?php 
+                                }
+                            ?>   
+
+                            <div id="show_errors"></div>
+
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm">
+                                <table id="results" class="table table-hover table-sm">
                                     <thead>
-                                        <th class="text-center" scope="col">No. contrato</th>
-                                        <th class="text-center" scope="col">No. Pasajeros</th>
-                                        <th class="text-center" scope="col">Jornada</th>
-                                        <th class="text-center" scope="col">Nombre de operador</th>
-                                        <th class="text-center" scope="col">Institución educativa</th>
+                                        <th class="text-center" scope="col">DANE</th>
+                                        <th class="text-center" scope="col">Operador</th>
+                                        <th class="text-center" scope="col">InstituciónEducativa/Sede</th>
+                                        <th class="text-center" scope="col">Dirección</th>
+                                        <th class="text-center" scope="col">Comuna</th>
+                                        <th class="text-center" scope="col">Tipo de Zona</th>
+                                        <th class="text-center" scope="col">Sector</th>
+                                        <th class="text-center" scope="col">Zona</th>
+                                        <th class="text-center" scope="col">Modalidad</th>
+                                        <th class="text-center" scope="col">Formación</th>
                                         <th class="text-center" scope="col">Acciones</th>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td class="text-center"><font style="vertical-align: inherit;">Celda</font></td>
-                                            <td class="text-center"><font style="vertical-align: inherit;">Celda</font></td>
-                                            <td class="text-center"><font style="vertical-align: inherit;">Celda</font></td>
-                                            <td class="text-center"><font style="vertical-align: inherit;">Celda</font></td>
-                                            <td class="text-center"><font style="vertical-align: inherit;">Celda</font></td>
-                                            <td class="text-center">
-                                                <a class="btn btn-outline-primary" data-url="prueba" data-title="Consultar Raciones" 
-                                                    data-toggle="modal" data-target="#load-modal" data-backdrop="static" href="#">
-                                                    <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
-                                                </a>
-                                                <a class="btn btn-outline-primary" data-url="consultar_raciones.php" data-title="Registrar Raciones" 
-                                                   data-toggle="modal" data-target="#load-modal" data-backdrop="static" href="#">
-                                                    <span class="oi oi-plus text-blue" title="icon name" aria-hidden="true"></span>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        
                                     </tbody>
                                 </table>
                             </div> 
@@ -149,18 +124,13 @@
         <hr>
 
         <div class="col-md-12 text-right">
-            <button type="submit" class="btn btn-dark-blue mb-2">
-                <span class="oi oi-plus text-blue" title="icon name" aria-hidden="true"></span>
-                Registrar Raciones
-            </button>
-            <button type="submit" class="btn btn-dark-blue mb-2">
+
+            <button type="submit" class="btn btn-dark-blue mb-2" data-url="consultar_raciones.php" data-title="Consultar Raciones" 
+                    data-toggle="modal" data-target="#load-modal" data-backdrop="static">
                 <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
                 Consultar
             </button>
-            <button type="submit" class="btn btn-dark-blue mb-2">
-                <span class="oi oi-account-logout text-blue" title="icon name" aria-hidden="true"></span>
-                Salir
-            </button>
+
         </div>
 
     </div>  
