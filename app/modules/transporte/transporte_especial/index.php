@@ -1,450 +1,234 @@
 <?php
-include('../../../hooks/head.php')
+require_once('../../../config/autoload.php');
+require_once('./Utilities.php');
+
+if (isset($_GET['router'])) {
+  header('Content-Type: application/json');
+  switch ($_GET['router']) {
+    case 'search-route':
+      echo Utilities::consultarRutas($db, $_GET['search']);
+      exit;
+    case 'search-routes':
+
+      exit;
+    case 'get-recorridos':
+      echo Utilities::consultaRecorridos($db, $_GET['id']);
+      exit;
+    case 'get-recorrido':
+      echo Utilities::consultaRecorrido($db, $_GET['id']);
+      exit;
+    case 'guardar-recorrido':
+      if (!empty($_POST['id_parada'])) echo Utilities::updateParada($db, $_POST);
+      else echo Utilities::saveParada($db, $_POST);
+      exit;
+    case 'delete-parada':
+      if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
+        echo Utilities::deleteParada($db, $_REQUEST['id']);
+      else echo json_encode(["message" => "No tiene permiso para esta acción"]);
+      exit;
+    case "get-proveedores":
+      echo Utilities::getProveedores($db);
+      exit;
+    case "get-ieo":
+      echo Utilities::getIeo($db, $_GET["search"]);
+      exit;
+    case "get-vehiculos":
+      echo Utilities::getVehiculo($db);
+      exit;
+    case "get-conductores":
+      echo Utilities::getConductor($db);
+      exit;
+    case "get-auxiliares":
+      echo Utilities::getAuxiliar($db);
+      exit;
+    case "create-ruta":
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::createRuta($db, $_POST);
+      else echo json_encode(["message" => "No tiene permiso para esta acción"]);
+      exit;
+  }
+}
+
 ?>
 
-    <div class="container-fluid">
-        <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
-        <div class="card border-dark-blue">
-            <div class="card-header-dark-blue">
-                Consulta transporte especial
-            </div>
-            <div class="card-body">
-                <div class="col-md-12">
-                    <form action="" class="form-row">
+<?php
+include('../../../hooks/head.php')
+?>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css"/>
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="search">Nombre de Ruta</label>
-                                <input type="search" class="form-control" id="nameRoute"
-                                       name="nameRoute"/>
-                            </div>
-                        </div>
+<style>
+    #alert-success, #alert-error {
+        display: none;
+    }
+</style>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="">Operador</label>
-                                <input type="search" class="form-control" id="operator"
-                                       name="operator"/>
-                            </div>
-                        </div>
-                        <div class="col-md-12 text-right">
-                            <button type="submit" class="btn btn-dark-blue mb-2">Buscar</button>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
+<div class="container-fluid">
+    <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
+    <div class="card border-dark-blue">
+        <div class="card-header-dark-blue">
+            Consulta transporte especial
         </div>
-        <!-- Fin Bloque -->
-
-        <hr/>
-
-        <!-- Bloque de listado de operadores -->
-        <div class="row d-none">
+        <div class="card-body">
             <div class="col-md-12">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="">Operadores</a>
-                    </li>
-                </ul>
-                <br>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                        <th></th>
-                        <th>No. contrato</th>
-                        <th>No. Pasajeros</th>
-                        <th>Jornada</th>
-                        <th>Nombre de operador</th>
-                        <th>Institución educativa</th>
-                        </thead>
-                        <tbody>
+                <form action="index.php" method="post" class="form-inline">
+                    <label class="my-1 mr-2" for="searchRoute">Nombre de Ruta</label>
+                    <select class="form-control mb-2 mr-sm-2" style="width: 30%" name="search"
+                            id="searchRoute"></select>
 
-                        </tbody>
-                    </table>
-                </div>
+                    <button type="submit" class="btn btn-dark-blue ml-3" id="btn-search">Buscar</button>
+                    <button type="button" class="btn btn-dark-blue ml-3" id="btn-create-ruta">Crear Ruta</button>
+                </form>
             </div>
         </div>
-        <!-- Fin bloque -->
+    </div>
+    <!-- Fin Bloque -->
+
+    <hr/>
 
 
-        <!-- Bloque de toda la información -->
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="tab-vehicle" data-toggle="tab" href="#vehicle" role="tab"
-                           aria-controls="vehicle" aria-selected="true">Vehículo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="tab-conductor" data-toggle="tab" href="#conductor" role="tab"
-                           aria-controls="conductor" aria-selected="true">Conductor</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#auxiliar" class="nav-link" id="tab-auxiliar" data-toggle="tab" role="tab"
-                           aria-controls="auxiliar" aria-selected="true">Auxiliar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#recorrido" class="nav-link" id="tab-recorrido" data-toggle="tab" role="tab"
-                           aria-controls="recorrido" aria-selected="true">Recorrido</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="vehicle" role="tabvehicle" aria-labelledby="tab-vehicle">
-                        <fieldset>
-                            <legend>
-                                Datos del vehículo
-                            </legend>
-                        </fieldset>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form action="">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Tipo de vehículo</label>
-                                                <select name="tipoVehiculo" id="" class="form-control">
-                                                    <option value="1">Bus</option>
-                                                    <option value="2">Carro</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Placa Vehículo</label>
-                                                <input type="text" class="form-control" name="placaVehiculo"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Marca del Vehículo</label>
-                                                <input type="text" class="form-control" name="marcaVehiculo"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Fecha Revisión Técnico Mecánica</label>
-                                                <input type="date" class="form-control" name="fecharevitecnomec"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">No. Revisión Técnico Mecánica</label>
-                                                <input type="number" class="form-control" name="numrevitecnomec"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Estado del Contrato</label>
-                                                <select class="form-control" name="estadoContrato" id="">
-                                                    <option value="1">Activo</option>
-                                                    <option value="2">Inactivo</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Fecha Vencimiento SOAT</label>
-                                                <input type="date" class="form-control" name="fechavencisoat"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">No. SOAT</label>
-                                                <input type="text" class="form-control" name="numsoat"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Número de Pasajeros</label>
-                                                <input type="number" class="form-control" name="numpasajeros"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Propietario del Vehículo</label>
-                                                <input type="text" class="form-control" name="propietarioVehiculo"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">No. De Contrato</label>
-                                                <input type="text" class="form-control" name="numcontrato"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">No. Tarjeta de Operación</label>
-                                                <input type="text" class="form-control" name="numtarjetaope"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Seguro Contractual</label>
-                                                <input type="text" class="form-control" name="seguroContractual"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Seguro Extra Contractual</label>
-                                                <input type="text" class="form-control" name="seguroExtraContractual"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="">Tipo de Zona</label>
-                                                <select class="form-control" name="tipoZona" id="">
-                                                    <option value="1">Urbana</option>
-                                                    <option value="2">Rural</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <br>
-
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">No. Contrato</label>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="form-group">
-                                                <label for="">Observaciones</label>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <br>
-
-                                    <div class="row">
-                                        <div class="col-md-12 text-right">
-                                            <button type="button" class="btn btn-dark-blue">Guardar</button>
-                                            <button type="button" class="btn btn-dark-blue">Salir</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade " id="conductor" role="tabconductor" aria-labelledby="tab-conductor">
-                        <fieldset>
-                            <legend>
-                                Datos del Conductor
-                            </legend>
-                        </fieldset>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form action="">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Tipo de Documento</label>
-                                                <select class="form-control" name="tipoDocumento" id="">
-                                                    <option value="1">Tarjeta de Identidad</option>
-                                                    <option value="2">Cedula de ciudadania</option>
-                                                    <option value="3">Otro</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Documento</label>
-                                                <input type="number" class="form-control" name="document"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Primer Apellido</label>
-                                                <input type="text" class="form-control" name="primerApellido"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Segundo Apellido</label>
-                                                <input type="text" class="form-control" name="segundoApellido"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Primer Nombre</label>
-                                                <input type="text" class="form-control" name="primerNombre"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Segundo Nombre</label>
-                                                <input type="text" class="form-control" name="SegundoNombre"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Dirección de Residencia</label>
-                                                <input type="text" class="form-control" name="direccionResidencia"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">No. de Celular</label>
-                                                <input type="text" class="form-control" name="numCelular"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Jornada</label>
-                                                <select class="form-control" name="jornada" id="">
-                                                    <option value="1">Mañana</option>
-                                                    <option value="2">Tarde</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Licencia de conducción No.</label>
-                                                <input type="text" class="form-control" name="licenciaConduccion"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Categoría Autorizada</label>
-                                                <input type="text" class="form-control" name="categoriaAutorizada"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Fecha Vencimiento Licencia</label>
-                                                <input type="text" class="form-control" name="fechavencilince"/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <br>
-
-                                    <div class="row">
-                                        <div class="col-md-12 text-right">
-                                            <button type="button" class="btn btn-dark-blue">Editar</button>
-                                            <button type="button" class="btn btn-dark-blue">Salir</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="auxiliar" role="tabauxiliar" aria-labelledby="tab-auxiliar">
-                        <fieldset>
-                            <legend>
-                                Datos del Auxiliar
-                            </legend>
-                        </fieldset>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form action="">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Tipo de Documento</label>
-                                                <select class="form-control" name="tipoDocumento" id="">
-                                                    <option value="1">Tarjeta de identidad</option>
-                                                    <option value="2">Cedula</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Documento</label>
-                                                <input type="number" class="form-control" name="documento" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Primer Apellido</label>
-                                                <input type="text" class="text" name="primerApellido" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Segundo Apellido</label>
-                                                <input type="text" class="form-control" name="segundoApellido"  />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Primer Nombre</label>
-                                                <input type="text" class="form-control" name="primerNombre" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Segundo Nombre</label>
-                                                <input type="text" class="form-control" name="primerNombre" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Dirección de Residencia</label>
-                                                <input type="text" class="form-control" name="direccionResidencia" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">No. de Celular</label>
-                                                <input type="number" class="form-control" name="numCelular" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Formación Académica</label>
-                                                <input type="text" class="form-control" name="formacionAcade" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 text-right">
-                                            <button class="btn btn-dark-blue mb-2" type="button">Guardar</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="recorrido" role="tabarecorrido" aria-labelledby="tab-recorrido">
-                        Recorrido
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Bloque de toda la información -->
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert-error">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 
 
-    <script>
-        $('#myTab a').on('click', function (e) {
-            e.preventDefault()
-            $(this).tab('show')
-        })
-    </script>
+    <!-- Bloque de listado de operadores -->
+    <div class="row d-none">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="">Operadores</a>
+                </li>
+            </ul>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <th></th>
+                    <th>No. contrato</th>
+                    <th>No. Pasajeros</th>
+                    <th>Jornada</th>
+                    <th>Nombre de operador</th>
+                    <th>Institución educativa</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Fin bloque -->
+
+    <div id="container"></div>
+
+</div>
+
+
+<div class="modal fade bd-modal-lg" tabindex="-1" id="load-modal" role="dialog" aria-labelledby="myLargeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="oi oi-browser icon-window" title="icon name" aria-hidden="true"></span>
+                <h4 class="modal-title" id="myLargeModalLabel">
+                    Parada
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="formRecorrido">
+                    <input type="hidden" name="id_parada" id="id_parada"/>
+                    <input type="hidden" name="id_ruta" id="id_ruta"/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nom_parada">Nombre de parada</label>
+                                <input type="text" name="nom_parada" id="nom_parada" class="form-control" required/>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" name="direccion" id="direccion" class="form-control" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="secuencia">Secuencia</label>
+                                <input type="number" name="secuencia" id="secuencia" class="form-control" required/>
+                                <span class="form-text text-muted">
+                                    Orden de la parada
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="hora_llegada">Hora de llegada</label>
+                                <input type="text" name="hora_llegada" id="hora_llegada" class="form-control" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="hora_partida">Hora de partida</label>
+                                <input type="text" name="hora_partida" id="hora_partida" class="form-control" required/>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group text-right mt-3">
+                                <button type="submit" id="btn-save-parada" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-modal-lg" tabindex="-1" id="modal-forms" role="dialog" aria-labelledby="myLargeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 900px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="oi oi-browser icon-window" title="icon name" aria-hidden="true"></span>
+                <h4 class="modal-title" id="myLargeModalLabel">
+                    Parada
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="body-modal-forms">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <?php
 include('../../../hooks/footer.php')
 ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+
+<script src="./js/app.js"></script>
+<script>
+    $('#myTab a').on('click', function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+</script>
