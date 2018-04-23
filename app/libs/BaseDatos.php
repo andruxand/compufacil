@@ -1,66 +1,97 @@
 <?php
 
-require_once ( APP_CONFIG_PATH . DS . "config.php" );
+require_once(APP_CONFIG_PATH . DS . "config.php");
 
-class BaseDatos
-{
-    protected $conexion;
-    protected $db;
-    public $db_error = '';
+class BaseDatos {
+  protected $conexion;
+  protected $db;
+  public $db_error = '';
 
-    public function conectar()
-    {
-        $this->conexion = mysqli_connect(HOST, USER, PASS, DBNAME);
+  public function conectar() {
+    $this->conexion = mysqli_connect(HOST, USER, PASS, DBNAME);
 
-        if (mysqli_connect_errno()) DIE("Lo sentimos, no se ha podido conectar con MySQL: " . mysqli_connect_error());
+    if (mysqli_connect_errno()) DIE("Lo sentimos, no se ha podido conectar con MySQL: " . mysqli_connect_error());
 
-        mysqli_set_charset($this->conexion,"utf8");    
+    mysqli_set_charset($this->conexion, "utf8");
 
-        return true;
+    return true;
 
+  }
+
+  public function desconectar() {
+    if ($this->conexion) {
+      mysqli_close($this->conexion);
     }
 
-    public function desconectar()
-    {
-        if ($this->conexion) {
-            mysqli_close($this->conexion);
-        }
+  }
 
+  //Ejecuta sentencias SQL
+  function query_exec($query) {
+    if ($this->conectar()) {
+      $result = mysqli_query($this->conexion, $query);
+
+      if (!$result) {
+        $this->db_error = mysqli_error($this->conexion);
+      }
+
+      $this->desconectar();
+      return $result;
     }
+  }
 
-    //Ejecuta sentencias SQL
-    function query_exec($query) {
-        if($this->conectar()){
-            $result = mysqli_query($this->conexion, $query);
+  //Función Insertar
+  function insert($tblname, $form_data) {
+    $fields = array_keys($form_data);
+    $sql = "INSERT INTO " . $tblname . "(" . implode(',', $fields) . ")  VALUES('" . implode("','", $form_data) . "')";
 
-            if(!$result){
-                $this->db_error = mysqli_error($this->conexion);
-            }
+    return $this->query_exec($sql);
+  }
 
-            $this->desconectar();
-            return $result;
-        }
-    }
+  //Función para Select y update
+  function sql_exec($query) {
+    return $this->query_exec($query);
+  }
 
-    //Función Insertar
-    function insert($tblname, $form_data){
-        $fields = array_keys($form_data);
-        $sql = "INSERT INTO " . $tblname . "(" . implode(',', $fields) . ")  VALUES('" . implode("','", $form_data) . "')";
-        
-        return $this->query_exec($sql);
-    }
+  function show_db_error() {
+    return "<div class='alert alert-danger' role='alert'>" .
+      " <span class='oi oi-circle-x' title='icon name' aria-hidden='true'></span>" .
+      " Error al consultar la base de datos: " . $this->db_error .
+      "</div>";
+  }
 
-    //Función para Select y update
-    function sql_exec($query){    
-        return $this->query_exec($query);
-    }
+  function beginTransaction() {
+    return mysqli_autocommit($this->conexion, FALSE);
+  }
 
-    function show_db_error(){
-        return  "<div class='alert alert-danger' role='alert'>" .
-                " <span class='oi oi-circle-x' title='icon name' aria-hidden='true'></span>" .
-                " Error al consultar la base de datos: " . $this->db_error .
-                "</div>";
-    }
+  function executeTransactionQuery($query) {
+      $result = mysqli_query($this->conexion, $query);
+
+      if (!$result) {
+        $this->db_error = mysqli_error($this->conexion);
+      }
+
+      return $result;
+  }
+
+  function inserTransaction($tblname, $form_data){
+    $fields = array_keys($form_data);
+    $sql = "INSERT INTO " . $tblname . "(" . implode(',', $fields) . ")  VALUES('" . implode("','", $form_data) . "')";
+    return $this->executeTransactionQuery($sql);
+  }
+
+  function getLastId() {
+    return mysqli_insert_id($this->conexion);
+  }
+
+  function commitTransaction() {
+    mysqli_commit($this->conexion);
+    $this->desconectar();
+  }
+
+  function rollbackTransaction() {
+    mysqli_rollback($this->conexion);
+    $this->conectar();
+  }
 
 }
 
