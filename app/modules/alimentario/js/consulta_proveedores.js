@@ -1,18 +1,32 @@
+var fechaInicial = moment().format('YYYY-MM-DD');
+var fechaFinal = moment().format('YYYY-MM-DD');
+
 $(document).ready(function() {
 
-	var institucion = $('#institucion');
+	var proveedor = $('#proveedor');
+	var fechas = $('input#daterange');
 
-	institucion.select2();
+	proveedor.select2();
+
+	fechas.daterangepicker({
+		locale: configDataPicker
+
+		},
+		function(start, end) {
+	        fechaInicial = start.format('YYYY-MM-DD');
+	        fechaFinal = end.format('YYYY-MM-DD'); 
+	    }
+	);
 
 	CargaResutlados('no');
 
-	function CargaResutlados(is_custom_search, institucion = ''){
+	function CargaResutlados(is_custom_search, proveedor = '', fechaIni = '', fechaFin = ''){
 
 		var dataTable = $('#results').DataTable( {
 			"processing": true,
 			"serverSide": true,
 			dom: "Bfrtip",
-       		columnDefs: [
+			columnDefs: [
 	            {
 	                targets: 1,
 	                className: "noVis"
@@ -23,11 +37,11 @@ $(document).ready(function() {
             	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" }
        		],
 			//"sort": false,
-   			//"order" : [],
+   			//"order" : ["ieo", "tipo_racion"],
 	        "ajax": {
 	        	url: "ajax.php",
 	        	type: "post",
-	        	data: { action: 'listar_registros', is_custom_search: is_custom_search, institucion: institucion },
+	        	data: { action: 'listar_registros_proveedor', is_custom_search: is_custom_search, proveedor: proveedor, fechaIni: fechaIni, fechaFin: fechaFin },
 	        	error: function(e){  // error handling
 	        		$('#loader-error').fadeIn(200);
     				$('#loader-icon').removeClass('fa-spin').addClass('text-danger');
@@ -40,17 +54,12 @@ $(document).ready(function() {
 				}
 	        },
 	        "columns": [
-	            { "data": "dane" },
-	            { "data": "proveedor" },
-	            { "data": "institucion" },
-	            { "data": "direccion" },
-	            { "data": "comuna" },
-	            //{ "data": "tipo_zona" },
-	            { "data": "sector" },
-	            //{ "data": "zona" },
-	            { "data": "modalidad" },
-	            { "data": "formacion" },
-	            { "data": "acciones" }
+	            { "data": "ieo" },
+	            { "data": "tipo_racion" },
+	            { "data": "raciones_primaria" },
+	            { "data": "raciones_secundaria" },
+	            { "data": "dias_atendidos" },
+	            { "data": "total_raciones" }
 	        ],
 	        "language": {
 					"emptyTable":			"<div class='alert alert-warning alert-dismissible fade show animated bounceInDown' role='alert'>" +
@@ -84,7 +93,8 @@ $(document).ready(function() {
 	$('#buscar').click(function(){
 		
 		$('#results').DataTable().destroy();
-		CargaResutlados('yes', institucion.val());
+		CargaResutlados('yes', proveedor.val(), fechaInicial, fechaFinal);
+		console.log(fechaInicial + ' - ' + fechaFinal);
 
 	});
 
@@ -92,8 +102,12 @@ $(document).ready(function() {
 		
 		$("#results").DataTable().destroy();
 		CargaResutlados('no');
-		institucion.val('').trigger('change.select2');
-
+		proveedor.val('').trigger('change.select2');
+		fechas.val('');
+		fechaInicial = '';
+		fechaFinal = '';
 	});
 
+
 });
+

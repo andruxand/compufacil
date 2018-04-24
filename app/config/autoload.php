@@ -8,13 +8,13 @@
 
 //se declara ruta del sitio
 if(isset($_SERVER['HTTPS'])){
-  $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https://" : "http://";
+	$protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https://" : "http://";
 }else{
-  $protocol = 'http://';
+	$protocol = 'http://';
 }
 
 //url a website
-(!defined('SITE_URI')) ? define('SITE_URI', $protocol . $_SERVER['HTTP_HOST'] . '/compufacil/') : NULL;
+(!defined('SITE_URI')) ? define('SITE_URI', $protocol . $_SERVER['HTTP_HOST'] . '/joomla/') : NULL;
 
 //se declara ruta del vendor
 (!defined('APP_RESOURCES')) ? define('APP_RESOURCES', SITE_URI . 'app/resources/') : NULL;
@@ -37,13 +37,13 @@ define ('APP_LIBS_PATH', str_replace(APP_CONFIG, APP_LIBS, dirname(__FILE__)));
 
 // Incorporamos definiciones de variables y constantes globales
 if (file_exists(INNER_PATH . 'defines.php')) {
-  include_once INNER_PATH . 'defines.php';
+include_once INNER_PATH . 'defines.php';
 }
 
 // Incorporamos las clases y objetos el framework
 if (!defined('_JDEFINES')) {
-  define('JPATH_BASE', INNER_PATH);
-  require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
+define('JPATH_BASE', INNER_PATH);
+require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
 }
 require_once JPATH_BASE . DS . 'includes' . DS . 'framework.php';
 

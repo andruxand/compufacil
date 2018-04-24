@@ -4,9 +4,11 @@ include('../../../hooks/head.php')
 
     <div class="container-fluid">
         <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
+        
+        <!-- Fin Bloque -->
         <div class="card border-dark-blue">
             <div class="card-header-dark-blue">
-                Consulta transporte especial
+                Quote
             </div>
             <div class="card-body">
                 <div class="col-md-12">
@@ -25,17 +27,16 @@ include('../../../hooks/head.php')
                                 <label class="mb-2 mr-sm-2" for="">Operador</label>
                                 <input type="search" class="form-control" id="operator"
                                        name="operator"/>
-                            </div>
-                        </div>
+                            </div>  
+                        </div> 
                         <div class="col-md-12 text-right">
-                            <button type="submit" class="btn btn-dark-blue mb-2">Buscar</button>
-                        </div>
+                            <button type="submit" class="btn btn-dark-blue mb-2">Submit</button>
+                        </div>        
 
                     </form>
                 </div>
             </div>
         </div>
-        <!-- Fin Bloque -->
 
         <hr/>
 
@@ -80,14 +81,6 @@ include('../../../hooks/head.php')
                         <a class="nav-link" id="tab-conductor" data-toggle="tab" href="#conductor" role="tab"
                            aria-controls="conductor" aria-selected="true">Conductor</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#auxiliar" class="nav-link" id="tab-auxiliar" data-toggle="tab" role="tab"
-                           aria-controls="auxiliar" aria-selected="true">Auxiliar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#recorrido" class="nav-link" id="tab-recorrido" data-toggle="tab" role="tab"
-                           aria-controls="recorrido" aria-selected="true">Recorrido</a>
-                    </li>
                 </ul>
 
                 <div class="tab-content">
@@ -113,13 +106,13 @@ include('../../../hooks/head.php')
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Placa Vehículo</label>
-                                                <input type="text" class="form-control" name="placaVehiculo"/>
+                                                <input type="text" class="form-control" name="placaVehiculo" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Marca del Vehículo</label>
-                                                <input type="text" class="form-control" name="marcaVehiculo"/>
+                                                <input type="text" class="form-control" name="marcaVehiculo" />
                                             </div>
                                         </div>
                                     </div>
@@ -127,13 +120,13 @@ include('../../../hooks/head.php')
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Fecha Revisión Técnico Mecánica</label>
-                                                <input type="date" class="form-control" name="fecharevitecnomec"/>
+                                                <input type="date" class="form-control" name="fecharevitecnomec" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">No. Revisión Técnico Mecánica</label>
-                                                <input type="number" class="form-control" name="numrevitecnomec"/>
+                                                <input type="number" class="form-control" name="numrevitecnomec" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -150,19 +143,19 @@ include('../../../hooks/head.php')
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Fecha Vencimiento SOAT</label>
-                                                <input type="date" class="form-control" name="fechavencisoat"/>
+                                                <input type="date" class="form-control" name="fechavencisoat" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">No. SOAT</label>
-                                                <input type="text" class="form-control" name="numsoat"/>
+                                                <input type="text" class="form-control" name="numsoat" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Número de Pasajeros</label>
-                                                <input type="number" class="form-control" name="numpasajeros"/>
+                                                <input type="number" class="form-control" name="numpasajeros" />
                                             </div>
                                         </div>
                                     </div>
@@ -170,19 +163,19 @@ include('../../../hooks/head.php')
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Propietario del Vehículo</label>
-                                                <input type="text" class="form-control" name="propietarioVehiculo"/>
+                                                <input type="text" class="form-control" name="propietarioVehiculo" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">No. De Contrato</label>
-                                                <input type="text" class="form-control" name="numcontrato"/>
+                                                <input type="text" class="form-control" name="numcontrato" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">No. Tarjeta de Operación</label>
-                                                <input type="text" class="form-control" name="numtarjetaope"/>
+                                                <input type="text" class="form-control" name="numtarjetaope" />
                                             </div>
                                         </div>
                                     </div>
@@ -190,13 +183,13 @@ include('../../../hooks/head.php')
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Seguro Contractual</label>
-                                                <input type="text" class="form-control" name="seguroContractual"/>
+                                                <input type="text" class="form-control" name="seguroContractual" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="">Seguro Extra Contractual</label>
-                                                <input type="text" class="form-control" name="seguroExtraContractual"/>
+                                                <input type="text" class="form-control" name="seguroExtraContractual" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -231,8 +224,8 @@ include('../../../hooks/head.php')
 
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button type="button" class="btn btn-dark-blue">Guardar</button>
-                                            <button type="button" class="btn btn-dark-blue">Salir</button>
+                                            <button type="button" class="btn btn-primary">Guardar</button>
+                                            <button type="button" class="btn btn-primary">Salir</button>
                                         </div>
                                     </div>
                                 </form>
@@ -262,19 +255,19 @@ include('../../../hooks/head.php')
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Documento</label>
-                                                <input type="number" class="form-control" name="document"/>
+                                                <input type="number" class="form-control" name="document" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Primer Apellido</label>
-                                                <input type="text" class="form-control" name="primerApellido"/>
+                                                <input type="text" class="form-control" name="primerApellido" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Segundo Apellido</label>
-                                                <input type="text" class="form-control" name="segundoApellido"/>
+                                                <input type="text" class="form-control" name="segundoApellido" />
                                             </div>
                                         </div>
                                     </div>
@@ -282,25 +275,25 @@ include('../../../hooks/head.php')
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Primer Nombre</label>
-                                                <input type="text" class="form-control" name="primerNombre"/>
+                                                <input type="text" class="form-control" name="primerNombre" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Segundo Nombre</label>
-                                                <input type="text" class="form-control" name="SegundoNombre"/>
+                                                <input type="text" class="form-control" name="SegundoNombre" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Dirección de Residencia</label>
-                                                <input type="text" class="form-control" name="direccionResidencia"/>
+                                                <input type="text" class="form-control" name="direccionResidencia" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">No. de Celular</label>
-                                                <input type="text" class="form-control" name="numCelular"/>
+                                                <input type="text" class="form-control" name="numCelular" />
                                             </div>
                                         </div>
                                     </div>
@@ -317,19 +310,19 @@ include('../../../hooks/head.php')
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Licencia de conducción No.</label>
-                                                <input type="text" class="form-control" name="licenciaConduccion"/>
+                                                <input type="text" class="form-control" name="licenciaConduccion" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Categoría Autorizada</label>
-                                                <input type="text" class="form-control" name="categoriaAutorizada"/>
+                                                <input type="text" class="form-control" name="categoriaAutorizada" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Fecha Vencimiento Licencia</label>
-                                                <input type="text" class="form-control" name="fechavencilince"/>
+                                                <input type="text" class="form-control" name="fechavencilince" />
                                             </div>
                                         </div>
                                     </div>
@@ -338,97 +331,13 @@ include('../../../hooks/head.php')
 
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button type="button" class="btn btn-dark-blue">Editar</button>
-                                            <button type="button" class="btn btn-dark-blue">Salir</button>
+                                            <button type="button" class="btn btn-primary">Editar</button>
+                                            <button type="button" class="btn btn-primary">Salir</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade" id="auxiliar" role="tabauxiliar" aria-labelledby="tab-auxiliar">
-                        <fieldset>
-                            <legend>
-                                Datos del Auxiliar
-                            </legend>
-                        </fieldset>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form action="">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Tipo de Documento</label>
-                                                <select class="form-control" name="tipoDocumento" id="">
-                                                    <option value="1">Tarjeta de identidad</option>
-                                                    <option value="2">Cedula</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Documento</label>
-                                                <input type="number" class="form-control" name="documento" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Primer Apellido</label>
-                                                <input type="text" class="text" name="primerApellido" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Segundo Apellido</label>
-                                                <input type="text" class="form-control" name="segundoApellido"  />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Primer Nombre</label>
-                                                <input type="text" class="form-control" name="primerNombre" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Segundo Nombre</label>
-                                                <input type="text" class="form-control" name="primerNombre" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Dirección de Residencia</label>
-                                                <input type="text" class="form-control" name="direccionResidencia" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">No. de Celular</label>
-                                                <input type="number" class="form-control" name="numCelular" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Formación Académica</label>
-                                                <input type="text" class="form-control" name="formacionAcade" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 text-right">
-                                            <button class="btn btn-dark-blue mb-2" type="button">Guardar</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="recorrido" role="tabarecorrido" aria-labelledby="tab-recorrido">
-                        Recorrido
                     </div>
                 </div>
             </div>

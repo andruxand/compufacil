@@ -4,44 +4,50 @@
     include('../../hooks/head.php');
 
 ?>
-<div class="invisible" id="title-export">Lista de Instituciones Con Contratos</div>
-<script src="js/script.js" type="text/javascript"></script>
+<div class="invisible" id="title-export">Consulta De Raciones a IEO</div>
+<script src="js/consulta_proveedores.js" type="text/javascript"></script>
 
     <div class="container-fluid" id="alimentario">
         <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
         <div class="card border-dark-blue">
             <div class="card-header-dark-blue">
-                CONSULTAR ALIMENTACIÓN
+                CONSULTA DE RACIONES A IEO
             </div>
             <div class="card-body">
                 <div class="col-md-12">
                     <div class="form-row">
 
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="institucion"><strong>Código DANE , Institución Educativa y/o Sede</strong></label>
-                                <select class="form-control-custom" id="institucion" name="institucion">
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor y/o Contrato</strong></label>
+                                <select class="form-control-custom" id="proveedor" name="proveedor">
                                     <option value="">TODOS</option>
                                     <?php 
-                                        $sql = "SELECT i.coddane DANE, CONCAT(i.coddane, ' - ', CONCAT(i.descripcion, ' / ', sc.descripcion) ) NOMBRE
-                                                FROM mat_instituciones i, ali_contrato c, mat_sedes sc
+                                        $sql = "SELECT c.numero_contrato, CONCAT(c.numero_contrato, ' / ', p.nombre_proveedor) proveedor
+                                                FROM ali_contrato c, ali_proveedor p
                                                 WHERE
-                                                sc.id_instituciones = i.id
-                                                AND c.sede_id = sc.id ORDER BY NOMBRE ASC";
+                                                c.proveedor_id = p.id
+                                                ORDER BY  p.nombre_proveedor ASC";
                                         $resultado = $db->sql_exec($sql);
                                         while($row = mysqli_fetch_object($resultado)){
                                             $selected = "";
-                                            if( isset($_POST['institucion']) ){
-                                                if( $_POST['institucion'] ==  $row->NOMBRE){
+                                            if( isset($_POST['proveedor']) ){
+                                                if( $_POST['proveedor'] ==  $row->proveedor){
                                                     $selected = 'selected="selected"';
                                                 }
                                             }
                                     ?>
-                                        <option value="<?= $row->DANE; ?>" <?= $selected; ?> ><?= $row->NOMBRE; ?></option>
+                                        <option value="<?= $row->numero_contrato; ?>" <?= $selected; ?> ><?= $row->proveedor; ?></option>
                                     <?php } ?>
                                 </select>
                             </div>  
                         </div> 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Fechas</strong></label>
+                                <input type="text" class="form-control-custom" name="daterange" id="daterange" value="">
+                            </div> 
+                        </div>
 
                         <div class="col-md-12 text-right">
 
@@ -81,24 +87,18 @@
                                     </button>
                                     <span class="oi oi-info" title="icon name" aria-hidden="true"></span>
                                     Por favor utilice los filtros superiores para una búsqueda especifica y el filtro inferior para una búsqueda global de los datos.
-                                </div> 
-
+                                </div>
                             <div id="show_errors"></div>
 
                             <div class="table-responsive">
-                                <table id="results" class="table table-hover table-sm">
+                                <table id="results" class="table table-hover table-sm display" style="width:100%">
                                     <thead>
-                                        <th class="text-center" scope="col">DANE</th>
-                                        <th class="text-center" scope="col">Operador</th>
-                                        <th class="text-center" scope="col">InstituciónEducativa/Sede</th>
-                                        <th class="text-center" scope="col">Dirección</th>
-                                        <th class="text-center" scope="col">Comuna</th>
-                                        <!--<th class="text-center" scope="col">Tipo de Zona</th>-->
-                                        <th class="text-center" scope="col">Sector</th>
-                                        <!--<th class="text-center" scope="col">Zona</th>-->
-                                        <th class="text-center" scope="col">Modalidad</th>
-                                        <th class="text-center" scope="col">Formación</th>
-                                        <th class="text-center" scope="col">Acciones</th>
+                                        <th class="text-center" scope="col">IEO</th>
+                                        <th class="text-center" scope="col">Tipo Ración</th>
+                                        <th class="text-center" scope="col">Raciones Primaria</th>
+                                        <th class="text-center" scope="col">Raciones Secundaria</th>
+                                        <th class="text-center" scope="col"># Día Atendidos / Servidos</th>
+                                        <th class="text-center" scope="col">Total Raciones</th>
                                     </thead>
                                     <tbody>
                                         
@@ -112,30 +112,7 @@
         </div>
         <!-- Fin Bloque -->
 
-        <hr>
-
     </div>  
-
-    <div class="modal fade bd-modal-lg" tabindex="-1" id="load-modal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-extra-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="oi oi-browser icon-window" title="icon name" aria-hidden="true"></span>
-                    <h4 class="modal-title" id="myLargeModalLabel">
-                        <font style="vertical-align: inherit;">
-                            Modal grande
-                        </font>
-                    </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><font style="vertical-align: inherit;">×</font></span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                 
-                </div>
-            </div>
-        </div> 
-    </div>
 
 <?php
 include('../../hooks/footer.php');
