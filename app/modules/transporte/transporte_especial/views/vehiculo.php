@@ -1,135 +1,248 @@
-<form action="">
-  <div class="row">
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Tipo de vehículo</label>
-        <select name="tipoVehiculo" id="" class="form-control">
-          <option value="1">Bus</option>
-          <option value="2">Carro</option>
-        </select>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Placa Vehículo</label>
-        <input type="text" class="form-control" name="placaVehiculo"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Marca del Vehículo</label>
-        <input type="text" class="form-control" name="marcaVehiculo"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Fecha Revisión Tecnomecánica</label>
-        <input type="date" class="form-control" name="fecharevitecnomec"/>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">No. Revisión Tecnomecánica</label>
-        <input type="number" class="form-control" name="numrevitecnomec"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Estado del Contrato</label>
-        <select class="form-control" name="estadoContrato" id="">
-          <option value="1">Activo</option>
-          <option value="2">Inactivo</option>
-        </select>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Fecha Vencimiento SOAT</label>
-        <input type="date" class="form-control" name="fechavencisoat"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">No. SOAT</label>
-        <input type="text" class="form-control" name="numsoat"/>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Número de Pasajeros</label>
-        <input type="number" class="form-control" name="numpasajeros"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Propietario del Vehículo</label>
-        <input type="text" class="form-control" name="propietarioVehiculo"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">No. De Contrato</label>
-        <input type="text" class="form-control" name="numcontrato"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">No. Tarjeta de Operación</label>
-        <input type="text" class="form-control" name="numtarjetaope"/>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Seguro Contractual</label>
-        <input type="text" class="form-control" name="seguroContractual"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Seguro Extra Contractual</label>
-        <input type="text" class="form-control" name="seguroExtraContractual"/>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">Tipo de Zona</label>
-        <select class="form-control" name="tipoZona" id="">
-          <option value="1">Urbana</option>
-          <option value="2">Rural</option>
-        </select>
-      </div>
-    </div>
-  </div>
+<fieldset>
+    <legend>
+        Datos del vehículo
+    </legend>
+</fieldset>
+<div class="row">
+    <div class="col-md-12">
+        <form action="" id="formVehiculo">
+            <input type="hidden" name="idVehiculo" id="idVehiculo" />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Tipo de vehículo</label>
+                        <select name="tipoVehiculo" id="" class="form-control">
+                            <option value="1">Bus</option>
+                            <option value="2">Carro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Placa Vehículo</label>
+                        <input type="text" class="form-control" name="placaVehiculo" id="placaVehiculo" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Marca del Vehículo</label>
+                        <input type="text" class="form-control" name="marcaVehiculo" id="marcaVehiculo" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Fecha Revisión Técnico Mecánica</label>
+                        <input type="date" class="form-control" name="fecharevitecnomec" id="fecharevitecnomec"
+                               required/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">No. Revisión Técnico Mecánica</label>
+                        <input type="number" class="form-control" name="numrevitecnomec" id="numrevitecnomec" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Estado del Contrato</label>
+                        <select class="form-control" name="estadoContrato" id="" required>
+                            <option value="1">Activo</option>
+                            <option value="2">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Fecha Vencimiento SOAT</label>
+                        <input type="date" class="form-control" name="fechavencisoat" id="fechavencisoat" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">No. SOAT</label>
+                        <input type="text" class="form-control" name="numsoat" id="numsoat" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Asignaciones disponibles</label>
+                        <input type="number" class="form-control" name="numpasajeros" id="numpasajeros" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Propietario del Vehículo</label>
+                        <input type="text" class="form-control" name="propietarioVehiculo" id="propietarioVehiculo"
+                               required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">No. De Contrato</label>
+                        <input type="text" class="form-control" name="numcontrato" id="numcontrato" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">No. Tarjeta de Operación</label>
+                        <input type="text" class="form-control" name="numtarjetaope" id="numtarjetaope" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Seguro Contractual</label>
+                        <input type="text" class="form-control" name="seguroContractual" id="seguroContractual"
+                               required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Seguro Extra Contractual</label>
+                        <input type="text" class="form-control" name="seguroExtraContractual"
+                               id="seguroExtraContractual" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Tipo de Zona</label>
+                        <select class="form-control" name="tipoZona" id="tipoZona" required>
+                            <option value="Urbana">Urbana</option>
+                            <option value="Rural">Rural</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-  <br>
+            <br>
 
-  <div class="row">
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="">No. Contrato</label>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">No. Contrato</label>
 
-      </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label for="">Observaciones</label>
+
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="submit" class="btn btn-dark-blue" id="btn-save-vehiculo">Guardar</button>
+                    <button type="button" class="btn btn-dark-blue" id="btn-edit-vehiculo">Editar</button>
+                    <button type="button" class="btn btn-dark-blue" id="btn-cancel-update-vehiculo">Salir</button>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="col-md-9">
-      <div class="form-group">
-        <label for="">Observaciones</label>
+</div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: 'index.php?router=get-vehiculo&id=' + idRoute,
+            method: 'GET'
+        }).then(function (response) {
+            $("#idVehiculo").val(response.id)
+            $("#placaVehiculo").val(response.placa).attr("disabled", "disabled")
+            $("#marcaVehiculo").val(response.marca_vehiculo).attr("disabled", "disabled")
+            $("#fecharevitecnomec").val(response.fecha_soat).attr("disabled", "disabled")
+            $("#numrevitecnomec").val(response.tecnico_mecanica).attr("disabled", "disabled")
+            $("#fechavencisoat").val(response.fecha_soat).attr("disabled", "disabled")
+            $("#numsoat").val(response.soat).attr("disabled", "disabled")
+            $("#numpasajeros").val(response.num_pasajeros).attr("disabled", "disabled")
+            $("#propietarioVehiculo").val(response.propietario).attr("disabled", "disabled")
+            $("#numtarjetaope").val(response.tarjeta_operacion).attr("disabled", "disabled")
+            $("#seguroContractual").val(response.seguro_contractual).attr("disabled", "disabled")
+            $("#seguroExtraContractual").val(response.seguro_extracontractual).attr("disabled", "disabled")
+            $("#tipoZona").val(response.tipo_zona).attr("disabled", "disabled")
+        }).catch(function (error) {
+            alert(error)
+        })
 
-      </div>
-    </div>
-  </div>
+        $("#btn-save-vehiculo, #btn-cancel-update-vehiculo").hide()
 
-  <br>
+        $("#btn-edit-vehiculo").click(function () {
+            enabledFieldsVehiculo()
+            $("#btn-save-vehiculo, #btn-cancel-update-vehiculo").show()
+            $(this).hide()
+        })
 
-  <div class="row">
-    <div class="col-md-12 text-right">
-      <button type="button" class="btn btn-dark-blue">Guardar</button>
-      <button type="button" class="btn btn-dark-blue">Salir</button>
-    </div>
-  </div>
-</form>
+        $("#btn-cancel-update-vehiculo").click(function () {
+            $("#btn-save-vehiculo, #btn-cancel-update-vehiculo").hide()
+            $("#btn-edit-vehiculo").show()
+            disabledFieldsVehiculo()
+        })
+
+
+        $("#formVehiculo").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: 'index.php?router=update-vehiculo',
+                method: 'POST',
+                data: $(this).serialize()
+            }).then(function (response) {
+                if(!response.success){
+                    $("#alert-error").text("No se ha podido actualizar el vehiculo").show("slow", function () {
+                        setTimeout(function () {
+                            $("#alert-error").hide('slow');
+                        }, 5000)
+                    });
+                    return false;
+                }
+                $("#alert-success").text(response.message).show("slow", function () {
+                    setTimeout(function () {
+                        $("#alert-success").hide('slow');
+                    }, 5000)
+                });
+                disabledFieldsVehiculo()
+                $("#btn-edit-vehiculo").show()
+                $("#btn-save-vehiculo, #btn-cancel-update-vehiculo").hide()
+            }).catch(function (error) {
+                alert(error)
+            })
+            $("#btn-save-vehiculo").show()
+        });
+
+        function enabledFieldsVehiculo() {
+            $("#placaVehiculo").removeAttr("disabled")
+            $("#marcaVehiculo").removeAttr("disabled")
+            $("#fecharevitecnomec").removeAttr("disabled")
+            $("#numrevitecnomec").removeAttr("disabled")
+            $("#fechavencisoat").removeAttr("disabled")
+            $("#numsoat").removeAttr("disabled")
+            //$("#numpasajeros").removeAttr("disabled")
+            $("#propietarioVehiculo").removeAttr("disabled")
+            $("#numtarjetaope").removeAttr("disabled")
+            $("#seguroContractual").removeAttr("disabled")
+            $("#seguroExtraContractual").removeAttr("disabled")
+            $("#tipoZona").removeAttr("disabled")
+        }
+
+        function disabledFieldsVehiculo () {
+            $("#placaVehiculo").attr("disabled", "disabled")
+            $("#marcaVehiculo").attr("disabled", "disabled")
+            $("#fecharevitecnomec").attr("disabled", "disabled")
+            $("#numrevitecnomec").attr("disabled", "disabled")
+            $("#fechavencisoat").attr("disabled", "disabled")
+            $("#numsoat").attr("disabled", "disabled")
+            //$("#numpasajeros").attr("disabled", "disabled")
+            $("#propietarioVehiculo").attr("disabled", "disabled")
+            $("#numtarjetaope").attr("disabled", "disabled")
+            $("#seguroContractual").attr("disabled", "disabled")
+            $("#seguroExtraContractual").attr("disabled", "disabled")
+            $("#tipoZona").attr("disabled", "disabled")
+        }
+    })
+</script>

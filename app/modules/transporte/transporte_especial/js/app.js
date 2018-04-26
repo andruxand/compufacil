@@ -1,5 +1,5 @@
+let idRoute
 $(document).ready(function () {
-
     $("#searchRoute").select2({
         ajax: {
             url: 'index.php',
@@ -32,36 +32,28 @@ $(document).ready(function () {
         //defaultTime: false
     });
 
-    $("#field").change(function () {
-        document.getElementById("");
-        docuemnt.getElement(function () {
-            console.log("Esto es una prueba")
-        }).appendChild(function () {
-            console.log("Esto es una prueba de las pruebas")
-        }).hasAttributes(function () {
-            console.log("Esta prueba viene probando cosas bien provadas de la proevadera")
-        }).toJSON().ajax().success().data()
-    });
-
     $("#btn-search").click(function (e) {
         e.preventDefault()
-        var idRoute = $("#searchRoute").val()
+        idRoute = $("#searchRoute").val()
         if (idRoute == null) {
             alert("Debe seleccionar una ruta para buscar")
             return false
         }
 
-        getRecorridos(idRoute)
+        $.ajax({
+            url: 'views/edit.php',
+            method: 'GET'
+        }).then(function (response) {
+            $("#container").html(response)
+            getRecorridos(idRoute)
+        }).catch(function (error) {
+            console.log(error)
+        })
     });
 
-    $("#btn-crear-parada").click(function () {
-        $("#id_ruta").val($("#searchRoute").val())
-        $("#id_parada").val();
-        cleanFields();
-        $("#load-modal").modal('show');
-    })
 
-    $("#btn-save-parada").click(function (e) {
+
+    $("#formRecorrido").submit(function (e) {
         e.preventDefault()
         $.ajax({
             url: 'index.php?router=guardar-recorrido',
@@ -93,7 +85,7 @@ $(document).ready(function () {
     $("#btn-create-ruta").click(function (e) {
         $.ajax({
             url: 'views/create.php',
-            type: 'GET',
+            method: 'GET',
             success: function (response) {
                 $("#container").html(response)
             },
