@@ -20,7 +20,6 @@
 	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
-	<script type="text/javascript" src="<?php echo APP_RESOURCES; ?>scripts/jquery.smartWizard.min.js"></script>
 
 	<link rel="stylesheet" href="<?php echo APP_RESOURCES; ?>css/style.css" type="text/css">
 	<link rel="stylesheet" href="<?php echo APP_RESOURCES; ?>css/bootstrap.css" type="text/css">
@@ -33,7 +32,5 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo APP_RESOURCES; ?>css/buttons.dataTables.min.css"/>
 	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="<?php echo APP_RESOURCES; ?>css/smart_wizard.css"/>
-	<link rel="stylesheet" type="text/css" href="<?php echo APP_RESOURCES; ?>css/smart_wizard_theme_dots.css"/>
 </head>
 <body>
