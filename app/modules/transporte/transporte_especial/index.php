@@ -1,7 +1,6 @@
 <?php
 require_once('../../../config/autoload.php');
 require_once('./Utilities.php');
-
 if (isset($_GET['router'])) {
   header('Content-Type: application/json');
   try {
@@ -91,7 +90,6 @@ if (isset($_GET['router'])) {
     exit;
   }
 }
-
 ?>
 
 <?php
