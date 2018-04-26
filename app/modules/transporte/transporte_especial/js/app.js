@@ -61,16 +61,24 @@ $(document).ready(function () {
             dataType: 'json',
             data: $("#formRecorrido").serialize(),
             success: function (response) {
-                if (response.success) {
-                    getRecorridos($("#searchRoute").val())
-                    $("#load-modal").modal('hide');
-                    cleanFields();
-                    $("#alert-success").text(response.message).show("slow", function () {
+                if (!response.success) {
+                    $("#alert-error").text(response.message).show("slow", function () {
                         setTimeout(function () {
-                            $("#alert-success").hide('slow');
+                            $("#alert-error").hide('slow');
                         }, 5000)
                     });
+                    $("#load-modal").modal('hide');
+                    return false;
                 }
+
+                getRecorridos($("#searchRoute").val())
+                $("#load-modal").modal('hide');
+                cleanFields();
+                $("#alert-success").text(response.message).show("slow", function () {
+                    setTimeout(function () {
+                        $("#alert-success").hide('slow');
+                    }, 5000)
+                });
             },
             error: function (xhr, status, error) {
                 $("#alert-error").text(error).show("slow", function () {

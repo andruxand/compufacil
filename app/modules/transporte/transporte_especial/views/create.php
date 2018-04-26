@@ -263,13 +263,13 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Placa Vehículo</label>
-                        <input type="text" class="form-control" name="placaVehiculo" id="placaVehiculo" required/>
+                        <input type="text" class="form-control" name="placaVehiculo" id="placaVehiculo" required maxlength="6"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Marca del Vehículo</label>
-                        <input type="text" class="form-control" name="marcaVehiculo" id="marcaVehiculo" required/>
+                        <input type="text" class="form-control" name="marcaVehiculo" id="marcaVehiculo" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -284,7 +284,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. Revisión Técnico Mecánica</label>
-                        <input type="number" class="form-control" name="numrevitecnomec" id="numrevitecnomec" required/>
+                        <input type="number" class="form-control" name="numrevitecnomec" id="numrevitecnomec" required maxlength="20"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -299,13 +299,13 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Fecha Vencimiento SOAT</label>
-                        <input type="date" class="form-control" name="fechavencisoat" id="fechavencisoat" required/>
+                        <input type="date" class="form-control" name="fechavencisoat" id="fechavencisoat" required maxlength="20"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. SOAT</label>
-                        <input type="text" class="form-control" name="numsoat" id="numsoat" required/>
+                        <input type="text" class="form-control" name="numsoat" id="numsoat" required maxlength="20"/>
                     </div>
                 </div>
             </div>
@@ -320,7 +320,7 @@
                     <div class="form-group">
                         <label for="">Propietario del Vehículo</label>
                         <input type="text" class="form-control" name="propietarioVehiculo" id="propietarioVehiculo"
-                               required/>
+                               required maxlength="60"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -332,7 +332,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. Tarjeta de Operación</label>
-                        <input type="text" class="form-control" name="numtarjetaope" id="numtarjetaope" required/>
+                        <input type="text" class="form-control" name="numtarjetaope" id="numtarjetaope" required maxlength="20"/>
                     </div>
                 </div>
             </div>
@@ -341,14 +341,14 @@
                     <div class="form-group">
                         <label for="">Seguro Contractual</label>
                         <input type="text" class="form-control" name="seguroContractual" id="seguroContractual"
-                               required/>
+                               required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Seguro Extra Contractual</label>
                         <input type="text" class="form-control" name="seguroExtraContractual"
-                               id="seguroExtraContractual" required/>
+                               id="seguroExtraContractual" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -424,19 +424,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Documento</label>
-                        <input type="number" class="form-control" name="documentCond" id="documentCond" required/>
+                        <input type="number" class="form-control" name="documentCond" id="documentCond" required maxlength="12"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Apellido</label>
-                        <input type="text" class="form-control" name="primerApellidoCond" id="primerApellidoCond" required/>
+                        <input type="text" class="form-control" name="primerApellidoCond" id="primerApellidoCond" required maxlength="45" "/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Apellido</label>
-                        <input type="text" class="form-control" name="segundoApellidoCond" id="segundoApellidoCond" required/>
+                        <input type="text" class="form-control" name="segundoApellidoCond" id="segundoApellidoCond" required maxlength="45"/>
                     </div>
                 </div>
             </div>
@@ -444,19 +444,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Nombre</label>
-                        <input type="text" class="form-control" name="primerNombreCond" id="primerNombreCond" required/>
+                        <input type="text" class="form-control" name="primerNombreCond" id="primerNombreCond" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Nombre</label>
-                        <input type="text" class="form-control" name="segundoNombreCond" id="segundoNombreCond" required/>
+                        <input type="text" class="form-control" name="segundoNombreCond" id="segundoNombreCond" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Dirección de Residencia</label>
-                        <input type="text" class="form-control" name="direccionResidenciaCond" id="direccionResidenciaCond" required/>
+                        <input type="text" class="form-control" name="direccionResidenciaCond" id="direccionResidenciaCond" required maxlength="70"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -470,13 +470,13 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Licencia de conducción No.</label>
-                        <input type="text" class="form-control" name="licenciaConduccion" id="licenciaConduccion" required/>
+                        <input type="text" class="form-control" name="licenciaConduccion" id="licenciaConduccion" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Categoría Autorizada</label>
-                        <input type="text" class="form-control" name="categoriaAutorizada" id="categoriaAutorizada" required/>
+                        <input type="text" class="form-control" name="categoriaAutorizada" id="categoriaAutorizada" required maxlength="2"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -551,19 +551,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Documento</label>
-                        <input type="number" class="form-control" name="documentoAux" id="documentoAux" required/>
+                        <input type="number" class="form-control" name="documentoAux" id="documentoAux" required maxlength="12"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Apellido</label>
-                        <input type="text" class="form-control" name="primerApellidoAux" id="primerApellidoAux" required/>
+                        <input type="text" class="form-control" name="primerApellidoAux" id="primerApellidoAux" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Apellido</label>
-                        <input type="text" class="form-control" name="segundoApellidoAux" id="segundoApellidoAux" required/>
+                        <input type="text" class="form-control" name="segundoApellidoAux" id="segundoApellidoAux" required maxlength="45"/>
                     </div>
                 </div>
             </div>
@@ -571,19 +571,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Nombre</label>
-                        <input type="text" class="form-control" name="primerNombreAux" id="primerNombreAux" required/>
+                        <input type="text" class="form-control" name="primerNombreAux" id="primerNombreAux" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Nombre</label>
-                        <input type="text" class="form-control" name="segundoNombreAux" id="segundoNombreAux" required/>
+                        <input type="text" class="form-control" name="segundoNombreAux" id="segundoNombreAux" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Dirección de Residencia</label>
-                        <input type="text" class="form-control" name="direccionResidenciaAux" id="direccionResidenciaAux" required/>
+                        <input type="text" class="form-control" name="direccionResidenciaAux" id="direccionResidenciaAux" required maxlength="70"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -597,7 +597,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Formación Académica</label>
-                        <input type="text" class="form-control" name="formacionAcadeAux" id="formacionAcadeAux" required/>
+                        <input type="text" class="form-control" name="formacionAcadeAux" id="formacionAcadeAux" required maxlength="100"/>
                     </div>
                 </div>
             </div>

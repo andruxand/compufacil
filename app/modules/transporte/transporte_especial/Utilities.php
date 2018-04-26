@@ -120,6 +120,13 @@ class Utilities {
     $hora_llegada = filter_var($hora_llegada, FILTER_SANITIZE_STRING);
     $hora_partida = filter_var($hora_partida, FILTER_SANITIZE_STRING);
 
+
+    $valid = "SELECT secuencia FROM tra_recorridos WHERE secuencia = {$secuencia} AND ruta = {$id_ruta}";
+
+    if($db->sql_exec($valid)) {
+      throw new InvalidArgumentException("No puede guardar una parada con una secuencia existente");
+    }
+
     $sql = "UPDATE tra_recorridos "
       . "SET nombre_parada = '{$nom_parada}', "
       . "secuencia = {$secuencia}, "
