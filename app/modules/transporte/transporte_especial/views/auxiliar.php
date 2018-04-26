@@ -28,13 +28,13 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Apellido</label>
-                        <input type="text" class="form-control" name="primerApellidoAux" id="primerApellidoAux" required/>
+                        <input type="text" class="form-control" name="primerApellidoAux" id="primerApellidoAux" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Apellido</label>
-                        <input type="text" class="form-control" name="segundoApellidoAux" id="segundoApellidoAux" required/>
+                        <input type="text" class="form-control" name="segundoApellidoAux" id="segundoApellidoAux" maxlength="45"/>
                     </div>
                 </div>
             </div>
@@ -42,25 +42,25 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Nombre</label>
-                        <input type="text" class="form-control" name="primerNombreAux" id="primerNombreAux" required/>
+                        <input type="text" class="form-control" name="primerNombreAux" id="primerNombreAux" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Nombre</label>
-                        <input type="text" class="form-control" name="segundoNombreAux" id="segundoNombreAux" required/>
+                        <input type="text" class="form-control" name="segundoNombreAux" id="segundoNombreAux" maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Dirección de Residencia</label>
-                        <input type="text" class="form-control" name="direccionResidenciaAux" id="direccionResidenciaAux" required/>
+                        <input type="text" class="form-control" name="direccionResidenciaAux" id="direccionResidenciaAux" required maxlength="100"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. de Celular</label>
-                        <input type="text" class="form-control" name="numCelularAux" id="numCelularAux" maxlength="10" required/>
+                        <input type="text" class="form-control" name="numCelularAux" id="numCelularAux" maxlength="10"/>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Formación Académica</label>
-                        <input type="text" class="form-control" name="formacionAcadeAux" id="formacionAcadeAux" required/>
+                        <input type="text" class="form-control" name="formacionAcadeAux" id="formacionAcadeAux" maxlength="100"/>
                     </div>
                 </div>
             </div>

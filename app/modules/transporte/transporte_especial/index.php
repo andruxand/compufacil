@@ -97,6 +97,8 @@ include('../../../hooks/head.php')
 ?>
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css"/>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"/>
 
 <style>
     #alert-success, #alert-error {
@@ -106,7 +108,7 @@ include('../../../hooks/head.php')
 
 <div class="container-fluid">
     <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
-    <div class="card border-dark-blue">
+    <div class="card border-dark-blue" id="container-search">
         <div class="card-header-dark-blue">
             Consulta transporte especial
         </div>

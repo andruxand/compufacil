@@ -1,8 +1,14 @@
 <div class="card" id="card-route">
     <div class="card-body">
-        <span id="nomRuta" class="mr-2"><b>Nombre de ruta:</b> </span>
-        <span id="operador" class="mr-2"><b>Operador:</b> </span><br><br>
-        <span id="ieo" class="mr-2"><b>Institución educativa:</b> </span>
+        <div class="row">
+            <div class="col-md-12">
+                <span id="nomRuta" class="mr-2"><b>Nombre de ruta:</b> </span>
+                <span id="operador" class="mr-2"><b>Operador:</b> </span>
+                <span id="num-pasajeros-disp" class="mr-2"><b>Cupos Disponibles:</b> </span>
+                <span id="num-pasajeros-asig" class="mr-2"><b>Cupos Asignados:</b> </span> <br><br>
+                <span id="ieo" class="mr-2"><b>Institución educativa:</b> </span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -72,18 +78,32 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <a href="views/print.php" target="_blank" class="btn btn-dark-blue mt-2" id="btn-print-data-route">
+            <span class="oi oi-print"></span>
+            Imprimir
+        </a>
+        <button type="button" class="btn btn-dark-blue mt-2" id="btn-exit-data-route">
+            <span class="oi oi-x"></span>
+            Salir
+        </button>
+    </div>
+</div>
 <!-- Bloque de toda la información -->
 <script>
     $(document).ready(function () {
         $("#card-route").hide();
 
         $.ajax({
-            url: 'index.php?router=get-data-route&id='+idRoute,
+            url: 'index.php?router=get-data-route&id=' + idRoute,
             method: 'GET'
         }).then(function (response) {
             $("#nomRuta").append(response.nombre_ruta)
             $("#operador").append(response.nombre_proveedor)
             $("#ieo").append(response.ieo)
+            $("#num-pasajeros-disp").append(response.num_pasajeros_disp)
+            $("#num-pasajeros-asig").append(response.pasajeros)
             $("#card-route").show('slow');
         }).catch(function (error) {
             console.log(error)
@@ -98,45 +118,52 @@
         }).catch(function (error) {
             alert(error);
         })
+
+        $("#tab-conductor").click(function () {
+            if ($("#content-conductor").html().trim() == '') {
+                $.ajax({
+                    url: 'views/conductor.php',
+                    method: 'GET'
+                }).then(function (response) {
+                    $("#content-conductor").html(response);
+                }).catch(function (error) {
+                    alert(error)
+                })
+            }
+        });
+
+        $("#tab-auxiliar").click(function () {
+            if ($("#content-auxiliar").html().trim() == '') {
+                $.ajax({
+                    url: 'views/auxiliar.php',
+                    method: 'GET'
+                }).then(function (response) {
+                    $("#content-auxiliar").html(response)
+                }).catch(function (error) {
+                    alert(error)
+                })
+            }
+        })
+
+        $("#btn-crear-parada").click(function () {
+            $("#id_ruta").val($("#searchRoute").val())
+            $("#id_parada").val();
+            //cleanFields();
+            $("#id_parada").val('')
+            $("#nom_parada").val('')
+            $("#direccion").val('')
+            $("#hora_llegada").val('')
+            $("#hora_partida").val('')
+            $("#secuencia").val('')
+            $("#load-modal").modal('show');
+        })
+
+        $("#btn-exit-data-route").click(function (e) {
+            $("#container-search").show()
+            $("#container").html('')
+        })
+
     })
 
-    $("#tab-conductor").click(function () {
-        if ($("#content-conductor").html().trim() == '') {
-            $.ajax({
-                url: 'views/conductor.php',
-                method: 'GET'
-            }).then(function (response) {
-                $("#content-conductor").html(response);
-            }).catch(function (error) {
-                alert(error)
-            })
-        }
-    });
 
-    $("#tab-auxiliar").click(function () {
-        if ($("#content-auxiliar").html().trim() == '') {
-            $.ajax({
-                url: 'views/auxiliar.php',
-                method: 'GET'
-            }).then(function (response) {
-                $("#content-auxiliar").html(response)
-            }).catch(function (error) {
-                alert(error)
-            })
-        }
-    })
-
-
-    $("#btn-crear-parada").click(function () {
-        $("#id_ruta").val($("#searchRoute").val())
-        $("#id_parada").val();
-        //cleanFields();
-        $("#id_parada").val('')
-        $("#nom_parada").val('')
-        $("#direccion").val('')
-        $("#hora_llegada").val('')
-        $("#hora_partida").val('')
-        $("#secuencia").val('')
-        $("#load-modal").modal('show');
-    })
 </script>

@@ -97,8 +97,8 @@ class Utilities {
     ];
 
     $valid = "SELECT secuencia FROM tra_recorridos WHERE secuencia = {$secuencia} AND ruta = {$id_ruta}";
-
-    if($db->sql_exec($valid)) {
+    $res = $db->sql_exec($valid);
+    if($res->num_rows > 0) {
       throw new InvalidArgumentException("No puede guardar una parada con una secuencia existente");
     }
 
@@ -167,7 +167,8 @@ class Utilities {
     while ($row = mysqli_fetch_object($resultado)) {
       $data[] = array(
         "id" => (int)$row->id,
-        "text" => "{$row->nombre_proveedor} ({$row->numero_contrato})"
+        "text" => "{$row->nombre_proveedor} ({$row->numero_contrato})",
+        "numero_contrato" => $row->numero_contrato
       );
     }
 
@@ -203,7 +204,8 @@ class Utilities {
     while ($row = mysqli_fetch_object($resultado)) {
       $data[] = array(
         "id" => (int)$row->id,
-        "text" => "({$row->placa}) {$row->propietario}"
+        "text" => "({$row->placa}) {$row->propietario}",
+        "num_pasajeros" => $row->num_pasajeros
       );
     }
 
@@ -258,7 +260,6 @@ class Utilities {
         "vehiculo_id" => $vehiculo,
         "conductor_id" => $conductor,
         "auxiliar_id" => $auxiliar,
-        "pasajeros" => $numPasajeros,
         "fecha_registro" => date("Y-m-d H:i:s", time())
       ];
 
@@ -313,10 +314,12 @@ class Utilities {
   public static function getOneVehiculo($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT vehi.*".
+    $sql = "SELECT vehi.*, provee.numero_contrato ".
            "FROM tra_rutas as ruta ".
            "INNER JOIN tra_vehiculos vehi ".
            "ON ruta.vehiculo_id = vehi.id ".
+           "INNER JOIN tra_proveedor as provee ".
+           "ON vehi.id_proveedor = provee.id ".
            "WHERE ruta.id = {$parameter}";
 
     $result = $db->sql_exec($sql);
@@ -405,11 +408,13 @@ class Utilities {
   public static function getDataRoute($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT ruta.*, provee.nombre_proveedor, ieo.descripcion as ieo FROM tra_rutas as ruta ".
+    $sql = "SELECT ruta.*, provee.nombre_proveedor, ieo.descripcion as ieo, vehi.num_pasajeros as num_pasajeros_disp  FROM tra_rutas as ruta ".
             "INNER JOIN tra_proveedor as provee ".
             " ON ruta.numero_contrato = provee.id ".
             "INNER JOIN mat_instituciones as ieo ".
             "ON ruta.institucion_id = ieo.id ".
+            "INNER JOIN tra_vehiculos as vehi ".
+            "ON ruta.vehiculo_id = vehi.id ".
             "WHERE ruta.id = {$parameter}";
 
     $resul = $db->sql_exec($sql);

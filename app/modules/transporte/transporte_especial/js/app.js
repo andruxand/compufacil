@@ -46,6 +46,7 @@ $(document).ready(function () {
         }).then(function (response) {
             $("#container").html(response)
             getRecorridos(idRoute)
+            $("#container-search").hide()
         }).catch(function (error) {
             console.log(error)
         })

@@ -22,19 +22,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Documento</label>
-                        <input type="number" class="form-control" name="documentCond" id="documentCond" required/>
+                        <input type="number" class="form-control" name="documentCond" id="documentCond" required maxlength="12"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Apellido</label>
-                        <input type="text" class="form-control" name="primerApellidoCond" id="primerApellidoCond" required/>
+                        <input type="text" class="form-control" name="primerApellidoCond" id="primerApellidoCond" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Apellido</label>
-                        <input type="text" class="form-control" name="segundoApellidoCond" id="segundoApellidoCond" required/>
+                        <input type="text" class="form-control" name="segundoApellidoCond" id="segundoApellidoCond" maxlength="45"/>
                     </div>
                 </div>
             </div>
@@ -42,25 +42,25 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Primer Nombre</label>
-                        <input type="text" class="form-control" name="primerNombreCond" id="primerNombreCond" required/>
+                        <input type="text" class="form-control" name="primerNombreCond" id="primerNombreCond" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Nombre</label>
-                        <input type="text" class="form-control" name="segundoNombreCond" id="segundoNombreCond" required/>
+                        <input type="text" class="form-control" name="segundoNombreCond" id="segundoNombreCond" maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Dirección de Residencia</label>
-                        <input type="text" class="form-control" name="direccionResidenciaCond" id="direccionResidenciaCond" required/>
+                        <input type="text" class="form-control" name="direccionResidenciaCond" id="direccionResidenciaCond" required maxlength="100"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. de Celular</label>
-                        <input type="text" class="form-control" name="numCelularCond" id="numCelularCond" maxlength="10" required/>
+                        <input type="text" class="form-control" name="numCelularCond" id="numCelularCond" maxlength="10"/>
                     </div>
                 </div>
             </div>

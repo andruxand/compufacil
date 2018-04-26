@@ -40,6 +40,10 @@
             </select>
         </div>
         <div class="col-md-3">
+            <label for="numPasajero">Capacidad de ruta</label>
+            <input type="number" name="numPasajeros" id="numPasajeros" class="form-control" readonly/>
+        </div>
+        <div class="col-md-3">
             <label for="conductor">Conductor</label>
             <select name="conductor" id="conductor" class="form-control" required>
                 <option value=""></option>
@@ -50,10 +54,6 @@
             <select name="auxiliar" id="auxiliar" class="form-control" required>
                 <option value=""></option>
             </select>
-        </div>
-        <div class="col-md-3">
-            <label for="numPasajero">Capacidad de ruta</label>
-            <input type="number" name="numPasajeros" id="numPasajeros" class="form-control" required/>
         </div>
     </div>
     <h3>Paradas</h3>
@@ -106,6 +106,8 @@
 <script>
     $(document).ready(function () {
 
+        let vehiArray
+
         const temp = function (id) {
             return `<div class="row" data-id="${id}">
             <div class="col-md-3">
@@ -141,14 +143,11 @@
         </div>`
         }
 
-        $(".time").timepicker({
-            icons: {
-                up: 'oi oi-chevron-top',
-                down: 'oi oi-chevron-bottom'
-            },
-            minuteStep: 1,
-            defaultTime: false
-        })
+        getVehiculos();
+
+        getConductores();
+
+        getAuxiliares();
 
         $.ajax({
             url: 'index.php?router=get-proveedores',
@@ -157,8 +156,18 @@
             $("#proveedor").select2({
                 data: response,
                 placeholder: "Seleccione un proveedor",
-                language: 'es'
+                language: 'es',
+                theme: 'bootstrap'
             });
+        })
+
+        $(".time").timepicker({
+            icons: {
+                up: 'oi oi-chevron-top',
+                down: 'oi oi-chevron-bottom'
+            },
+            minuteStep: 1,
+            defaultTime: false
         })
 
         $("#ieo").select2({
@@ -181,26 +190,11 @@
             },
             placeholder: 'Búsqueda de rutas',
             minimumInputLength: 3,
-            language: 'es'
+            language: 'es',
+            theme: 'bootstrap'
         });
 
-        getVehiculos();
-
-        getConductores();
-
-        getAuxiliares();
-
         let idParada = 0
-
-        $(".time").timepicker({
-            icons: {
-                up: 'oi oi-chevron-top',
-                down: 'oi oi-chevron-bottom'
-            },
-            minuteStep: 1,
-            defaultTime: false
-        })
-
         $("#btn-add-parada").click(function (e) {
             idParada++
             $("#paradas").append(temp(idParada))
@@ -214,7 +208,6 @@
             })
             $(".btn-clear").click(function (e) {
                 $("div[data-id='" + $(this).attr("data-id") + "']").remove();
-                console.log($("#newRoute").serialize())
             });
         })
 
@@ -248,6 +241,15 @@
             e.preventDefault();
         })
 
+        $("#vehiculo").change(function (e) {
+            let arLength = vehiArray.length
+            for(let i = 0; i < arLength; i++) {
+                if (vehiArray[i].id = $(this).val()){
+                    $("#numPasajeros").val(vehiArray[i].num_pasajeros)
+                    break
+                }
+            }
+        })
 
         const tempVehi = `<form action="" id="formCreateVehiculo">
             <div class="row">
@@ -375,6 +377,14 @@
             $("#modal-forms").modal('show')
             $("#formCreateVehiculo").submit(function (e) {
                 e.preventDefault();
+
+                let dateSoat = new Date($("#fechavencilince").val())
+                let dateTecmec = new Date($("#fecharevitecnomec").val())
+                let dateNow = new Date()
+
+                if (dateSoat.toGMTString() < dateNow.toGMTString()) alert("Tenga en cuenta que el SOAT se encuentra vencido")
+                if(dateTecmec.toGMTString() < dateNow.toGMTString()) alert("Tenga en cuenta que la revisión técnico mécanica se encuentra vencida")
+
                 $.ajax({
                     url: 'index.php?router=create-vehiculo',
                     method: 'POST',
@@ -436,7 +446,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Apellido</label>
-                        <input type="text" class="form-control" name="segundoApellidoCond" id="segundoApellidoCond" required maxlength="45"/>
+                        <input type="text" class="form-control" name="segundoApellidoCond" id="segundoApellidoCond" maxlength="45"/>
                     </div>
                 </div>
             </div>
@@ -450,7 +460,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Nombre</label>
-                        <input type="text" class="form-control" name="segundoNombreCond" id="segundoNombreCond" required maxlength="45"/>
+                        <input type="text" class="form-control" name="segundoNombreCond" id="segundoNombreCond" maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -462,7 +472,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. de Celular</label>
-                        <input type="text" class="form-control" name="numCelularCond" id="numCelularCond" maxlength="10" required/>
+                        <input type="text" class="form-control" name="numCelularCond" id="numCelularCond" maxlength="10"/>
                     </div>
                 </div>
             </div>
@@ -502,6 +512,11 @@
             $("#modal-forms").modal('show')
             $("#formCreateConductor").submit(function (e) {
                 e.preventDefault()
+
+                let dateLicen = new Date($("#fechavencilince").val())
+                let dateNow = new Date()
+                if(dateLicen.toGMTString() < dateNow.toGMTString()) alert("Tenga en cuenta que la licencia de conducción ya está vencida");
+
                 $.ajax({
                     url: 'index.php?router=create-conductor',
                     method: 'POST',
@@ -551,7 +566,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Documento</label>
-                        <input type="number" class="form-control" name="documentoAux" id="documentoAux" required maxlength="12"/>
+                        <input type="number" class="form-control" name="documentoAux" id="documentoAux" required/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -563,7 +578,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Apellido</label>
-                        <input type="text" class="form-control" name="segundoApellidoAux" id="segundoApellidoAux" required maxlength="45"/>
+                        <input type="text" class="form-control" name="segundoApellidoAux" id="segundoApellidoAux" maxlength="45"/>
                     </div>
                 </div>
             </div>
@@ -577,19 +592,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Segundo Nombre</label>
-                        <input type="text" class="form-control" name="segundoNombreAux" id="segundoNombreAux" required maxlength="45"/>
+                        <input type="text" class="form-control" name="segundoNombreAux" id="segundoNombreAux" maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Dirección de Residencia</label>
-                        <input type="text" class="form-control" name="direccionResidenciaAux" id="direccionResidenciaAux" required maxlength="70"/>
+                        <input type="text" class="form-control" name="direccionResidenciaAux" id="direccionResidenciaAux" required maxlength="100"/>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">No. de Celular</label>
-                        <input type="text" class="form-control" name="numCelularAux" id="numCelularAux" maxlength="10" required/>
+                        <input type="text" class="form-control" name="numCelularAux" id="numCelularAux" maxlength="10"/>
                     </div>
                 </div>
             </div>
@@ -597,7 +612,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Formación Académica</label>
-                        <input type="text" class="form-control" name="formacionAcadeAux" id="formacionAcadeAux" required maxlength="100"/>
+                        <input type="text" class="form-control" name="formacionAcadeAux" id="formacionAcadeAux" maxlength="100"/>
                     </div>
                 </div>
             </div>
@@ -653,10 +668,12 @@
                 url: 'index.php?router=get-vehiculos',
                 method: 'GET'
             }).then(function (response) {
+                vehiArray = response
                 $("#vehiculo").select2({
                     data: response,
                     placeholder: 'Seleccione un vehículo',
-                    language: 'es'
+                    language: 'es',
+                    theme: 'bootstrap'
                 })
             })
         }
@@ -669,7 +686,8 @@
                 $("#conductor").select2({
                     data: response,
                     placeholder: 'Seleccione un conductor',
-                    language: 'es'
+                    language: 'es',
+                    theme: 'bootstrap'
                 })
             })
         }
@@ -682,7 +700,8 @@
                 $("#auxiliar").select2({
                     data: response,
                     placeholder: 'Seleccione un auxiliar',
-                    language: 'es'
+                    language: 'es',
+                    theme: 'bootstrap'
                 })
             })
         }
