@@ -80,7 +80,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <a href="views/print.php" target="_blank" class="btn btn-dark-blue mt-2" id="btn-print-data-route">
+        <a  target="_blank" class="btn btn-dark-blue mt-2" id="btn-print-data-route">
             <span class="oi oi-print"></span>
             Imprimir
         </a>
@@ -105,6 +105,7 @@
             $("#num-pasajeros-disp").append(response.num_pasajeros_disp)
             $("#num-pasajeros-asig").append(response.pasajeros)
             $("#card-route").show('slow');
+            $("#btn-print-data-route").attr("href", "views/print.php?id="+idRoute)
         }).catch(function (error) {
             console.log(error)
         })

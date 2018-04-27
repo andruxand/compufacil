@@ -98,7 +98,7 @@ class Utilities {
 
     $valid = "SELECT secuencia FROM tra_recorridos WHERE secuencia = {$secuencia} AND ruta = {$id_ruta}";
     $res = $db->sql_exec($valid);
-    if($res->num_rows > 0) {
+    if ($res->num_rows > 0) {
       throw new InvalidArgumentException("No puede guardar una parada con una secuencia existente");
     }
 
@@ -123,7 +123,7 @@ class Utilities {
 
     $valid = "SELECT secuencia FROM tra_recorridos WHERE secuencia = {$secuencia} AND ruta = {$id_ruta}";
 
-    if($db->sql_exec($valid)) {
+    if ($db->sql_exec($valid)) {
       throw new InvalidArgumentException("No puede guardar una parada con una secuencia existente");
     }
 
@@ -249,78 +249,78 @@ class Utilities {
   }
 
   public static function createRuta($db, $parameters) {
-      $db->conectar();
-      extract($parameters);
+    $db->conectar();
+    extract($parameters);
 
-      $data = [
-        "vigencia" => $vigencia,
-        "nombre_ruta" => $nombreRuta,
-        "numero_contrato" => $proveedor,
-        "institucion_id" => $ieo,
-        "vehiculo_id" => $vehiculo,
-        "conductor_id" => $conductor,
-        "auxiliar_id" => $auxiliar,
-        "fecha_registro" => date("Y-m-d H:i:s", time())
-      ];
+    $data = [
+      "vigencia" => $vigencia,
+      "nombre_ruta" => $nombreRuta,
+      "numero_contrato" => $proveedor,
+      "institucion_id" => $ieo,
+      "vehiculo_id" => $vehiculo,
+      "conductor_id" => $conductor,
+      "auxiliar_id" => $auxiliar,
+      "fecha_registro" => date("Y-m-d H:i:s", time())
+    ];
 
-      $db->beginTransaction();
+    $db->beginTransaction();
 
-      $consult = $db->executeTransactionQuery("SELECT num_pasajeros FROM tra_vehiculos WHERE id = {$vehiculo}");
+    $consult = $db->executeTransactionQuery("SELECT num_pasajeros FROM tra_vehiculos WHERE id = {$vehiculo}");
 
-      if(!$consult) {
-        throw new InvalidArgumentException("No se encontró el vehiculo seleccionado");
-      }
+    if (!$consult) {
+      throw new InvalidArgumentException("No se encontró el vehiculo seleccionado");
+    }
 
-      $vehi = mysqli_fetch_object($consult);
+    $vehi = mysqli_fetch_object($consult);
 
-      if ($vehi->num_pasajeros < $numPasajeros) {
-        throw new InvalidArgumentException("La cantidad de pasajeros ingresada en la ruta es mayor a la disponible en el vehículo seleccionado");
-      }
+    if ($vehi->num_pasajeros < $numPasajeros) {
+      throw new InvalidArgumentException("La cantidad de pasajeros ingresada en la ruta es mayor a la disponible en el vehículo seleccionado");
+    }
 
-      $res1 = $db->inserTransaction("tra_rutas", $data);
-      if (!$res1) $db->rollbackTransaction();
-      $idRuta = $db->getLastId();
+    $res1 = $db->inserTransaction("tra_rutas", $data);
+    if (!$res1) $db->rollbackTransaction();
+    $idRuta = $db->getLastId();
 
-      if(isset($parada) && count($parada) > 0) {
-        foreach ($parada as $key => $para) {
-          $data = array(
-            "ruta" => $idRuta,
-            "secuencia" => $secuencia[$key],
-            "nombre_parada" => $para,
-            "direccion" => $direccion[$key],
-            "hora_llegada" => $hora_llegada[$key],
-            "hora_partida" => $hora_partida[$key],
-            "fecha_registro" => date("Y-m-d H:i:s", time())
-          );
-          $res2 = $db->inserTransaction("tra_recorridos", $data);
-          if (!$res2) {
-            throw new \InvalidArgumentException("No se pudo guardar correctamente una de las paradas");
-          }
+    if (isset($parada) && count($parada) > 0) {
+      foreach ($parada as $key => $para) {
+        $data = array(
+          "ruta" => $idRuta,
+          "secuencia" => $secuencia[$key],
+          "nombre_parada" => $para,
+          "direccion" => $direccion[$key],
+          "hora_llegada" => $hora_llegada[$key],
+          "hora_partida" => $hora_partida[$key],
+          "fecha_registro" => date("Y-m-d H:i:s", time())
+        );
+        $res2 = $db->inserTransaction("tra_recorridos", $data);
+        if (!$res2) {
+          throw new \InvalidArgumentException("No se pudo guardar correctamente una de las paradas");
         }
       }
+    }
 
-      $upd = $db->executeTransactionQuery("UPDATE tra_vehiculos SET num_pasajeros = num_pasajeros - {$numPasajeros} WHERE id = {$vehiculo} ");
+    $upd = $db->executeTransactionQuery("UPDATE tra_vehiculos SET num_pasajeros = num_pasajeros - {$numPasajeros} WHERE id = {$vehiculo} ");
 
-      if (!$upd) {
-          throw new InvalidArgumentException("No se pudo actualizar la cantidad de asignaciones en el vehículo seleccionado");
-      }
+    if (!$upd) {
+      throw new InvalidArgumentException("No se pudo actualizar la cantidad de asignaciones en el vehículo seleccionado");
+    }
 
-      $db->commitTransaction();
+    $db->commitTransaction();
 
 
-      return json_encode(["success" => true, "message" => "Se ha guardado exitosamente la ruta"]);
+    return json_encode(["success" => true, "message" => "Se ha guardado exitosamente la ruta"]);
   }
 
   public static function getOneVehiculo($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT vehi.*, provee.numero_contrato ".
-           "FROM tra_rutas as ruta ".
-           "INNER JOIN tra_vehiculos vehi ".
-           "ON ruta.vehiculo_id = vehi.id ".
-           "INNER JOIN tra_proveedor as provee ".
-           "ON vehi.id_proveedor = provee.id ".
-           "WHERE ruta.id = {$parameter}";
+    $sql = "SELECT vehi.*, provee.numero_contrato " .
+      "FROM tra_rutas as ruta " .
+      "INNER JOIN tra_vehiculos vehi " .
+      "ON ruta.vehiculo_id = vehi.id " .
+      "INNER JOIN tra_proveedor as provee " .
+      "ON vehi.id_proveedor = provee.id " .
+      "WHERE ruta.id = {$parameter}";
 
     $result = $db->sql_exec($sql);
 
@@ -332,11 +332,11 @@ class Utilities {
   public static function getOneConductor($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT condu.* ".
-           "FROM tra_rutas as ruta ".
-           "INNER JOIN tra_conductores condu ".
-           "ON ruta.conductor_id = condu.id ".
-           "WHERE ruta.id = {$parameter}";
+    $sql = "SELECT condu.* " .
+      "FROM tra_rutas as ruta " .
+      "INNER JOIN tra_conductores condu " .
+      "ON ruta.conductor_id = condu.id " .
+      "WHERE ruta.id = {$parameter}";
 
     $result = $db->sql_exec($sql);
 
@@ -348,10 +348,29 @@ class Utilities {
   public static function getOneAuxiliar($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT aux.* ".
+    $sql = "SELECT aux.* " .
+      "FROM tra_rutas as ruta " .
+      "INNER JOIN tra_auxiliar aux " .
+      "ON ruta.auxiliar_id = aux.id " .
+      "WHERE ruta.id = {$parameter}";
+
+    $result = $db->sql_exec($sql);
+
+    $data = mysqli_fetch_object($result);
+
+    return json_encode($data);
+
+  }
+
+public static function getOneProveedor($db, $parameter) {
+    $db->conectar();
+
+    $sql = "SELECT provee.* ".
            "FROM tra_rutas as ruta ".
-           "INNER JOIN tra_auxiliar aux ".
-           "ON ruta.auxiliar_id = aux.id ".
+           "INNER JOIN tra_vehiculos as vehi ".
+           "ON ruta.vehiculo_id = vehi.id ".
+           "INNER JOIN tra_proveedor as provee ".
+           "ON vehi.id_proveedor = provee.id ".
            "WHERE ruta.id = {$parameter}";
 
     $result = $db->sql_exec($sql);
