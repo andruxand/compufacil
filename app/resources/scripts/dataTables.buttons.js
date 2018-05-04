@@ -1634,7 +1634,7 @@ var _filename = function ( config )
 	}
 
 	if ( filename.indexOf( '*' ) !== -1 ) {
-		filename = $.trim( filename.replace( '*', $('head > title').text() ) );
+		filename = $.trim( filename.replace( '*', $('#title-export').text() ) );
 	}
 
 	// Strip characters which the OS will object to

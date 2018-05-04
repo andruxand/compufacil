@@ -1,0 +1,7 @@
+ErrorDocument 404 /joomla/app/errors/404.php
+ErrorDocument 500 /joomla/app/errors/500.php
+ErrorDocument 403 /joomla/app/errors/403.php
+
+#ErrorDocument 404 /apr_aprender/inscripcion/app/errors/404.php
+#ErrorDocument 500 /apr_aprender/inscripcion/app/errors/500.php
+#ErrorDocument 403 /apr_aprender/inscripcion/app/errors/403.php

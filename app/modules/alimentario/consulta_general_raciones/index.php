@@ -1,7 +1,7 @@
 <?php
 
-    require_once "../../config/autoload.php";
-    include('../../hooks/head.php');
+    require_once "../../../config/autoload.php";
+    include('../../../hooks/head.php');
 
 ?>
 <div class="invisible" id="title-export">Consulta General De Raciones</div>
@@ -116,5 +116,5 @@
     </div>  
 
 <?php
-include('../../hooks/footer.php');
+include('../../../hooks/footer.php');
 ?>
