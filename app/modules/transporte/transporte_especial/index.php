@@ -85,6 +85,14 @@ if (isset($_GET['router'])) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::loadConductor($db, $_FILES);
         else throw new InvalidArgumentException("No tiene permiso para esta acción");
         exit;
+      case "load-vehiculos":
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::loadVehiculo($db, $_FILES);
+        else throw new InvalidArgumentException("No tiene permiso para esta acción");
+        exit;
+      case "load-auxiliares":
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::loadAuxiliar($db, $_FILES);
+        else throw new InvalidArgumentException("No tiene permiso para esta acción");
+        exit;
     }
   } catch (InvalidArgumentException $e) {
     echo json_encode(["success" => false, "message" => $e->getMessage()]);

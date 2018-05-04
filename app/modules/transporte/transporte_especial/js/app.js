@@ -15,6 +15,7 @@ function notificationSuccess(message) {
         }, 5000)
     });
 }
+
 $(document).ready(function () {
     $("#searchRoute").select2({
         ajax: {
@@ -67,7 +68,6 @@ $(document).ready(function () {
             console.log(error)
         })
     });
-
 
 
     $("#formRecorrido").submit(function (e) {
@@ -128,6 +128,26 @@ $(document).ready(function () {
         e.preventDefault();
         $.ajax({
             url: 'views/loadConductor.php',
+            method: 'GET'
+        }).then(function (response) {
+            $("#container").html(response);
+        })
+    })
+
+    $("#btn-load-vehiculos").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'views/loadVehiculo.php',
+            method: 'GET'
+        }).then(function (response) {
+            $("#container").html(response);
+        })
+    })
+
+    $("#btn-load-auxiliares").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'views/loadAuxiliar.php',
             method: 'GET'
         }).then(function (response) {
             $("#container").html(response);
