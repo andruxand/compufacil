@@ -81,6 +81,10 @@ if (isset($_GET['router'])) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::createAuxiliar($db, $_POST);
         else throw new InvalidArgumentException("No tiene permiso para esta acción");
         exit;
+      case "load-conductores":
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::loadConductor($db, $_FILES);
+        else throw new InvalidArgumentException("No tiene permiso para esta acción");
+        exit;
     }
   } catch (InvalidArgumentException $e) {
     echo json_encode(["success" => false, "message" => $e->getMessage()]);
@@ -128,6 +132,18 @@ include('../../../hooks/head.php')
 
                     <button type="submit" class="btn btn-dark-blue ml-3 mt-3" id="btn-search">Buscar</button>
                     <button type="button" class="btn btn-dark-blue ml-3 mt-3" id="btn-create-ruta">Crear Ruta</button>
+                    <div class="dropdown ml-3 mt-3">
+                        <a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Carga masiva
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="#" id="btn-load-vehiculos">Carga masiva vehiculos</a>
+                            <a class="dropdown-item" href="#" id="btn-load-conductores">Carga masiva conductores</a>
+                            <a class="dropdown-item" href="#" id="btn-load-auxiliares">Carga masiva auxiliar</a>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -147,35 +163,6 @@ include('../../../hooks/head.php')
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-
-
-    <!-- Bloque de listado de operadores -->
-    <div class="row d-none">
-        <div class="col-md-12">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" href="">Operadores</a>
-                </li>
-            </ul>
-            <br>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                    <th></th>
-                    <th>No. contrato</th>
-                    <th>No. Pasajeros</th>
-                    <th>Jornada</th>
-                    <th>Nombre de operador</th>
-                    <th>Institución educativa</th>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <!-- Fin bloque -->
 
     <div id="container"></div>
 

@@ -1,4 +1,20 @@
 let idRoute
+
+function notificationError(message) {
+    $("#alert-error").text(message).show("slow", function () {
+        setTimeout(function () {
+            $("#alert-error").hide('slow');
+        }, 5000)
+    });
+}
+
+function notificationSuccess(message) {
+    $("#alert-success").text(message).show("slow", function () {
+        setTimeout(function () {
+            $("#alert-success").hide('slow');
+        }, 5000)
+    });
+}
 $(document).ready(function () {
     $("#searchRoute").select2({
         ajax: {
@@ -107,6 +123,16 @@ $(document).ready(function () {
     if (!$("#searchRoute").val()) {
         $("#btn-crear-parada").hide();
     }
+
+    $("#btn-load-conductores").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'views/loadConductor.php',
+            method: 'GET'
+        }).then(function (response) {
+            $("#container").html(response);
+        })
+    })
 
     function cleanFields() {
         $("#id_parada").val('')

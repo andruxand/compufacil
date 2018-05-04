@@ -19,11 +19,13 @@ class Utilities {
     $resultado = $db->sql_exec($sql);
 
     $data = [];
-    while ($row = mysqli_fetch_object($resultado)) {
-      $data[] = array(
-        "id" => (int)$row->id,
-        "text" => $row->nombre_ruta
-      );
+    if ($resultado->num_rows > 0) {
+      while ($row = mysqli_fetch_object($resultado)) {
+        $data[] = array(
+          "id" => (int)$row->id,
+          "text" => $row->nombre_ruta
+        );
+      }
     }
 
     return json_encode($data);
@@ -386,8 +388,8 @@ public static function getOneProveedor($db, $parameter) {
     extract($parameters);
 
     $sql = "UPDATE tra_vehiculos SET marca_vehiculo = '{$marcaVehiculo}', placa = '{$placaVehiculo}', propietario = '{$propietarioVehiculo}', ".
-           //"tarjeta_operacion = '{$numtarjetaope}', soat = '{$numsoat}', num_pasajeros = {$numpasajeros}, fecha_soat = '{$fechavencisoat}', seguro_contractual = '{$seguroContractual}', ".
-           "tarjeta_operacion = '{$numtarjetaope}', soat = '{$numsoat}', fecha_soat = '{$fechavencisoat}', seguro_contractual = '{$seguroContractual}', ".
+           "tarjeta_operacion = '{$numtarjetaope}', soat = '{$numsoat}', num_pasajeros = {$numpasajeros}, fecha_soat = '{$fechavencisoat}', seguro_contractual = '{$seguroContractual}', ".
+           //"tarjeta_operacion = '{$numtarjetaope}', soat = '{$numsoat}', fecha_soat = '{$fechavencisoat}', seguro_contractual = '{$seguroContractual}', ".
            "seguro_extracontractual = '{$seguroExtraContractual}', tipo_zona = '{$tipoZona}' WHERE id = {$idVehiculo}";
 
     $resultado = $db->sql_exec($sql);
@@ -529,5 +531,31 @@ public static function getOneProveedor($db, $parameter) {
     }
 
     return json_encode(["success" => $result, "message" => "El auxiliar fue creado exitosamente"]);
+  }
+
+  public static function loadConductor($db, $files) {
+    if(isset($files["lConductor"])){
+      $file = $files["lConductor"];
+      $types = array("application/vnd.ms-excel", "text/csv", "text/plain", "application/excel");
+      if(!in_array($file["type"], $types)) throw new InvalidArgumentException("El tipo del archivo no es válido");
+      if($file["size"] > 2097152) throw new InvalidArgumentException("El tamaño máximo permitido del archivo es 2MB");
+
+      $result = false;
+      $nameFile = "loadConductor_".time();
+      $route = '//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//'.$nameFile.'.csv';
+      if (move_uploaded_file($file["tmp_name"], $route)){
+        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE prueba  FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' ".
+                "LINES TERMINATED BY '\r\n' (documento, primernombre, segundonombre, primerapellido, segundoapellido, licencia)";
+        $result = $db->sql_exec($sql);
+      }
+
+      if ($result) {
+        return json_encode(["success" => $result, "message" => "La carga masiva de los conductores fue exitosa"]);
+      } else {
+        throw new InvalidArgumentException("Ha ocurrido un error cargando los conductores");
+      }
+    }
+
+    return false;
   }
 }

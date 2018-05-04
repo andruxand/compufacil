@@ -57,13 +57,16 @@ class BaseDatos {
     $sql = "INSERT INTO " . $tblname . "(" . implode(',', $fields) . ")  VALUES('" . implode("','", $form_data) . "')";
     return $this->executeTransactionQuery($sql);
   }
+
   function getLastId() {
     return mysqli_insert_id($this->conexion);
   }
+
   function commitTransaction() {
     mysqli_commit($this->conexion);
     $this->desconectar();
   }
+
   function rollbackTransaction() {
     mysqli_rollback($this->conexion);
     $this->conectar();
