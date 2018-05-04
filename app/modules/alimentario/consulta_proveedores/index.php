@@ -1,29 +1,29 @@
 <?php
 
-    require_once "../../config/autoload.php";
-    include('../../hooks/head.php');
+    require_once "../../../config/autoload.php";
+    include('../../../hooks/head.php');
 
 ?>
-<div class="invisible" id="title-export">Consulta Registro De Proveedores</div>
-<script src="js/consulta_registro_proveedores.js" type="text/javascript"></script>
+<div class="invisible" id="title-export">Consulta De Raciones a IEO</div>
+<script src="js/consulta_proveedores.js" type="text/javascript"></script>
 
     <div class="container-fluid" id="alimentario">
         <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
         <div class="card border-dark-blue">
             <div class="card-header-dark-blue">
-                CONSULTA REGISTRO DE PROVEEDORES
+                CONSULTA DE RACIONES A IEO
             </div>
             <div class="card-body">
                 <div class="col-md-12">
                     <div class="form-row">
 
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor y/o NIT</strong></label>
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor y/o Contrato</strong></label>
                                 <select class="form-control-custom" id="proveedor" name="proveedor">
                                     <option value="">TODOS</option>
                                     <?php 
-                                        $sql = "SELECT p.nit, CONCAT(p.nit, ' / ', p.nombre_proveedor) proveedor
+                                        $sql = "SELECT c.numero_contrato, CONCAT(c.numero_contrato, ' / ', p.nombre_proveedor) proveedor
                                                 FROM ali_contrato c, ali_proveedor p
                                                 WHERE
                                                 c.proveedor_id = p.id
@@ -37,11 +37,17 @@
                                                 }
                                             }
                                     ?>
-                                        <option value="<?= $row->nit; ?>" <?= $selected; ?> ><?= $row->proveedor; ?></option>
+                                        <option value="<?= $row->numero_contrato; ?>" <?= $selected; ?> ><?= $row->proveedor; ?></option>
                                     <?php } ?>
                                 </select>
                             </div>  
                         </div> 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Fechas</strong></label>
+                                <input type="text" class="form-control-custom" name="daterange" id="daterange" value="">
+                            </div> 
+                        </div>
 
                         <div class="col-md-12 text-right">
 
@@ -91,6 +97,7 @@
                                         <th class="text-center" scope="col">Tipo Ración</th>
                                         <th class="text-center" scope="col">Raciones Primaria</th>
                                         <th class="text-center" scope="col">Raciones Secundaria</th>
+                                        <th class="text-center" scope="col"># Día Atendidos / Servidos</th>
                                         <th class="text-center" scope="col">Total Raciones</th>
                                     </thead>
                                     <tbody>
@@ -108,5 +115,5 @@
     </div>  
 
 <?php
-include('../../hooks/footer.php');
+include('../../../hooks/footer.php');
 ?>

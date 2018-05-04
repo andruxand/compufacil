@@ -4,7 +4,7 @@ function consultar_raciones(id){
 	$(".alert").hide();
 
 	$.ajax({
-        url: 'ajax.php',
+        url: '../ajax.php',
         type: 'POST',
         dataType: 'json',
         data: {action: 'consultar_raciones_por_usuario', user: id},
@@ -43,7 +43,7 @@ function consulta_entrega_raciones_por_usuario(id, mes){
 	$(".alert").hide();
 
 	$.ajax({
-        url: 'ajax.php',
+        url: '../ajax.php',
         type: 'POST',
         dataType: 'json',
         data: {action: 'consulta_entrega_raciones', user: id, mes: mes},
@@ -73,7 +73,7 @@ function consulta_entrega_raciones_por_usuario(id, mes){
 				                		' id="' + data.instituciones[i].institucion + '" accept="image/*,.doc,.docx,application/msword, ' +
 				                		'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.ms-excel" ></td>' +     
 			                  ' </tr>';
-    			for(var s in data.instituciones[i].sedes) {
+    			/*for(var s in data.instituciones[i].sedes) {
     				console.log("nuevo campo dos" + data.instituciones[i].sedes[s].institucion); 
     				partialTable += ' <tr> ' +
 				                	 ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].institucion + '</td> ' +
@@ -87,7 +87,7 @@ function consulta_entrega_raciones_por_usuario(id, mes){
 				                		' id="' + data.instituciones[i].sedes[s].institucion + '" accept="image/*,.doc,.docx,application/msword, ' +
 				                		'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.ms-excel" ></td>' +      
 				                   ' </tr>';
-    			}
+    			}*/
 			}
 
 			$('#results tbody').html(partialTable);
@@ -125,7 +125,7 @@ $(document).ready(function() {
     });
 
     $('#buscar_raciones').on("click", function(){
-		consulta_mensual_raciones($('#contrato').text(), $('#mes').val());
+		consulta_entrega_raciones_por_usuario($('#contrato').text(), $('#mes').val());
 	});
 
 });

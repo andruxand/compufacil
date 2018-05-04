@@ -33,13 +33,13 @@ $(document).ready(function() {
 	            }
         	],
        		buttons: [
-            	{ extend: "print", text: "Vista Impresión" },
+            	{ extend: "print", text: "Vista Impresión", exportOptions: { columns: ':visible' } },
             	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" }
        		],
 			//"sort": false,
    			//"order" : ["ieo", "tipo_racion"],
 	        "ajax": {
-	        	url: "ajax.php",
+	        	url: "../ajax.php",
 	        	type: "post",
 	        	data: { action: 'listar_raciones_general', is_custom_search: is_custom_search, proveedor: proveedor, fechaIni: fechaIni, fechaFin: fechaFin },
 	        	error: function(e){  // error handling

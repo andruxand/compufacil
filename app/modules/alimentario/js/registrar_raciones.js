@@ -7,9 +7,10 @@ function consultar_raciones(id){
         url: 'ajax.php',
         type: 'POST',
         dataType: 'json',
-        data: {action: 'consultar_raciones', contrato: id},
+        data: {action: 'consultar_raciones', dane: id},
     })
     .done(function(data) {
+    	console.log(data);
         if ( data.success ) {
 	        console.log( "La solicitud se ha completado correctamente." );
 	        $('#proveedor').text(data.proveedor);
@@ -35,12 +36,21 @@ function consultar_raciones(id){
 	        	$('#racion-pp').attr("readonly", true);
 		        $('#racion-s').attr("readonly", true);
 		        $('#observaciones').attr("readonly", true);
+		        $('#confirm').attr("disabled", true);
+		        $('#confirm').attr("checked", true);
 
-	        	$('#racion-pp').val(data.datos_racion.primaria_pp);
-		        $('#racion-s').val(data.datos_racion.secundaria_s);
+		        $('#id_registro_racion').val(data.datos_racion.id_racion);
+	        	$('#racion-pp').val(data.datos_racion.primaria);
+		        $('#racion-s').val(data.datos_racion.secundaria);
 		        $('#racion-total').val(data.datos_racion.total_entregadas);
-		        $('#observaciones').val(data.datos_racion.observaciones);
-		        $('#registrar_raciones').attr('disabled', true);
+
+		        if(data.datos_racion.observaciones !== ''){
+		        	$('#observaciones').val(data.datos_racion.observaciones);
+		        	$('#observaciones-block').show();
+		        }
+
+		        $('#registrar_raciones').hide();
+		        $('#editar-registro').show();
 
 	    	}else{
 
@@ -52,6 +62,7 @@ function consultar_raciones(id){
 		        $('#racion-pp').val(data.raciones_programadas_pp);
 		        $('#racion-s').val(data.raciones_programadas_s);
 		        $('#racion-total').val(total_raciones);
+		        $('#registrar_raciones').attr("disabled", true);
 
 	    	}
 
@@ -62,6 +73,10 @@ function consultar_raciones(id){
 	    $('#fullpage-loader').fadeOut(200);
     })
     .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+
+    	$(".alert-danger").show();
+	    $("#danger-msg").text(data.message);
+
 	    if ( console && console.log ) {
 	        console.log( "La solicitud a fallado: " +  textStatus);
 	    }    
@@ -72,6 +87,7 @@ function consultar_raciones(id){
 function registra_raciones(datos){
 
 	console.log(datos + '&action=registrar_raciones');
+	$('.alert').hide();
 
 	$.ajax({
         url: 'ajax.php',
@@ -85,6 +101,14 @@ function registra_raciones(datos){
 	        $(".alert-success").show();
 	        $("#success-msg").text(data.message);
 
+	        $('#racion-pp').attr("readonly", true);
+		    $('#racion-s').attr("readonly", true);
+		    $('#observaciones').attr("readonly", true);
+		    $('#confirm').attr("disabled", true);
+
+		    $('#registrar_raciones').hide();
+		    $('#cancelar-registro').hide();
+
 	    }else{
 	        console.log( "La solicitud NO se ha completado correctamente." );
 	    }
@@ -93,6 +117,11 @@ function registra_raciones(datos){
 
     })
     .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+    	
+    	$(".alert-danger").show();
+	    $("#danger-msg").text(data.message);
+
+
 	    if ( console && console.log ) {
 	        console.log( "La solicitud a fallado: " +  textStatus);
 	    }    
@@ -109,7 +138,7 @@ function consulta_mensual_raciones(id, mes){
         url: 'ajax.php',
         type: 'POST',
         dataType: 'json',
-        data: {action: 'consulta_mensual_raciones', contrato: id, mes: mes},
+        data: {action: 'consulta_mensual_raciones', dane: id, mes: mes},
     })
     .done(function(data) {
         if ( data.success ) {
@@ -153,6 +182,44 @@ function consulta_mensual_raciones(id, mes){
 
 }
 
+function habilitaEditarRacion(habilitar){
+
+	if(habilitar === 1){
+
+		$('#registrar_raciones').text('Registrar Cambios');
+		$('#registrar_raciones').attr("readonly", false);
+		$('#registrar_raciones').show();
+
+		$('#editar-registro').hide();
+		$('#cancelar-registro').show();
+
+		$('#racion-pp').attr("readonly", false);
+		$('#racion-s').attr("readonly", false);
+
+		$('#observaciones').attr("readonly", false);
+		$('#observaciones').attr("required", true);
+		$('#observaciones-block').show();
+
+	}else{
+
+		$('#registrar_raciones').hide();
+
+		$('#editar-registro').show();
+		$('#cancelar-registro').hide();
+
+		$('#racion-pp').attr("readonly", true);
+		$('#racion-s').attr("readonly", true);
+
+		$('#observaciones').attr("readonly", true);
+
+		if($('#observaciones').val() === ''){
+			$('#observaciones-block').hide();				
+		}
+
+	}
+
+}
+
 $(document).ready(function() {
 
 	$( ':input[type="number"]' ).on( "keyup mouseup", function(e) {
@@ -178,13 +245,111 @@ $(document).ready(function() {
             $( '#area-impresion' ).printArea( options );
     });
 
+    $('#confirm').on("change", function(e){
+
+    	if( $(this).is(':checked') ) {
+	         $('#registrar_raciones').attr('disabled', false);
+	         console.log('habilita registro');
+	    } else {
+	        $('#registrar_raciones').attr('disabled', true);
+	        console.log('NO habilita registro');
+	    }
+
+	});
+
     $('#registrar_raciones').on("click", function(e){
     	var data = $('#raciones-form').serialize();
 
     	$(".alert").hide();
+    	$(this).attr('disabled', true);
 
     	e.preventDefault();
-		registra_raciones(data);
+
+    	if ($('#observaciones').attr('required')){
+
+    		if($('#observaciones').val() === ''){
+
+		    	$.confirm({
+				    title: 'Confirmar Registro',
+				    content: 'Debe ingresar una observación',
+				    type: 'yellow',
+				    typeAnimated: true,
+				    buttons: {
+					    close: {
+				            text: 'Cerrar',
+				            action: function(){
+
+				            }
+				        }
+				    }
+				});
+
+			}else{
+
+				$.confirm({
+				    title: 'Confirmar Registro',
+				    content: 'Está seguro de que la información ingresada es correcta ?',
+				    type: 'yellow',
+				    typeAnimated: true,
+				    buttons: {
+				    	confirm: {
+				            text: 'Confirmar',
+				            action: function(){
+				            	registra_raciones(data);
+				            }
+				        },
+					    close: {
+				            text: 'Cerrar',
+				            action: function(){
+
+				            }
+				        }
+				    }
+				});
+
+			}
+
+    	}else{
+
+			$.confirm({
+			    title: 'Confirmar Registro',
+			    content: 'Está seguro de que la información ingresada es correcta ?',
+			    type: 'yellow',
+			    typeAnimated: true,
+			    buttons: {
+			    	confirm: {
+			            text: 'Confirmar',
+			            action: function(){
+			            	registra_raciones(data);
+			            }
+			        },
+				    close: {
+			            text: 'Cerrar',
+			            action: function(){
+
+			            }
+			        }
+			    }
+			});
+
+		}
+
+	});
+
+	$('#editar-registro').on("click", function(e){
+
+		e.preventDefault();
+
+		habilitaEditarRacion(1);
+
+	});
+
+	$('#cancelar-registro').on("click", function(e){
+
+		e.preventDefault();
+
+		habilitaEditarRacion(0);
+
 	});
 
     $('#buscar_raciones').on("click", function(){

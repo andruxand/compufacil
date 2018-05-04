@@ -65,6 +65,10 @@ $( document ).ready(function() {
         
     });
 
+    $('#load-modal').on('hidden.bs.modal', function (e) {
+      $(".modal-body").html('');  
+    })
+
     // Fullpage loader
     $(document).on('click', '.ajax-loader', function () {
         $('#loader-icon').addClass('fa-spin').removeClass('text-danger');

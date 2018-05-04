@@ -20,7 +20,7 @@
 				"acciones"
 			);
 
-			$sql = " SELECT i.coddane dane, p.nombre_proveedor proveedor, CONCAT(i.descripcion, ' / ', sc.descripcion) institucion, sc.direccion, 
+			$sql = " SELECT sc.coddane dane, p.nombre_proveedor proveedor, CONCAT(i.descripcion, ' / ', sc.descripcion) institucion, sc.direccion, 
 					 cc.descripcion comuna, s.descripcion sector, c.numero_contrato, c.tipo_racion, mti.descripcion formacion
 		             FROM mat_instituciones i, mat_sectores s, ali_contrato c, mat_sedes sc, ali_proveedor p,
 		             mat_comunas_corregimientos cc, mat_tipo_instituciones mti
@@ -35,15 +35,15 @@
 		    if($_POST["is_custom_search"] == "yes")
 			{
 				if( !empty($_POST["institucion"]) ){
-					$sql .= ' AND i.coddane LIKE "'.$_POST["institucion"].'"';
+					$sql .= ' AND sc.coddane LIKE "'.$_POST["institucion"].'"';
 				}
 			}         
 
 			if(!empty($_POST["search"]["value"]))
 			{
-				$sql .= ' AND (i.coddane LIKE "%'.$_POST["search"]["value"].'%" 
+				$sql .= ' AND (sc.coddane LIKE "%'.$_POST["search"]["value"].'%" 
 			  				OR p.nombre_proveedor LIKE "%'.$_POST["search"]["value"].'%" 
-			  				OR i.descripcion LIKE "%'.$_POST["search"]["value"].'%" 
+			  				OR sc.descripcion LIKE "%'.$_POST["search"]["value"].'%" 
 			  				OR sc.descripcion LIKE "%'.$_POST["search"]["value"].'%"
 			  				OR sc.direccion LIKE "%'.$_POST["search"]["value"].'%"
 			  				OR cc.descripcion LIKE "%'.$_POST["search"]["value"].'%"
@@ -57,8 +57,14 @@
 			{
 				$sql .= ' ORDER BY '.$columns[$_POST['order']['0']['column']].' '.$_POST['order']['0']['dir'].' ';
 			}else{
-				$sql .= ' ORDER BY i.coddane DESC ';
+				$sql .= ' ORDER BY sc.coddane DESC ';
 			}
+
+			$instituciones = $db->sql_exec($sql);
+
+			if( $instituciones ){
+			 	$totalglobal = mysqli_num_rows($instituciones); 
+			} 
 			 
 			if($_POST["length"] != -1)
 			{
@@ -88,12 +94,12 @@
 							$columns[8]    => $row["tipo_racion"],
 							$columns[9]    => $row["formacion"],
 							$columns[10]   => "<div style='width:100px'>
-											   <a class='btn btn-outline-primary' data-url='registrar_raciones.php' data-title='Registrar Raciones' 
-			                                   data-toggle='modal' data-target='#load-modal' data-backdrop='static' data-id='" . $row["numero_contrato"] . "' href='#''>
+											   <a class='btn btn-outline-primary' data-url='views/registrar_raciones.php' data-title='Registrar Raciones' 
+			                                   data-toggle='modal' data-target='#load-modal' data-backdrop='static' data-id='" . $row["dane"] . "' href='#''>
 			                                   <span class='oi oi-plus text-blue' title='icon name' aria-hidden='true'></span>
 			                                   </a>
-			                                   <a class='btn btn-outline-primary' data-url='consultar_raciones.php' data-title='Consultar Raciones' 
-			                                   data-toggle='modal' data-target='#load-modal' data-backdrop='static' data-id='" . $row["numero_contrato"] . "' href='#''>
+			                                   <a class='btn btn-outline-primary' data-url='views/consultar_raciones.php' data-title='Consultar Raciones' 
+			                                   data-toggle='modal' data-target='#load-modal' data-backdrop='static' data-id='" . $row["dane"] . "' href='#''>
 			                                   <span class='oi oi-magnifying-glass text-blue' title='icon name' aria-hidden='true'></span>
 			                                   </a>
 			                                   </div>"
@@ -106,7 +112,7 @@
 					$json_data = array(
 						"draw"            => intval($_POST["draw"]),
 						"recordsTotal"    => intval( $totalFiltered ), 
-						"recordsFiltered" => intval( $totalFiltered ),
+						"recordsFiltered" => intval( $totalglobal ),
 						"data"            => $data 
 					);
 
@@ -132,23 +138,24 @@
 
 	    	$sql = " SELECT p.nombre_proveedor proveedor, sc.id_instituciones institucionid, i.descripcion institucion, sc.id sedeid, 
 	    			 sc.descripcion sede, sc.direccion, cc.descripcion comuna, c.numero_contrato, c.raciones_programadas_primaria, 
-	    			 c.raciones_programadas_secundaria, c.tipo_racion, i.coddane
-		             FROM mat_instituciones i, mat_sectores s, ali_contrato c, mat_sedes sc, ali_proveedor p,
+	    			 c.raciones_programadas_secundaria, c.tipo_racion, sc.coddane
+		             FROM mat_instituciones i, ali_contrato c, mat_sedes sc, ali_proveedor p,
 		             mat_comunas_corregimientos cc
 		             WHERE
 		             sc.id_instituciones = i.id
 		             AND c.sede_id = sc.id
 		             AND p.id = c.proveedor_id
 		             AND cc.id = sc.id_comunas_corregimientos
-		             AND c.numero_contrato LIKE '" .$_POST['contrato']. "' ";
+		             AND sc.coddane LIKE '" .$_POST['dane']. "' ";
 
 		    $instituciones = $db->sql_exec($sql); 
 
-		    $sql_s = " SELECT primaria, secundaria, observaciones, total
-		               FROM  ali_registros
+		    $sql_s = " SELECT ar.id, ar.primaria, ar.secundaria, ar.observaciones, ar.total
+		               FROM  ali_registros ar, mat_sedes ms
 		               WHERE
-		               contrato_numero LIKE '" .$_POST['contrato']. "'
-                       AND date_format(str_to_date(fecha_registro, '%d/%m/%Y'), '%Y-%m-%d') = CURDATE() ";
+		               ms.id = ar.sede_id
+		               AND ms.coddane LIKE '" .$_POST['dane']. "'
+                       AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m-%d') = CURDATE() ";
 
             $raciones = $db->sql_exec($sql_s);  
             
@@ -159,6 +166,7 @@
             	$valida_raciones = ($num_raciones > 0) ? true : false;
 
             	$json_raciones = array(
+            		'id_racion' => $row_racion['id'],
             		'primaria' => $row_racion['primaria'], 
             		'secundaria' => $row_racion['secundaria'],
         			'observaciones' => $row_racion['observaciones'], 
@@ -218,13 +226,14 @@
 
 	    	case 'consulta_mensual_raciones':
 
-	    	$sql = "SELECT primaria, secundaria,
-					WEEK(date_format(str_to_date(fecha_registro, '%d/%m/%Y'), '%Y/%m/%d'), 5) - WEEK(DATE_SUB(date_format(str_to_date(fecha_registro, '%d/%m/%Y'), '%Y/%m/%d'), INTERVAL DAYOFMONTH(date_format(str_to_date(fecha_registro, '%d/%m/%Y'), '%Y/%m/%d')) - 1 DAY), 5) + 1 semana,
-					(ELT(WEEKDAY(date_format(str_to_date(fecha_registro, '%d/%m/%Y'), '%Y/%m/%d')) + 1, '1', '2', '3', '4', '5', '6', '7')) dia_semana
-					FROM ali_registros
+	    	$sql = "SELECT ar.primaria, ar.secundaria,
+					WEEK(date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y/%m/%d'), 5) - WEEK(DATE_SUB(date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y/%m/%d'), INTERVAL DAYOFMONTH(date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y/%m/%d')) - 1 DAY), 5) semana,
+					(ELT(WEEKDAY(date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y/%m/%d')) + 1, '1', '2', '3', '4', '5', '6', '7')) dia_semana
+					FROM ali_registros ar, mat_sedes ms
 					WHERE 
-					contrato_numero LIKE '" . $_POST['contrato'] . "' 
-					AND date_format(str_to_date(fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] ."' ";
+					ar.sede_id = ms.id
+					AND ms.coddane LIKE '" . $_POST['dane'] . "' 
+					AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] ."' ";
 
 		    $raciones = $db->sql_exec($sql); 
 		    
@@ -284,37 +293,69 @@
 
 	    	case 'registrar_raciones':
 
-	    	$db_data = array(
-	    		"sede_usuario_user_id"	=> $_POST["fuser"],
-	    		"institucion_id"		=> $_POST["finstitucion"],
-	    		"sede_id"				=> $_POST["fsede"],
-	    		"fecha_registro"		=> $_POST["fregistro"],
-	    		"contrato_numero"		=> $_POST["fcontrato"],
-	    		"tipo_racion"			=> $_POST["fmodalidad"],
-	    		"primaria"				=> $_POST["racion-pp"],
-	    		"secundaria"			=> $_POST["racion-s"],
-	    		"total" 				=> $_POST["racion-total"],
-	    		"observaciones" 		=> $_POST["observaciones"],
-	    	);
+	    	if(empty($_POST["id_registro_racion"])){
 
-	    	//insert
-		    $raciones = $db->insert("ali_registros", $db_data);
-		    
-		    if( $raciones ){
+		    	$db_data = array(
+		    		"sede_usuario_user_id"	=> $_POST["fuser"],
+		    		"institucion_id"		=> $_POST["finstitucion"],
+		    		"sede_id"				=> $_POST["fsede"],
+		    		"fecha_registro"		=> $_POST["fregistro"],
+		    		"contrato_numero"		=> $_POST["fcontrato"],
+		    		"tipo_racion"			=> $_POST["fmodalidad"],
+		    		"primaria"				=> $_POST["racion-pp"],
+		    		"secundaria"			=> $_POST["racion-s"],
+		    		"total" 				=> $_POST["racion-total"],
+		    		"observaciones" 		=> $_POST["observaciones"],
+		    	);
 
-			    $json_data = array(
-			       	"success"     => true,
-			       	"message"    => "Raciones registradas satisfactoriamente!",
-				);
+		    	//insert
+			    $raciones = $db->insert("ali_registros", $db_data);
+			    
+			    if( $raciones ){
 
-		    }else{
+				    $json_data = array(
+				       	"success"     => true,
+				       	"message"    => "Raciones registradas satisfactoriamente!",
+					);
 
-		    	$json_data = array(
-			        "success"     => false,     
-					"message"    => 'Problemas al ejecutar la consulta para cargar datos de la institución',
-				);	
+			    }else{
 
-		    }        
+			    	$json_data = array(
+				        "success"     => false,     
+						"message"    => 'Problemas al ejecutar la inserción para cargar datos de la institución',
+					);	
+
+			    } 
+
+			}else{
+
+				$sql = " UPDATE ali_registros set 
+						 primaria = " . $_POST["racion-pp"] . " 
+						 , secundaria = " . $_POST["racion-s"] ." 
+						 , observaciones = '" . $_POST["observaciones"] . "' 
+						 , total = '" . $_POST["racion-total"] . "' 
+						 WHERE
+						 id = " . $_POST["id_registro_racion"] . " ";
+
+				$raciones = $db->sql_exec($sql);
+				
+				 if( $raciones ){
+
+				    $json_data = array(
+				       	"success"     => true,
+				       	"message"    => "Raciones actualizadas satisfactoriamente!",
+					);
+
+			    }else{
+
+			    	$json_data = array(
+				        "success"     => false,     
+						"message"    => 'Problemas al ejecutar la actualización para cargar datos de la institución',
+					);	
+
+			    } 	 
+
+			}       
 
 			echo json_encode($json_data);
 	        
@@ -370,6 +411,12 @@
 			}else{
 				$sql .= ' ORDER BY ra.descripcion DESC ';
 			}
+
+			$proveedores = $db->sql_exec($sql);
+
+			if( $proveedores ){
+			 	$totalglobal = mysqli_num_rows($proveedores); 
+			} 
 			 
 			if($_POST["length"] != -1)
 			{
@@ -403,7 +450,7 @@
 					$json_data = array(
 						"draw"            => intval($_POST["draw"]),
 						"recordsTotal"    => intval( $totalFiltered ), 
-						"recordsFiltered" => intval( $totalFiltered ),
+						"recordsFiltered" => intval( $totalglobal ),
 						"data"            => $data 
 					);
 
@@ -482,6 +529,12 @@
 			}else{
 				$sql .= ' ORDER BY ra.nombre_proveedor DESC ';
 			}
+
+			$raciones = $db->sql_exec($sql);
+
+			if( $raciones ){
+			 	$totalglobal = mysqli_num_rows($raciones); 
+			} 
 			 
 			if($_POST["length"] != -1)
 			{
@@ -516,7 +569,7 @@
 					$json_data = array(
 						"draw"            => intval($_POST["draw"]),
 						"recordsTotal"    => intval( $totalFiltered ), 
-						"recordsFiltered" => intval( $totalFiltered ),
+						"recordsFiltered" => intval( $totalglobal ),
 						"data"            => $data 
 					);
 
@@ -526,7 +579,7 @@
 						"draw"            => intval($_POST["draw"]),
 						"recordsTotal"    => intval( 0 ), 
 						"recordsFiltered" => intval( 0 ),
-						"data"            => $sql
+						"data"            => ''
 					);
 
 				}
@@ -556,7 +609,7 @@
 			);
 
 
-			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, 
+			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, p.nit, 
 					 c.raciones_programadas_primaria raciones_primaria, 
 					 c.raciones_programadas_secundaria raciones_secundaria, 
 			         ( c.raciones_programadas_primaria + c.raciones_programadas_secundaria ) as total_raciones
@@ -571,7 +624,7 @@
 		    if($_POST["is_custom_search"] == "yes")
 			{
 				if( !empty($_POST["proveedor"]) ){
-					$sql .= ' AND ra.numero_contrato LIKE "'.$_POST["proveedor"].'"';
+					$sql .= ' AND ra.nit LIKE "'.$_POST["proveedor"].'"';
 				}
 			}         
 
@@ -588,6 +641,12 @@
 			}else{
 				$sql .= ' ORDER BY ra.descripcion DESC ';
 			}
+
+			$proveedores = $db->sql_exec($sql);
+
+			if( $proveedores ){
+			 	$totalglobal = mysqli_num_rows($proveedores); 
+			} 
 			 
 			if($_POST["length"] != -1)
 			{
@@ -620,7 +679,7 @@
 					$json_data = array(
 						"draw"            => intval($_POST["draw"]),
 						"recordsTotal"    => intval( $totalFiltered ), 
-						"recordsFiltered" => intval( $totalFiltered ),
+						"recordsFiltered" => intval( $totalglobal ),
 						"data"            => $data 
 					);
 
@@ -654,10 +713,10 @@
 	    	$sql = " SELECT p.nombre_proveedor proveedor, sc.id_instituciones institucionid, i.descripcion institucion, sc.id sedeid, 
 	    			 sc.descripcion sede, sc.direccion, cc.descripcion comuna, c.numero_contrato, c.raciones_programadas_primaria, 
 	    			 c.raciones_programadas_secundaria, c.tipo_racion, i.coddane
-		             FROM mat_instituciones i, mat_sectores s, ali_contrato c, mat_sedes sc, ali_proveedor p,
+		             FROM mat_instituciones i, ali_contrato c, mat_sedes sc, ali_proveedor p,
 		             mat_comunas_corregimientos cc
 		             WHERE
-		             sc.id_instituciones = i.id
+		             sc.coddane = i.coddane
 		             AND c.sede_id = sc.id
 		             AND p.id = c.proveedor_id
 		             AND cc.id = sc.id_comunas_corregimientos
@@ -713,7 +772,7 @@
 
 	        case 'consulta_entrega_raciones':
 
-	    	$sql = " SELECT ar.institucion_id, i.descripcion ieo, c.tipo_racion,
+	    	$sql = " SELECT ar.institucion_id, ms.descripcion ieo, ar.tipo_racion,
 					 c.raciones_programadas_primaria raciones_primaria,
 					 c.raciones_programadas_secundaria raciones_secundaria,
 			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
@@ -725,9 +784,11 @@
 					 AND ar.institucion_id = i.id
 					 AND i.coddane = ms.coddane
 					 AND ms.id = ar.sede_id
-					 GROUP BY i.descripcion, c.tipo_racion
+                     AND ms.id = c.sede_id
+					 AND c.user_id = 49
+                     GROUP BY ar.institucion_id, ar.tipo_racion
 					 UNION
-					 SELECT ar.institucion_id,  ms.descripcion ieo, c.tipo_racion,
+					 SELECT ar.sede_id,  ms.descripcion ieo, ar.tipo_racion,
 					 c.raciones_programadas_primaria raciones_primaria, 
 					 c.raciones_programadas_secundaria raciones_secundaria, 
 			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
@@ -739,7 +800,9 @@
 					 AND ar.sede_id = ms.id
                      AND ar.institucion_id = i.id
                      AND ms.coddane <> i.coddane
-					 GROUP BY ms.descripcion, c.tipo_racion ";
+                     ANd ms.id = c.sede_id
+                     AND c.user_id = 49
+					 GROUP BY ar.sede_id, ar.tipo_racion ";
 
 					/* " SELECT ar.institucion_id, i.descripcion ieo, c.tipo_racion,
 					 c.raciones_programadas_primaria raciones_primaria,
@@ -777,13 +840,13 @@
 
 			    if( $totalFiltered > 0 ){
 
-			    	$institucion_id = array();
+			    	//$institucion_id = array();
 
 			    	while( $row = mysqli_fetch_array($raciones) ) { 
 
-			    		if(!in_array($row['institucion_id'], $institucion_id)){
+			    		//if( $row['tipo'] == 'institucion' ){
 
-					    	$institucion[$row['institucion_id']] = array(
+					    	$institucion[] = array(
 					        	"institucion_id"             => $row['institucion_id'],     
 								"institucion"             	 => $row['ieo'],
 								"tipo_racion"             	 => $row['tipo_racion'],
@@ -792,11 +855,11 @@
 								"total_raciones"			 => $row['total_raciones'],
 								"dias_atendidos"			 => $row['dias_atendidos'],
 								"tipo"			 			 => $row['tipo'],
-								"sedes"						 => array(),
+								//"sedes"						 => array(),
 							);
 
-							array_push($institucion_id, $row['institucion_id']);
-						}else{
+							//array_push($institucion_id, $row['institucion_id']);
+						/*}else{
 
 							$sede = array(
 					        	"institucion_id"             => $row['institucion_id'],     
@@ -809,10 +872,10 @@
 								"tipo"			 			 => $row['tipo'],
 							);
 
-							array_push($institucion[$row['institucion_id']]["sedes"], $sede);
+							//array_push($institucion[$row['institucion_id']]["sedes"], $sede);
 
 
-						}
+						}*/
 
 			    	}
 

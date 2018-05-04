@@ -1,7 +1,7 @@
 <?php
 
-    require_once "../../config/autoload.php";
-    include('../../hooks/head.php');
+    require_once "../../../config/autoload.php";
+    include('../../../hooks/head.php');
 
 ?>
 
@@ -10,8 +10,8 @@
         
     $(document).ready(function() {
 
-        consultar_raciones(49);
-        consulta_entrega_raciones_por_usuario(46, '2018-03');
+        consultar_raciones(<?= $current_userID ?>);
+        consulta_entrega_raciones_por_usuario(<?= $current_userID ?>, '2018-03');
         
     });
 
@@ -117,7 +117,7 @@
 
                         <div class="col-md-4 col-xs-4">
                             <div class="form-group-custom">
-                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor</strong></label>
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Operador</strong></label>
                                 <label id="proveedor" class="full-width border-label"></label>
                             </div>  
                         </div> 
@@ -135,13 +135,13 @@
                         </div> 
                         <div class="col-md-2">
                             <div class="form-group-custom">
-                                <label class="mb-2 mr-sm-2" for="raciones"><strong>Pre-Escolar/Primaria</strong></label>
+                                <label class="mb-2 mr-sm-2" for="raciones"><strong>Jornada Única</strong></label>
                                 <label id="raciones_programadas_pp" class="full-width border-label"></label>
                             </div>  
                         </div>
                         <div class="col-md-2">
                             <div class="form-group-custom">
-                                <label class="mb-2 mr-sm-2" for="raciones"><strong>Secundaria</strong></label>
+                                <label class="mb-2 mr-sm-2" for="raciones"><strong>Complemento Alimentario</strong></label>
                                 <label id="raciones_programadas_s" class="full-width border-label"></label>
                             </div>  
                         </div>
@@ -152,8 +152,8 @@
                                         <tr>
                                             <th class="text-center" scope="col">SEDE</th>
                                             <th class="text-center" scope="col">TIPO RACIÓN</th>
-                                            <th class="text-center" scope="col"># RACIONES PRE-ESCOLAR/PRIMARIA POR DÍA</th>
-                                            <th class="text-center" scope="col"># RACIONES SECUNDARIA POR DÍA</th>
+                                            <th class="text-center" scope="col"># RACIONES JORNADA ÚNICA</th>
+                                            <th class="text-center" scope="col"># RACIONES COMPLEMENTO ALIMENTARIO</th>
                                             <th class="text-center" scope="col"># DIAS ATENDIDOS</th>
                                             <th class="text-center" scope="col">TOTAL RACIONES</th>
                                             <th class="text-center" scope="col">ADJUNTAR SOPORTE</th>
@@ -189,5 +189,5 @@
     </div>  
 
 <?php
-include('../../hooks/footer.php');
+include('../../../hooks/footer.php');
 ?>

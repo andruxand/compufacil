@@ -19,7 +19,7 @@ $(document).ready(function() {
 	            }
         	],
        		buttons: [
-            	{ extend: "print", text: "Vista Impresión" },
+            	{ extend: "print", text: "Vista Impresi&oacuten", exportOptions: { columns: ':visible' } },
             	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" }
        		],
 			//"sort": false,
@@ -68,7 +68,7 @@ $(document).ready(function() {
 					"zeroRecords":			"No se han encontrado coincidencias.",
 					"paginate": {
 						"first":			"Primera",
-						"last":				"Última",
+						"last":				"&Ucuteltima",
 						"next":				"Siguiente",
 						"previous":			"Anterior"
 					},

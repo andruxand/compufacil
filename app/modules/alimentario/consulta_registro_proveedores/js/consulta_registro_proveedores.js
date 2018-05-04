@@ -19,13 +19,13 @@ $(document).ready(function() {
 	            }
         	],
        		buttons: [
-            	{ extend: "print", text: "Vista Impresión" },
+            	{ extend: "print", text: "Vista Impresión", exportOptions: { columns: ':visible' } },
             	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" }
        		],
 			//"sort": false,
    			//"order" : ["ieo", "tipo_racion"],
 	        "ajax": {
-	        	url: "ajax.php",
+	        	url: "../ajax.php",
 	        	type: "post",
 	        	data: { action: 'listar_proveedores_registrados', is_custom_search: is_custom_search, proveedor: proveedor },
 	        	error: function(e){  // error handling
