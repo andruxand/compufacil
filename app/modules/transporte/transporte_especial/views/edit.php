@@ -103,7 +103,7 @@
             $("#operador").append(response.nombre_proveedor)
             $("#ieo").append(response.ieo)
             $("#num-pasajeros-disp").append(response.num_pasajeros_disp)
-            $("#num-pasajeros-asig").append(response.pasajeros)
+            $("#num-pasajeros-asig").append("<a href='../../transporte/listado_asignacion_transporte/?ruta="+idRoute+"' target='_blank' >"+response.pasajeros+"</a>")
             $("#card-route").show('slow');
             $("#btn-print-data-route").attr("href", "views/print.php?id="+idRoute)
         }).catch(function (error) {
