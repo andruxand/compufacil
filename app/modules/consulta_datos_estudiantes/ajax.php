@@ -23,7 +23,8 @@
 			);
 
 			$sql = " SELECT DISTINCT
-                                    est.abr_tipo_identificacion tipodoc
+									 est.nui
+                                    ,est.abr_tipo_identificacion tipodoc
                                     ,est.numero_identificacion  documento
                                     ,est.apellido1              apellido1
                                     ,est.apellido2              apellido2
@@ -140,7 +141,7 @@
 							$columns[11]   => $row["anio_lectivo"],
 							$columns[12]   => "<div style='width:100px'> 
 			                                   <a class='btn btn-outline-primary' data-url='views/info_estudiante.php' data-title='Información Estudiante' 
-			                                   data-toggle='modal' data-target='#load-modal' data-backdrop='static' data-id='" . $row["documento"] . "' href='#''>
+			                                   data-toggle='modal' data-target='#load-modal' data-backdrop='static' data-id='" . $row["nui"] . "' href='#''>
 			                                   <span class='oi oi-magnifying-glass text-blue' title='icon name' aria-hidden='true'></span>
 			                                   </a>
 			                                   </div>"
@@ -184,6 +185,103 @@
 				echo json_encode( $json_data );
 
 			} 
+
+	    break;
+
+	    case 'consulta_datos_estudiantes':
+
+	    	$sql = " SELECT DISTINCT
+                                    est.abr_tipo_identificacion tipodoc
+                                    ,est.numero_identificacion  documento
+                                    ,est.apellido1              apellido1
+                                    ,est.apellido2              apellido2
+                                    ,est.nombre1                nombre1
+                                    ,est.nombre2                nombre2                                    
+                                    ,niv.descripcion            grado
+                                    ,par.descripcion            grupo
+                                    ,inst.descripcion           institucion
+                                    ,se.descripcion             sede
+                                    ,jor.descripcion            jornada
+                                    ,mtr.anio_lectivo           anio_lectivo
+                                    ,mg.descripcion             genero
+                                    ,acu.tipoDocumento as tipoDocumentoAcu,
+					                 acu.numeroDocumento as numDocumentoAcu,
+					                 acu.nombres as nombresAcu,
+					                 acu.apellidos as apellidosAcu,
+					                 acu.mail as correoAcu,
+					                 acu.celular as celularAcu,
+					                 parentes.descripcion as parentescoAcu
+                                    FROM 
+                                    mat_estudiantes                             est
+                                    LEFT OUTER JOIN mat_generos                 mg   ON  est.id_generos                =  mg.id
+                                    LEFT OUTER JOIN mat_acudientes              acu  ON  est.id                        = acu.mat_estudiantes_id
+                                    LEFT OUTER JOIN mat_parentesco              parentes ON acu.parentesco             = parentes.id
+                                    LEFT OUTER JOIN mat_matriculas              mtr  ON  mtr.id_estudiantes            =  est.id
+                                    LEFT OUTER JOIN mat_paralelos               par  ON  mtr.id_paralelos              =  par.id
+                                    LEFT OUTER JOIN mat_sedes_niveles           sn   ON  par.id_sedes_niveles          =   sn.id
+                                    LEFT OUTER JOIN mat_sedes                   se   ON   sn.id_sedes                  =   se.id
+                                    LEFT OUTER JOIN mat_instituciones           inst ON   se.id_instituciones          = inst.id
+                                    LEFT OUTER JOIN mat_sectores                sec  ON inst.id_sectores               =  sec.id
+                                    LEFT OUTER JOIN mat_niveles                 niv  ON   sn.id_niveles                =  niv.id
+                                    LEFT OUTER JOIN mat_barrios_veredas         bv   ON   se.id_barrios_veredas        =   bv.id
+                                    LEFT OUTER JOIN mat_comunas_corregimientos  cc   ON   bv.id_comunas_corregimientos =   cc.id
+                                    LEFT OUTER JOIN mat_sedes_jornadas          sj   ON  par.id_sedes_jornadas         =   sj.id
+                                    LEFT OUTER JOIN mat_jornadas                jor  ON   sj.id_jornadas               =  jor.id
+
+                                    LEFT OUTER JOIN mat_ie_usuarios us     ON inst.coddane = us.institucion_coddane
+
+                                    WHERE 
+                                        sec.descripcion = 'OFICIAL' 
+                                        AND est.nui LIKE '" .$_POST['id'] . "' ";
+                                    /*AND  us.user_id     = $userId
+
+                                    AND inst.descripcion like '%xinstitucion%'
+                                    AND inst.coddane     like '%xdanesede%'
+                                    AND se.descripcion   like '%xsede%'
+                                    AND niv.descripcion  like '%xgrado%'
+                                    AND par.descripcion  like '%xgrupo%' ";*/
+
+            $datos_estudiante = $db->sql_exec($sql);   
+            
+            if($datos_estudiante){
+
+            	$row = mysqli_fetch_array($datos_estudiante);
+
+			    $json_data = array(
+			        	"success"               => true,     
+						"tipodoc"               => $row['tipodoc'],
+						"documento"             => $row['documento'],
+						"apellido1"             => $row['apellido1'],
+						"apellido2"             => $row['apellido2'],
+						"nombre1"               => $row['nombre1'],
+						"nombre2"      			=> $row['nombre2'],
+						"grado" 				=> $row['grado'],
+						"grupo"  				=> $row['grupo'],
+						"institucion"           => $row['institucion'],
+						"sede"                  => $row['sede'],
+						"jornada"               => $row['jornada'],
+						"anio_lectivo"			=> $row['anio_lectivo'],
+						"genero"			    => $row['genero'],
+
+						"tipoDocumentoAcu"  	=> $row['tipoDocumentoAcu'],
+						"numDocumentoAcu"       => $row['numDocumentoAcu'],
+						"nombresAcu"            => $row['nombresAcu'],
+						"apellidosAcu"          => $row['apellidosAcu'],
+						"correoAcu"				=> $row['correoAcu'],
+						"celularAcu"			=> $row['celularAcu'],
+						"parentescoAcu"			=> $row['parentescoAcu'],
+				);
+
+            }else{
+
+		    	$json_data = array(
+			        "success"     => false,     
+					"message"    => 'Problemas al ejecutar la consulta para cargar datos del estudiante',
+				);	
+
+		    }  
+
+		    echo json_encode($json_data);                 	
 
 	    break;
 

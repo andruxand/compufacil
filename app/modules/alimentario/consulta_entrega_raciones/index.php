@@ -37,7 +37,7 @@
 
                         <div class="col-md-12 text-right">
 
-                            <button type="submit" name="buscar_raciones" id="buscar_raciones" class="btn btn-dark-blue mb-2">
+                            <button type="submit" name="buscar_raciones" id="buscar_raciones" class="btn btn-dark-blue mb-2 ajax-loader">
                                 <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
                                 Buscar
                             </button>

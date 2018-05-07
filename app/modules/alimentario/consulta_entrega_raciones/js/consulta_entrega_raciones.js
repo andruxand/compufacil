@@ -188,6 +188,7 @@ $(document).ready(function() {
 	    })
 	    .done(function(data) {
 	    	
+	    	$('#fullpage-loader').fadeOut(200);
 	    	var data = jQuery.parseJSON( data );
 	    	console.log('respuesta: ' + data);
 
@@ -228,7 +229,9 @@ $(document).ready(function() {
 	    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
 		    if ( console && console.log ) {
 		        console.log( "La solicitud a fallado: " +  errorThrown);
-		    }    
+		    } 
+		    $('#loader-error').fadeIn(200);
+    		$('#loader-icon').removeClass('fa-spin').addClass('text-danger');   
 		});
 
 
