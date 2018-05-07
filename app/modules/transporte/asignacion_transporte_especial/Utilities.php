@@ -11,8 +11,6 @@ class Utilities {
   public static function getEstudiantes($db, $parameters) {
     $db->conectar();
 
-//    $sql = "SELECT * FROM mat_simatsubeestudiantes " .
-//      "WHERE estado = 'MATRICULADO' ";
     $sql = "SELECT
                   est.id as idEstu,
                   CONCAT( est.nombre1, ' ', est.nombre2, ' ', est.apellido1, ' ', est.apellido2 ) as nombres,
@@ -75,14 +73,11 @@ class Utilities {
 
     $id = filter_var($parameter, FILTER_SANITIZE_NUMBER_INT);
 
-//    $sql = "SELECT * FROM mat_simatsubeestudiantes " .
-//      "WHERE estado = 'MATRICULADO' AND id = {$id}";
-
     $sql = "SELECT
                   est.id as idEstu,
                   CONCAT( est.nombre1, ' ', est.nombre2, ' ', est.apellido1, ' ', est.apellido2 ) as nombres,
                   est.numero_identificacion as doc,
-                  est.fecha_nacimiento,
+                  DATE_FORMAT(est.fecha_nacimiento,\"%Y-%m-%d\") as fecha_nacimiento,
                   gene.descripcion as genero,
                   est.direccion,
                   inst.descripcion as institucion,

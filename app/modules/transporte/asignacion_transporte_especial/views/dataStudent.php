@@ -51,7 +51,7 @@
                     <div class="col-md-1">
                       <div class="form-group">
                         <label for="grado">Grado</label>
-                        <input type="text" class="form-control" value="${obj.grado_cod}" readonly />
+                        <input type="text" class="form-control" value="${obj.grado}" readonly />
                       </div>
                     </div>
                   </div>
