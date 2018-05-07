@@ -11,23 +11,43 @@ class Utilities {
   public static function getEstudiantes($db, $parameters) {
     $db->conectar();
 
-    $sql = "SELECT * FROM mat_simatsubeestudiantes " .
-      "WHERE estado = 'MATRICULADO' ";
+//    $sql = "SELECT * FROM mat_simatsubeestudiantes " .
+//      "WHERE estado = 'MATRICULADO' ";
+    $sql = "SELECT
+                  est.id as idEstu,
+                  CONCAT( est.nombre1, ' ', est.nombre2, ' ', est.apellido1, ' ', est.apellido2 ) as nombres,
+                  est.numero_identificacion as doc,
+                  est.fecha_nacimiento,
+                  est.direccion,
+                  inst.descripcion as institucion,
+                  se.descripcion as sede,
+                  niv.descripcion as grado,
+                  jor.descripcion as jornada
+              FROM
+                  mat_estudiantes AS est #Estudiantes
+                  INNER JOIN mat_matriculas AS mtr ON est.id = mtr.id_estudiantes
+                  INNER JOIN mat_paralelos AS par ON mtr.id_paralelos = par.id
+                  INNER JOIN mat_sedes_niveles AS sn ON par.id_sedes_niveles = sn.id
+                  INNER JOIN mat_sedes AS se ON sn.id_sedes = se.id
+                  INNER JOIN mat_instituciones AS inst ON se.id_instituciones = inst.id
+                  INNER JOIN mat_niveles AS niv ON sn.id_niveles = niv.id
+                  INNER JOIN mat_sedes_jornadas AS sj ON par.id_sedes_jornadas = sj.id
+                  INNER JOIN mat_jornadas AS jor ON sj.id_jornadas = jor.id WHERE 1 = 1 ";
 
     if (!empty($parameters["documento"])) {
-      $sql .= "AND doc = {$parameters["documento"]} ";
+      $sql .= "AND est.numero_identificacion = {$parameters["documento"]} ";
     }
     if (!empty($parameters["primer-apellido"])) {
-      $sql .= "AND apellido1 LIKE '%{$parameters["primer-apellido"]}%' ";
+      $sql .= "AND est.apellido1 LIKE '{$parameters["primer-apellido"]}%' ";
     }
     if (!empty($parameters["segundo-apellido"])) {
-      $sql .= "AND apellido2 LIKE '%{$parameters["segundo-apellido"]}%' ";
+      $sql .= "AND est.apellido2 LIKE '{$parameters["segundo-apellido"]}%' ";
     }
     if (!empty($parameters["primer-nombre"])) {
-      $sql .= "AND nombre1 LIKE '%{$parameters["primer-nombre"]}%' ";
+      $sql .= "AND est.nombre1 LIKE '{$parameters["primer-nombre"]}%' ";
     }
     if (!empty($parameters["segundo-nombre"])) {
-      $sql .= "AND nombre2 LIKE '%{$parameters["segundo-nombre"]}%' ";
+      $sql .= "AND est.nombre2 LIKE '{$parameters["segundo-nombre"]}%' ";
     }
 
     $sql .= "LIMIT 20";
@@ -36,11 +56,11 @@ class Utilities {
     if ($result){
       while ($row = mysqli_fetch_object($result)) {
         $data[] = array(
-          "id" => $row->id,
+          "id" => $row->idEstu,
           "documento" => $row->doc,
-          "name" => "{$row->nombre1} {$row->nombre2} {$row->apellido1} {$row->apellido2}",
+          "name" => $row->nombres,
           "jornada" => $row->jornada,
-          "grado" => $row->grado_cod,
+          "grado" => $row->grado,
           "institucion" => $row->institucion,
           "sede" => $row->sede
         );
@@ -55,8 +75,36 @@ class Utilities {
 
     $id = filter_var($parameter, FILTER_SANITIZE_NUMBER_INT);
 
-    $sql = "SELECT * FROM mat_simatsubeestudiantes " .
-      "WHERE estado = 'MATRICULADO' AND id = {$id}";
+//    $sql = "SELECT * FROM mat_simatsubeestudiantes " .
+//      "WHERE estado = 'MATRICULADO' AND id = {$id}";
+
+    $sql = "SELECT
+                  est.id as idEstu,
+                  CONCAT( est.nombre1, ' ', est.nombre2, ' ', est.apellido1, ' ', est.apellido2 ) as nombres,
+                  est.numero_identificacion as doc,
+                  est.fecha_nacimiento,
+                  gene.descripcion as genero,
+                  est.direccion,
+                  inst.descripcion as institucion,
+                  se.descripcion as sede,
+                  niv.descripcion as grado,
+                  jor.descripcion as jornada,
+                  bv.descripcion as barrio,
+                  cc.descripcion as comuna
+              FROM
+                  mat_estudiantes AS est #Estudiantes
+                  INNER JOIN mat_generos AS gene ON est.id_generos = gene.id
+                  INNER JOIN mat_matriculas AS mtr ON est.id = mtr.id_estudiantes
+                  INNER JOIN mat_paralelos AS par ON mtr.id_paralelos = par.id
+                  INNER JOIN mat_sedes_niveles AS sn ON par.id_sedes_niveles = sn.id
+                  INNER JOIN mat_sedes AS se ON sn.id_sedes = se.id
+                  INNER JOIN mat_instituciones AS inst ON se.id_instituciones = inst.id
+                  INNER JOIN mat_niveles AS niv ON sn.id_niveles = niv.id
+                  INNER JOIN mat_barrios_veredas AS bv ON se.id_barrios_veredas = bv.id
+                  INNER JOIN mat_comunas_corregimientos AS cc ON bv.id_comunas_corregimientos = cc.id
+                  INNER JOIN mat_sedes_jornadas AS sj ON par.id_sedes_jornadas = sj.id
+                  INNER JOIN mat_jornadas AS jor ON sj.id_jornadas = jor.id
+              WHERE est.id = {$id}";
 
     $result = $db->sql_exec($sql);
 

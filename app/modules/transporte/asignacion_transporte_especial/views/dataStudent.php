@@ -77,13 +77,13 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="direccion">Direccion</label>
-                        <input type="text" class="form-control" readonly />
+                        <input type="text" class="form-control" value="${(obj.direccion ? obj.direccion : 'Sin asignar')}" readonly />
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group">
                         <label for="comuna">Comuna</label>
-                        <input type="text" class="form-control" readonly />
+                        <input type="text" class="form-control" value="${obj.comuna}" readonly />
                       </div>
                     </div>
                   </div>
@@ -91,7 +91,7 @@
                     <div class="col-md-4">
                       <div class="form group">
                         <label for="barrio">Barrio</label>
-                        <input type="text" class="form-control" readonly />
+                        <input type="text" class="form-control" value="${obj.barrio}" readonly />
                       </div>
                     </div>
                     <div class="col-md-3">
