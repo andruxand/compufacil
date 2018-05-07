@@ -30,7 +30,8 @@
 		             AND c.sede_id = sc.id
 		             AND p.id = c.proveedor_id
 		             AND cc.id = sc.id_comunas_corregimientos 
-		             AND i.id_tipo_instituciones = mti.id";
+		             AND i.id_tipo_instituciones = mti.id
+		             AND c.user_id = ".$current_userID."";
 
 		    if($_POST["is_custom_search"] == "yes")
 			{
@@ -374,9 +375,11 @@
 
 
 			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, 
-					 c.raciones_programadas_primaria raciones_primaria, ar.fecha_registro, 
-					 c.raciones_programadas_secundaria raciones_secundaria, c.numero_contrato, 
-			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+					 ar.fecha_registro, 
+					 c.numero_contrato, 
+			         SUM(ar.primaria) raciones_primaria,
+					 SUM(ar.secundaria) raciones_secundaria,
+			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
 			         COUNT(ar.contrato_numero) as dias_atendidos
 					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i
 					 WHERE
@@ -493,9 +496,11 @@
 
 
 			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, 
-					 c.raciones_programadas_primaria raciones_primaria, ar.fecha_registro,
-					 c.raciones_programadas_secundaria raciones_secundaria, c.numero_contrato, 
-			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+					 ar.fecha_registro,
+					 c.numero_contrato, 
+			         SUM(ar.primaria) raciones_primaria,
+					 SUM(ar.secundaria) raciones_secundaria,
+			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones,  
 			         COUNT(ar.contrato_numero) as dias_atendidos
 					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i
 					 WHERE
@@ -610,9 +615,9 @@
 
 
 			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, p.nit, 
-					 c.raciones_programadas_primaria raciones_primaria, 
-					 c.raciones_programadas_secundaria raciones_secundaria, 
-			         ( c.raciones_programadas_primaria + c.raciones_programadas_secundaria ) as total_raciones
+			         SUM(ar.primaria) raciones_primaria,
+					 SUM(ar.secundaria) raciones_secundaria,
+			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
 					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i
 					 WHERE
 					 c.proveedor_id = p.id
@@ -772,10 +777,10 @@
 
 	        case 'consulta_entrega_raciones':
 
-	    	$sql = " SELECT ar.institucion_id, ms.descripcion ieo, ar.tipo_racion,
-					 c.raciones_programadas_primaria raciones_primaria,
-					 c.raciones_programadas_secundaria raciones_secundaria,
-			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+	    	$sql = " SELECT ar.institucion_id, ms.descripcion ieo, ar.tipo_racion, ms.coddane,
+					 SUM(ar.primaria) raciones_primaria,
+					 SUM(ar.secundaria) raciones_secundaria,
+			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones,  
 			         COUNT(ar.contrato_numero) as dias_atendidos,
 			         'institucion' as tipo
 					 FROM ali_contrato c, ali_registros ar, mat_instituciones i, mat_sedes ms
@@ -785,13 +790,14 @@
 					 AND i.coddane = ms.coddane
 					 AND ms.id = ar.sede_id
                      AND ms.id = c.sede_id
-					 AND c.user_id = 49
+					 AND c.user_id = ".$current_userID."
+					 AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] . "'
                      GROUP BY ar.institucion_id, ar.tipo_racion
 					 UNION
-					 SELECT ar.sede_id,  ms.descripcion ieo, ar.tipo_racion,
-					 c.raciones_programadas_primaria raciones_primaria, 
-					 c.raciones_programadas_secundaria raciones_secundaria, 
-			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+					 SELECT ar.sede_id,  ms.descripcion ieo, ar.tipo_racion, ms.coddane,
+					 SUM(ar.primaria) raciones_primaria,
+					 SUM(ar.secundaria) raciones_secundaria,
+			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
 			         COUNT(ar.contrato_numero) as dias_atendidos,
 			         'sede' as tipo
 					 FROM ali_contrato c, ali_registros ar, mat_sedes ms, mat_instituciones i
@@ -801,36 +807,9 @@
                      AND ar.institucion_id = i.id
                      AND ms.coddane <> i.coddane
                      ANd ms.id = c.sede_id
-                     AND c.user_id = 49
+                     AND c.user_id = ".$current_userID."
+                     AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] . "'
 					 GROUP BY ar.sede_id, ar.tipo_racion ";
-
-					/* " SELECT ar.institucion_id, i.descripcion ieo, c.tipo_racion,
-					 c.raciones_programadas_primaria raciones_primaria,
-					 c.raciones_programadas_secundaria raciones_secundaria,
-			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
-			         COUNT(ar.contrato_numero) as dias_atendidos
-					 FROM ali_contrato c, ali_registros ar, mat_instituciones i
-					 WHERE
-					 c.numero_contrato = ar.contrato_numero
-					 AND ar.institucion_id = i.id
-					 AND c.user_id = " . $_POST['user'] . "
-					 AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] ."'
-					 GROUP BY i.descripcion, c.tipo_racion
-					 UNION
-					 SELECT ar.institucion_id,  ms.descripcion ieo, c.tipo_racion,
-					 c.raciones_programadas_primaria raciones_primaria, 
-					 c.raciones_programadas_secundaria raciones_secundaria, 
-			         ( (c.raciones_programadas_primaria + c.raciones_programadas_secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
-			         COUNT(ar.contrato_numero) as dias_atendidos
-					 FROM ali_contrato c, ali_registros ar, mat_sedes ms, mat_instituciones i
-					 WHERE
-					 c.numero_contrato = ar.contrato_numero
-					 AND ar.sede_id = ms.id
-                     AND ar.institucion_id = i.id
-                     AND ms.coddane <> i.coddane
-                     AND c.user_id = " . $_POST['user'] . "
-                     AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] ."'
-					 GROUP BY ms.descripcion, c.tipo_racion "; */
 
 		    $raciones = $db->sql_exec($sql); 
 		    
@@ -838,44 +817,29 @@
 
 		    	$totalFiltered = mysqli_num_rows($raciones);  
 
-			    if( $totalFiltered > 0 ){
-
-			    	//$institucion_id = array();
+			    if( $totalFiltered > 0 ){			    
 
 			    	while( $row = mysqli_fetch_array($raciones) ) { 
 
-			    		//if( $row['tipo'] == 'institucion' ){
+			    			$sqlArchivo = " SELECT adjunto from ali_Cer_EntregasR_D
+			    				    WHERE consecut LIKE '" . $row['coddane'] . $row['tipo_racion'] . $_POST['mes'] . "' ";
+
+					    	$row_archivo = $db->sql_exec($sqlArchivo); 
+					    	
+					    	$row_arch = mysqli_fetch_array($row_archivo);
 
 					    	$institucion[] = array(
 					        	"institucion_id"             => $row['institucion_id'],     
 								"institucion"             	 => $row['ieo'],
+								"coddane"             	     => $row['coddane'],
 								"tipo_racion"             	 => $row['tipo_racion'],
 								"raciones_primaria"			 => $row['raciones_primaria'],
 								"raciones_secundaria"		 => $row['raciones_secundaria'],
 								"total_raciones"			 => $row['total_raciones'],
 								"dias_atendidos"			 => $row['dias_atendidos'],
 								"tipo"			 			 => $row['tipo'],
-								//"sedes"						 => array(),
+								"archivo"					 => (!empty($row_arch['adjunto']))?$row_arch['adjunto']:'',
 							);
-
-							//array_push($institucion_id, $row['institucion_id']);
-						/*}else{
-
-							$sede = array(
-					        	"institucion_id"             => $row['institucion_id'],     
-								"institucion"             	 => $row['ieo'],
-								"tipo_racion"             	 => $row['tipo_racion'],
-								"raciones_primaria"			 => $row['raciones_primaria'],
-								"raciones_secundaria"		 => $row['raciones_secundaria'],
-								"total_raciones"			 => $row['total_raciones'],
-								"dias_atendidos"			 => $row['dias_atendidos'],
-								"tipo"			 			 => $row['tipo'],
-							);
-
-							//array_push($institucion[$row['institucion_id']]["sedes"], $sede);
-
-
-						}*/
 
 			    	}
 
@@ -904,6 +868,131 @@
 
 			echo json_encode($json_data);
 	        
+	        break;
+
+	        case 'registra_entrega_raciones':
+	        	try{
+
+	        		$target_path = "uploads/";
+	        		$error = 0;
+
+		        	for($i=0; $i<count($_FILES['soporte_anexo']['name']); $i++){
+
+						if( !empty($_FILES['soporte_anexo']['name'][$i]) ){
+
+							$tipo_racion = "";
+							$coddane = "";
+							$new_path = "";
+							$mesanio = "";
+							$id_archivo = "";
+							$nombre_archivo = "";
+
+							$mesanio = str_replace("/", "-", $_POST['mes']);
+							$tipo_racion = str_replace("/", "-", $_POST['tipo_racion'][$i]);
+							$coddane = $_POST['coddane'][$i];
+							$id_archivo = $coddane . $tipo_racion;
+							$consecutivo = $coddane . $_POST['tipo_racion'][$i] . $mesanio;
+
+							$ext = explode('.', basename( $_FILES['soporte_anexo']['name'][$i]));
+
+							$new_path = $target_path . $coddane . $tipo_racion . $mesanio . "." . $ext[count($ext)-1]; 
+							$nombre_archivo = $coddane . $tipo_racion . $mesanio . "." . $ext[count($ext)-1];
+
+							if($_FILES['soporte_anexo']['size'][$i] <= 2097152) {							
+
+								try{
+
+									if(move_uploaded_file($_FILES['soporte_anexo']['tmp_name'][$i], $new_path)) {
+
+										$db_data = array(
+								    		"consecut"				=> $consecutivo,
+								    		"tipo_racion"			=> $_POST['tipo_racion'][$i],
+								    		"adjunto"				=> $nombre_archivo,
+								    		"fecha_ingreso"			=> date("Y-m-d"),
+								    	);
+
+										$archivos = $db->insert("ali_Cer_EntregasR_D", $db_data);
+
+										if($archivos){
+										    $json_archivo[] = array(  
+										    	"success"    => true, 
+												"message"    => 'se ha subido satisfactoriamente el archivo',
+												"id_archivo" => $id_archivo,
+												"nombre_archivo" => $nombre_archivo,
+											);
+										}else{
+											$json_archivo[] = array(  
+										    	"success"    => false, 
+												"message"    => 'No es posible subir el archivo',
+												"id_archivo" => $id_archivo,
+												"nombre_archivo" => $nombre_archivo,
+											);
+
+											$error++;
+
+										}
+									} else{
+									    $json_archivo[] = array(
+									    	"success"    => false,     
+											"message"    => 'No es posible subir el archivo',
+											"id_archivo" => $id_archivo,
+											"nombre_archivo" => $nombre_archivo,
+										);
+
+										$error++;
+									}
+
+								} catch (Exception $e) {
+									$json_archivo[] = array(
+											"success"    => false,     
+											"message"    => $e->getMessage(),
+											"id_archivo" => $id_archivo,
+											"nombre_archivo" => $nombre_archivo,
+										);
+
+									$error++;
+
+								    exit;
+								}
+							}else{
+								$json_archivo[] = array(
+										"success"    => false,    
+										"message"    => "Archivo excede el tamaño permitido",
+										"id_archivo" => $id_archivo,
+										"nombre_archivo" => $nombre_archivo,
+								);	
+
+								$error++;
+							}
+						}
+					}
+
+				} catch (Exception $e) {
+					$json_data = array(
+					       	"success"     => false,     
+							"message"    => $e->getMessage()
+						);
+				    exit;
+				}
+
+				if($error == 0){
+
+					$json_data = array(
+						"success"     => true,
+						"archivos"    => $json_archivo,     
+					);
+
+				}else{
+
+					$json_data = array(
+						"success"     => false,
+						"archivos"    => $json_archivo,     
+					);
+
+				}
+
+				echo json_encode($json_data);
+					
 	        break;
 } 
 

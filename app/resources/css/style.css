@@ -265,3 +265,11 @@ span.round-tab {
 .file-input:active::before {
   background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
 }
+
+.custom-alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}

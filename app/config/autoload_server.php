@@ -67,6 +67,18 @@ $user = JFactory::getUser();
 $sess = JSession::getInstance('none', array());
 $idSessUser = $sess->getId();
 
+$current_userID = 49;
+
+//$current_roles = $db->loadRoles( $user->id );
+
+$current_roles = $db->loadRoles( $current_userID );
+
+if(!$current_roles){
+
+	header( "Location: " .SITE_URI . "app/errors/403.php" );
+
+}
+
 error_reporting(E_ALL);
 
 ?>

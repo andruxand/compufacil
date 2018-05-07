@@ -37,16 +37,17 @@ function consultar_raciones(id){
 
 }
 
-function consulta_entrega_raciones_por_usuario(id, mes){
+function consulta_entrega_raciones_por_usuario(mes){
 
 	$('td > label, textarea').empty();
+	$('#results tbody').html('');
 	$(".alert").hide();
 
 	$.ajax({
         url: '../ajax.php',
         type: 'POST',
         dataType: 'json',
-        data: {action: 'consulta_entrega_raciones', user: id, mes: mes},
+        data: {action: 'consulta_entrega_raciones', mes: mes},
     })
     .done(function(data) {
         if ( data.success ) {
@@ -68,11 +69,20 @@ function consulta_entrega_raciones_por_usuario(id, mes){
 			                    ' <td class="text-center" scope="col">' + data.instituciones[i].raciones_secundaria + '</td> ' +
 			                    ' <td class="text-center" scope="col">' + data.instituciones[i].dias_atendidos + '</td> ' +
 			                    ' <td class="text-center" scope="col">' + data.instituciones[i].total_raciones + '</td> ' +
-			                    ' <td class="text-center" scope="col"> ' +
-			                    		'<input class="file-input" type="file" name="' + data.instituciones[i].institucion + '" '+
-				                		' id="' + data.instituciones[i].institucion + '" accept="image/*,.doc,.docx,application/msword, ' +
-				                		'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.ms-excel" ></td>' +     
-			                  ' </tr>';
+			                    ' <td class="text-center" scope="col"> ';
+
+			    if(data.instituciones[i].archivo == ''){
+			    	partialTable +=	'<input class="anexa-soporte" type="file" name="soporte_anexo[]" '+
+				                		' id="' + data.instituciones[i].coddane + data.instituciones[i].tipo_racion.replace('/', '-') + '" accept="application/pdf" >' + 
+				                		' <input type="hidden" value="' + data.instituciones[i].tipo_racion + '" name="tipo_racion[]" id="tipo_racion" > ' + 
+				                		' <input type="hidden" value="' + data.instituciones[i].coddane + '" name="coddane[]" id="coddane" >'; 
+				}else{
+
+					partialTable +='<strong><a href="../uploads/'+data.instituciones[i].archivo +'" target="_blank"> ' + data.instituciones[i].archivo + '</a></strong>';
+
+				}  
+
+			    partialTable += ' </td></tr>';
     			/*for(var s in data.instituciones[i].sedes) {
     				console.log("nuevo campo dos" + data.instituciones[i].sedes[s].institucion); 
     				partialTable += ' <tr> ' +
@@ -125,7 +135,104 @@ $(document).ready(function() {
     });
 
     $('#buscar_raciones').on("click", function(){
-		consulta_entrega_raciones_por_usuario($('#contrato').text(), $('#mes').val());
+		consulta_entrega_raciones_por_usuario($('#mes').val());
 	});
+
+	$("#entrega-raciones-form").on('submit', function (e) {
+
+		e.preventDefault();
+
+		$('.alert').hide();
+
+		var filedata = $('input[type=file]');
+
+	    var i = 1, len = filedata.length, file, error = 0;
+
+	    console.log('cuantos:' + len);
+
+	    /*$('input[type=file]').each(function(){
+        	alert($(this).files.size)
+        });*/
+
+	   /* for (; i < len; i++) {
+	        file = filedata[i].files[0];
+
+	        console.log('tamaño:' + file.size);
+
+	        if (file.size > 2097152) {
+	            filedata[i].css('border-color: #000;');
+	            filedata[i].val('');
+	            error = error + 1;
+	            alert('Archivo muy grande');
+	        }
+
+	    }*/
+
+		var form = $(this);
+   		var formdata = false;
+    	if (window.FormData){
+        	formdata = new FormData(form[0]);
+        	formdata.append('mes', $('#mes').val());
+    	}
+
+        /*for (var value of formdata.values()) {
+   			console.log(value); 
+		}*/
+
+		$.ajax({
+        url: '../ajax.php',
+        type: 'POST',
+        data: formdata,
+        processData: false,
+        contentType: false,
+	    })
+	    .done(function(data) {
+	    	
+	    	var data = jQuery.parseJSON( data );
+	    	console.log('respuesta: ' + data);
+
+	        if ( data.success ) {
+
+	        	var mensajes = '';
+
+		        $.each(data.archivos, function(index, data) {
+		            mensajes += '<span class="oi oi-check"></span>' + data.message + ' ' + data.nombre_archivo + '<br>';
+		            $('#' + data.id_archivo).parent('td').html('<strong><a href="../uploads/'+ data.nombre_archivo +'" target="_blank">' + data.nombre_archivo + '</a></strong>');
+	       		 });
+
+		        $('#success-msg').html(mensajes);
+		        $('.alert-success').show();
+
+		    }else{
+
+				var mensajes = '';
+
+		        $.each(data.archivos, function(index, data) {
+		            
+		            if(data.success){
+		            	mensajes += '<span class="oi oi-check"></span>' + data.message + ' ' + data.nombre_archivo + '<br>';
+		            	$('#' + data.id_archivo).parent('td').html('<strong><a href="../uploads/'+ data.nombre_archivo +'" target="_blank">' + data.nombre_archivo + '</a></strong>');	
+		            }else{
+		            	mensajes += '<span class="oi oi-x"></span>' + data.message + ' ' + data.nombre_archivo + '<br>';
+		            }
+
+	       		 });
+
+		        $('#info-msg').html(mensajes);
+		        $('.alert-info').show();
+
+		    }
+
+		    $('#fullpage-loader').fadeOut(200);
+	    })
+	    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+		    if ( console && console.log ) {
+		        console.log( "La solicitud a fallado: " +  errorThrown);
+		    }    
+		});
+
+
+            
+    });
 
 });

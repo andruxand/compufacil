@@ -71,7 +71,7 @@ $current_userID = 49;
 
 //$current_roles = $db->loadRoles( $user->id );
 
-$current_roles = $db->loadRoles( 49 );
+$current_roles = $db->loadRoles( $current_userID );
 
 if(!$current_roles){
 

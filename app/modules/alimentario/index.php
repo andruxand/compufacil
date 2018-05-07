@@ -34,7 +34,9 @@
                                                 FROM mat_instituciones i, ali_contrato c, mat_sedes sc
                                                 WHERE
                                                 sc.id_instituciones = i.id
-                                                AND c.sede_id = sc.id ORDER BY NOMBRE ASC";
+                                                AND c.sede_id = sc.id 
+                                                AND c.user_id = ".$current_userID."
+                                                ORDER BY NOMBRE ASC";
                                         $resultado = $db->sql_exec($sql);
                                         while($row = mysqli_fetch_object($resultado)){
                                             $selected = "";

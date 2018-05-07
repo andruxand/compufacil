@@ -11,21 +11,13 @@
     $(document).ready(function() {
 
         consultar_raciones(<?= $current_userID ?>);
-        consulta_entrega_raciones_por_usuario(<?= $current_userID ?>, '2018-03');
+        consulta_entrega_raciones_por_usuario('<?= date('Y-m') ?>');
         
     });
 
     </script>
 
     <div class="container-fluid" id="consultar_raciones">
-
-        <div style="display: none;" class="alert alert-info alert-dismissible fade show animated bounceInDown" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <span class="oi oi-info" title="icon name" aria-hidden="true"></span>
-            <label id="info-msg"></label>
-        </div>
 
         <!-- Consulta por Fecha -->
         <div class="card border-dark-blue">
@@ -49,6 +41,7 @@
                                 <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
                                 Buscar
                             </button>
+                            <input type="hidden" value="<?= $current_userID ?>" name="id_user" id="id_user" >
                         </div>        
 
                     </div>
@@ -68,60 +61,60 @@
                 <div class="col-md-12">
                     <div class="form-row">
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2 full-width" for="institucion"><strong>Institución Educativa</strong></label>
                                 <label id="nombre-institucion" class="full-width border-label"></label>
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2 full-width" for="sede"><strong>Sede</strong></label>
                                 <label id="sede" class="full-width border-label"></label>
                             </div>  
                         </div> 
-                        <div class="col-md-2 col-xs-2">
+                        <div class="col-md-2">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2 full-width" for="registro"><strong>Código DANE</strong></label>
                                 <label id="dane" class="full-width border-label"></label>
                             </div>  
                         </div> 
-                        <div class="col-md-2 col-xs-2">
+                        <div class="col-md-2">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2 full-width" for="registro"><strong>Fecha de Registro</strong></label>
                                 <label class="full-width border-label"><strong><?= date("d-m-Y"); ?></strong></label>
                             </div>  
                         </div> 
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2 full-width" for="direccion"><strong>Dirección</strong></label>
                                 <label id="direccion" class="full-width border-label"></label>
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2 full-width" for="barrio"><strong>Barrio</strong></label>
                                 <label id="barrio" class="full-width border-label"></label>
                             </div>  
                         </div> 
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2" for="comuna"><strong>Comuna</strong></label>
                                 <label id="comuna" class="full-width border-label"></label>
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2" for="proveedor"><strong>Operador</strong></label>
                                 <label id="proveedor" class="full-width border-label"></label>
                             </div>  
                         </div> 
-                        <div class="col-md-2 col-xs-2">
+                        <div class="col-md-2">
                             <div class="form-group-custom">
                                 <label class="mb-2 mr-sm-2" for="contrato"><strong>Contrato</strong></label>
                                 <label id="contrato" class="full-width border-label"></label>
@@ -145,8 +138,27 @@
                                 <label id="raciones_programadas_s" class="full-width border-label"></label>
                             </div>  
                         </div>
-                        <form method="post" id="entrega-raciones-form" enctype="multipart/form-data">
-                            <div class="col-md-12 table-responsive">
+                    </div>
+                        <form method="post" id="entrega-raciones-form" name="entrega-raciones-form">
+                            <div style="display: none;" class="alert alert-info alert-dismissible fade show animated bounceInDown" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <label id="info-msg"></label>
+                            </div>
+                            <div style="display: none;" class="alert alert-success alert-dismissible fade show animated bounceInDown" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <label id="success-msg"></label>
+                            </div>
+                            <div style="font-size: 12px" class="custom-alert alert-info alert-dismissible fade show animated bounceInDown" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                El tamaño del archivo a subir no debe superar los 2 MB.
+                            </div>
+                            <div class="table-responsive">
                                 <table id="results" class="table table-hover table-sm table-bordered">
                                     <thead>
                                         <tr>
@@ -163,9 +175,17 @@
 
                                     </tbody>
                                 </table>
-                            </div>      
+                            </div> 
+
+                            <div class="col-md-12 text-right">
+                                <button type="submit" name="registrar_anexos" id="registrar_anexos" class="btn btn-dark-blue mb-2">
+                                    <span class="oi oi-check text-blue" title="icon name" aria-hidden="true"></span>
+                                    Registrar
+                                </button>
+                                <input type="hidden" value="registra_entrega_raciones" name="action" id="action" >
+                            </div>     
                         </form>
-                    </div>
+                    
                 </div>
             </div>
         </div>

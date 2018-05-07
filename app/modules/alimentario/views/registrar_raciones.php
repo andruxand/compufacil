@@ -146,7 +146,7 @@
                         <input type="hidden" name="finstitucion" id="finstitucion">
                         <input type="hidden" name="fmodalidad" id="fmodalidad">
                         <input type="hidden" name="fsede" id="fsede">
-                        <input type="hidden" name="fuser" id="fuser" value="46">
+                        <input type="hidden" name="fuser" id="fuser" value="<?= $current_userID; ?>">
 
                         <div class="col-md-4">
                             <div class="form-group">
