@@ -19,25 +19,22 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor y/o Contrato</strong></label>
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Zonas</strong></label>
                                 <select class="form-control-custom" id="proveedor" name="proveedor">
                                     <option value="">TODOS</option>
                                     <?php 
-                                        $sql = "SELECT c.numero_contrato, CONCAT(c.numero_contrato, ' / ', p.nombre_proveedor) proveedor
-                                                FROM ali_contrato c, ali_proveedor p
-                                                WHERE
-                                                c.proveedor_id = p.id
-                                                ORDER BY  p.nombre_proveedor ASC";
+                                        $sql = " SELECT id, descripcion
+                                                FROM mat_zonas c ";
                                         $resultado = $db->sql_exec($sql);
                                         while($row = mysqli_fetch_object($resultado)){
                                             $selected = "";
-                                            if( isset($_POST['proveedor']) ){
-                                                if( $_POST['proveedor'] ==  $row->proveedor){
+                                            if( isset($_POST['id']) ){
+                                                if( $_POST['id'] ==  $row->proveedor){
                                                     $selected = 'selected="selected"';
                                                 }
                                             }
                                     ?>
-                                        <option value="<?= $row->numero_contrato; ?>" <?= $selected; ?> ><?= $row->proveedor; ?></option>
+                                        <option value="<?= $row->id; ?>" <?= $selected; ?> ><?= $row->descripcion; ?></option>
                                     <?php } ?>
                                 </select>
                             </div> 

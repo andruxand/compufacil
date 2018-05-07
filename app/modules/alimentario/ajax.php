@@ -495,25 +495,28 @@
 			);
 
 
-			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, 
+			$sql = " SELECT * FROM (SELECT ms.descripcion ieo, c.tipo_racion, p.nombre_proveedor, 
 					 ar.fecha_registro,
 					 c.numero_contrato, 
 			         SUM(ar.primaria) raciones_primaria,
 					 SUM(ar.secundaria) raciones_secundaria,
 			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones,  
-			         COUNT(ar.contrato_numero) as dias_atendidos
-					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i
+			         COUNT(ar.contrato_numero) as dias_atendidos,
+			         ms.id_zonas
+					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i, mat_sedes ms
 					 WHERE
 					 c.proveedor_id = p.id
+					 AND c.sede_id = ms.id
+					 AND ms.id_instituciones = i.id
 					 AND c.numero_contrato = ar.contrato_numero
 					 AND ar.institucion_id = i.id
-					 GROUP BY i.descripcion, c.tipo_racion, p.nombre_proveedor) ra 
+					 GROUP BY ms.id, c.tipo_racion, p.nombre_proveedor) ra 
 					 WHERE 1 = 1 ";
 
 		    if($_POST["is_custom_search"] == "yes")
 			{
 				if( !empty($_POST["proveedor"]) ){
-					$sql .= ' AND ra.numero_contrato LIKE "'.$_POST["proveedor"].'"';
+					$sql .= ' AND ra.id_zonas = '.$_POST["proveedor"].' ';
 				}
 
 				if( (!empty($_POST["fechaIni"])) && (!empty($_POST["fechaFin"])) ){
