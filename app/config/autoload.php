@@ -1,10 +1,10 @@
 <?php
 
 //se declara ruta del app, hook
-(!defined('APPLICATION')) ? define('APPLICATION', '/app') : NULL;
-(!defined('APP_HOOK')) ? define('APP_HOOK', '/app/hooks') : NULL;
-(!defined('APP_CONFIG')) ? define('APP_CONFIG', '/app/config') : NULL;
-(!defined('APP_LIBS')) ? define('APP_LIBS', '/app/libs') : NULL;
+(!defined('APPLICATION')) ? define('APPLICATION', '\app') : NULL;
+(!defined('APP_HOOK')) ? define('APP_HOOK', '\app\hooks') : NULL;
+(!defined('APP_CONFIG')) ? define('APP_CONFIG', '\app\config') : NULL;
+(!defined('APP_LIBS')) ? define('APP_LIBS', '\app\libs') : NULL;
 
 //se declara ruta del sitio
 if(isset($_SERVER['HTTPS'])){
@@ -14,7 +14,7 @@ if(isset($_SERVER['HTTPS'])){
 }
 
 //url a website
-(!defined('SITE_URI')) ? define('SITE_URI', $protocol . $_SERVER['HTTP_HOST'] . '/apr_aprender/inscripcion/') : NULL;
+(!defined('SITE_URI')) ? define('SITE_URI', $protocol . $_SERVER['HTTP_HOST'] . '/joomla/') : NULL;
 
 //se declara ruta del vendor
 (!defined('APP_RESOURCES')) ? define('APP_RESOURCES', SITE_URI . 'app/resources/') : NULL;
@@ -27,7 +27,7 @@ if(isset($_SERVER['HTTPS'])){
 
 // Definimos la ruta base de nustro sitio
 //define ('INNER_PATH', str_replace('/app', '', dirname(__FILE__))); para linux
-define ('INNER_PATH', str_replace('/inscripcion' . APP_CONFIG, '', dirname(__FILE__)));
+define ('INNER_PATH', str_replace(APP_CONFIG, '', dirname(__FILE__)));
 
 // Definimos el path a carpeta config de app
 define ('APP_CONFIG_PATH', str_replace(APP_HOOK, APP_CONFIG, dirname(__FILE__)));
@@ -78,7 +78,5 @@ if(!$current_roles){
 	header( "Location: " .SITE_URI . "app/errors/403.php" );
 
 }
-
-error_reporting(E_ALL);
 
 ?>
