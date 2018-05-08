@@ -244,7 +244,7 @@
         $("#vehiculo").change(function (e) {
             let arLength = vehiArray.length
             for(let i = 0; i < arLength; i++) {
-                if (vehiArray[i].id = $(this).val()){
+                if (vehiArray[i].id == $(this).val()){
                     $("#numPasajeros").val(vehiArray[i].num_pasajeros)
                     break
                 }
@@ -378,13 +378,13 @@
             $("#formCreateVehiculo").submit(function (e) {
                 e.preventDefault();
 
-                let dateSoat = new Date($("#fechavencilince").val())
-                let dateTecmec = new Date($("#fecharevitecnomec").val())
-                let dateNow = new Date()
+                let dateSoat = moment.unix(new Date(moment($("#fechavencisoat").val()).format('YYYY-MM-DD 23:59')))
+                let dateTecmec = moment.unix(new Date(moment($("#fecharevitecnomec").val()).format('YYYY-MM-DD 23:59')))
+                let dateNow = moment.unix(new Date())
 
-                if (dateSoat.toGMTString() < dateNow.toGMTString()) alert("Tenga en cuenta que el SOAT se encuentra vencido")
-                if(dateTecmec.toGMTString() < dateNow.toGMTString()) alert("Tenga en cuenta que la revisión técnico mécanica se encuentra vencida")
-
+                if (dateSoat < dateNow) alert("Tenga en cuenta que el SOAT se encuentra vencido")
+                if(dateTecmec < dateNow) alert("Tenga en cuenta que la revisión técnico mécanica se encuentra vencida")
+                return false;
                 $.ajax({
                     url: 'index.php?router=create-vehiculo',
                     method: 'POST',

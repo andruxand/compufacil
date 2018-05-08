@@ -39,30 +39,26 @@ switch ($_GET["router"]) {
                                     LEFT OUTER JOIN mat_ie_usuarios us     ON inst.coddane = us.institucion_coddane
 
                                     WHERE 
-                                        sec.descripcion = 'OFICIAL' ";
+                                        est.estado = 'MATRICULADO'  ";
 
     if (!empty($_POST["documento"])) {
       $sql .= ' AND est.numero_identificacion LIKE "' . $_POST["documento"] . '"';
     }
 
     if (!empty($_POST["nombre1"])) {
-      $sql .= ' AND est.nombre1 LIKE "' . $_POST["nombre1"] . '"';
+      $sql .= ' AND est.nombre1 LIKE "' . $_POST["nombre1"] . '%"';
     }
 
     if (!empty($_POST["nombre2"])) {
-      $sql .= ' AND est.nombre2 LIKE "' . $_POST["nombre1"] . '"';
+      $sql .= ' AND est.nombre2 LIKE "' . $_POST["nombre1"] . '%"';
     }
 
     if (!empty($_POST["apellido1"])) {
-      $sql .= ' AND est.apellido1 LIKE "' . $_POST["apellido1"] . '"';
+      $sql .= ' AND est.apellido1 LIKE "' . $_POST["apellido1"] . '%"';
     }
 
     if (!empty($_POST["apellido2"])) {
-      $sql .= ' AND est.apellido2 LIKE "' . $_POST["apellido2"] . '"';
-    }
-
-    if (!empty($_POST["grado"])) {
-      $sql .= ' AND niv.descripcion LIKE "' . $_POST["grado"] . '"';
+      $sql .= ' AND est.apellido2 LIKE "' . $_POST["apellido2"] . '%"';
     }
 
     if (!empty($_POST["vigencia"])) {
@@ -94,8 +90,6 @@ switch ($_GET["router"]) {
         $data = array();
 
         while ($row = mysqli_fetch_array($estudiantes)) {
-          // preparing an array
-
           $nestedData[] = array(
             $columns[0] => $row["documento"],
             $columns[1] => $row["nombre"],
@@ -118,7 +112,6 @@ switch ($_GET["router"]) {
         );
 
         echo json_encode($json_data);
-        //echo $sql;
 
       } else {
         $json_data = array(

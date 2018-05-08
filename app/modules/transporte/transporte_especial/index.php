@@ -249,6 +249,7 @@ include('../../../hooks/head.php')
 include('../../../hooks/footer.php')
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.js"></script>
 
 <script src="./js/app.js"></script>
 <script>
