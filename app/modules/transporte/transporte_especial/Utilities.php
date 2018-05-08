@@ -572,7 +572,7 @@ class Utilities {
       $nameFile = "loadVehiculo_" . time();
       $route = "//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
       if (move_uploaded_file($file["tmp_name"], $route)) {
-        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE prueba FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
+        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE tra_vehiculos FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
           "LINES TERMINATED BY '\r\n' (placa, tipo_vehiculo, fecha_soat, fecha_tecnico, tarjeta_operacion)";
         $result = $db->sql_exec($sql);
       }
@@ -599,7 +599,7 @@ class Utilities {
       $nameFile = "loadAuxiliar_" . time();
       $route = "//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
       if (move_uploaded_file($file["tmp_name"], $route)) {
-        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE prueba FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
+        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE tra_auxiliar FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
           "LINES TERMINATED BY '\r\n' (documento, primernombre, segundonombre, primerapellido, segundoapellido)";
         $result = $db->sql_exec($sql);
       }

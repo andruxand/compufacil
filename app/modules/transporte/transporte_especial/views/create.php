@@ -384,7 +384,7 @@
 
                 if (dateSoat < dateNow) alert("Tenga en cuenta que el SOAT se encuentra vencido")
                 if(dateTecmec < dateNow) alert("Tenga en cuenta que la revisión técnico mécanica se encuentra vencida")
-                return false;
+
                 $.ajax({
                     url: 'index.php?router=create-vehiculo',
                     method: 'POST',

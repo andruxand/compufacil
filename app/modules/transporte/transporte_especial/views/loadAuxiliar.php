@@ -20,7 +20,7 @@
       <ul>
         <li>Debe ser un archivo separado por punto y coma (.csv)</li>
         <li>Debe tener la siguiente estructura (documento; primernombre; segundonombre; primerapellido;
-          segundoapellido; licencia)
+          segundoapellido)
         </li>
         <li>El archivo puede tener un tamaño máximo de 2MB</li>
       </ul>

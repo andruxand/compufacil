@@ -19,8 +19,8 @@
             <h4>Recomendaciones</h4>
             <ul>
                 <li>Debe ser un archivo separado por punto y coma (.csv)</li>
-                <li>Debe tener la siguiente estructura (documento; primernombre; segundonombre; primerapellido;
-                    segundoapellido; licencia)
+                <li>Debe tener la siguiente estructura (placa; tipo_vehículo; fecha_soat; fecha_tecnicomecanico;
+                    tarjeta_operacion)
                 </li>
                 <li>El archivo puede tener un tamaño máximo de 2MB</li>
             </ul>
