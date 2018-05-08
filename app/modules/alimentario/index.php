@@ -4,9 +4,9 @@
     include('../../hooks/head.php');
 
     if(in_array(8, $current_roles)){
-        echo "Usted tiene permisos para rol 1";
+        //echo "Usted tiene permisos para rol 1";
     }else{
-        echo "No tiene permisos para el rol 1";
+        //echo "No tiene permisos para el rol 1";
     }
     //echo $current_roles[0] . " - " . $current_roles[1];
 

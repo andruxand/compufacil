@@ -19,7 +19,7 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor y/o Contrato</strong></label>
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Operador y/o Contrato</strong></label>
                                 <select class="form-control-custom" id="proveedor" name="proveedor">
                                     <option value="">TODOS</option>
                                     <?php 
@@ -95,8 +95,8 @@
                                     <thead>
                                         <th class="text-center" scope="col">IEO</th>
                                         <th class="text-center" scope="col">Tipo Ración</th>
-                                        <th class="text-center" scope="col">Raciones Primaria</th>
-                                        <th class="text-center" scope="col">Raciones Secundaria</th>
+                                        <th class="text-center" scope="col">Raciones Jornada Única</th>
+                                        <th class="text-center" scope="col">Raciones Complemento Alimentario</th>
                                         <th class="text-center" scope="col"># Día Atendidos / Servidos</th>
                                         <th class="text-center" scope="col">Total Raciones</th>
                                     </thead>

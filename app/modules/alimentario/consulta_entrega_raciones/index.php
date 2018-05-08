@@ -200,10 +200,6 @@
                 Vista Impresión
             </button>
 
-            <button type="submit" class="btn btn-dark-blue mb-2" data-dismiss="modal" aria-label="Close">
-                <span class="oi oi-account-logout text-blue" title="icon name" aria-hidden="true"></span>
-                Salir
-            </button>
         </div>
 
     </div>  

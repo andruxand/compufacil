@@ -562,7 +562,7 @@
 
 						$nestedData[] = array(
 							$columns[0]    => $row["nombre_proveedor"],
-							$columns[1]    => "zona",
+							$columns[1]    => $row["id_zonas"],
 							$columns[2]    => $row["tipo_racion"],
 							$columns[3]    => $row["raciones_primaria"],
 							$columns[4]    => $row["raciones_secundaria"],

@@ -90,11 +90,11 @@
                             <div class="table-responsive">
                                 <table id="results" class="table table-hover table-sm display" style="width:100%">
                                     <thead>
-                                        <th class="text-center" scope="col">Proveedor</th>
+                                        <th class="text-center" scope="col">Operador</th>
                                         <th class="text-center" scope="col">Zona</th>
                                         <th class="text-center" scope="col">Tipo Ración</th>
-                                        <th class="text-center" scope="col">Raciones Primaria</th>
-                                        <th class="text-center" scope="col">Raciones Secundaria</th>
+                                        <th class="text-center" scope="col">Raciones Jornada Única</th>
+                                        <th class="text-center" scope="col">Raciones Complemento Alimentario</th>
                                         <th class="text-center" scope="col"># Día Atendidos / Servidos</th>
                                         <th class="text-center" scope="col">Total Raciones</th>
                                     </thead>
