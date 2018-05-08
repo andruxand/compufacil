@@ -379,7 +379,7 @@
 					 c.numero_contrato, 
 			         SUM(ar.primaria) raciones_primaria,
 					 SUM(ar.secundaria) raciones_secundaria,
-			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+			         ( (SUM(ar.primaria) + SUM(ar.secundaria)) * COUNT(ar.contrato_numero) ) as total_raciones, 
 			         COUNT(ar.contrato_numero) as dias_atendidos
 					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i
 					 WHERE
@@ -500,7 +500,7 @@
 					 c.numero_contrato, 
 			         SUM(ar.primaria) raciones_primaria,
 					 SUM(ar.secundaria) raciones_secundaria,
-			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones,  
+			         ( (SUM(ar.primaria) + SUM(ar.secundaria)) * COUNT(ar.contrato_numero) ) as total_raciones,  
 			         COUNT(ar.contrato_numero) as dias_atendidos,
 			         ms.id_zonas
 					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i, mat_sedes ms
@@ -620,7 +620,7 @@
 			$sql = " SELECT * FROM (SELECT  i.descripcion ieo, c.tipo_racion, p.nombre_proveedor, p.nit, 
 			         SUM(ar.primaria) raciones_primaria,
 					 SUM(ar.secundaria) raciones_secundaria,
-			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+			         ( (SUM(ar.primaria) + SUM(ar.secundaria)) * COUNT(ar.contrato_numero) ) as total_raciones, 
 					 FROM ali_contrato c, ali_proveedor p, ali_registros ar, mat_instituciones i
 					 WHERE
 					 c.proveedor_id = p.id
@@ -783,34 +783,40 @@
 	    	$sql = " SELECT ar.institucion_id, ms.descripcion ieo, ar.tipo_racion, ms.coddane,
 					 SUM(ar.primaria) raciones_primaria,
 					 SUM(ar.secundaria) raciones_secundaria,
-			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones,  
+			         ( (SUM(ar.primaria) + SUM(ar.secundaria) ) * COUNT(ar.contrato_numero) ) as total_raciones,  
 			         COUNT(ar.contrato_numero) as dias_atendidos,
 			         'institucion' as tipo
-					 FROM ali_contrato c, ali_registros ar, mat_instituciones i, mat_sedes ms
+					 FROM ali_contrato c, ali_registros ar, mat_instituciones i, mat_sedes ms, mat_ie_usuarios mie
 					 WHERE
 					 c.numero_contrato = ar.contrato_numero
 					 AND ar.institucion_id = i.id
-					 AND i.coddane = ms.coddane
-					 AND ms.id = ar.sede_id
+                     AND ms.id = ar.sede_id
+                     
+                     AND i.coddane = mie.institucion_coddane
+					 AND mie.institucion_coddane = ms.coddane
+					 
                      AND ms.id = c.sede_id
-					 AND c.user_id = ".$current_userID."
+					 AND mie.user_id = ".$current_userID."
 					 AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] . "'
                      GROUP BY ar.institucion_id, ar.tipo_racion
 					 UNION
 					 SELECT ar.sede_id,  ms.descripcion ieo, ar.tipo_racion, ms.coddane,
 					 SUM(ar.primaria) raciones_primaria,
 					 SUM(ar.secundaria) raciones_secundaria,
-			         ( (ar.primaria + ar.secundaria) * COUNT(ar.contrato_numero) ) as total_raciones, 
+			         ( (SUM(ar.primaria) + SUM(ar.secundaria) ) * COUNT(ar.contrato_numero) ) as total_raciones, 
 			         COUNT(ar.contrato_numero) as dias_atendidos,
 			         'sede' as tipo
-					 FROM ali_contrato c, ali_registros ar, mat_sedes ms, mat_instituciones i
+					 FROM ali_contrato c, ali_registros ar, mat_sedes ms, mat_instituciones i, mat_ie_usuarios mie
 					 WHERE
 					 c.numero_contrato = ar.contrato_numero
-					 AND ar.sede_id = ms.id
                      AND ar.institucion_id = i.id
-                     AND ms.coddane <> i.coddane
+                     AND ar.sede_id = ms.id
+                     AND i.coddane = mie.institucion_coddane
+					 
+                     AND ms.daneinstitucion = mie.institucion_coddane
+                     AND ms.coddane <> mie.institucion_coddane
                      ANd ms.id = c.sede_id
-                     AND c.user_id = ".$current_userID."
+                     AND mie.user_id = ".$current_userID."
                      AND date_format(str_to_date(ar.fecha_registro, '%d/%m/%Y'), '%Y-%m') = '" . $_POST['mes'] . "'
 					 GROUP BY ar.sede_id, ar.tipo_racion ";
 
