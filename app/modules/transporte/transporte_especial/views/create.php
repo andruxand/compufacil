@@ -362,6 +362,12 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <label for="proveedorCond">Proveedor</label>
+                    <select name="proveedorCond" id="proveedorCond" class="form-control" required>
+                        <option value=""></option>
+                    </select>
+                </div>
             </div>
             <br>
             <div class="row">
@@ -374,6 +380,17 @@
         $("#btn-create-vehiculo").click(function (e) {
             e.preventDefault();
             $("#body-modal-forms").html(tempVehi)
+            $.ajax({
+                url: 'index.php?router=get-proveedores',
+                method: 'GET'
+            }).then(function (response) {
+                $("#proveedorCond").select2({
+                    data: response,
+                    placeholder: "Seleccione un proveedor",
+                    language: 'es',
+                    theme: 'bootstrap'
+                });
+            });
             $("#modal-forms").modal('show')
             $("#formCreateVehiculo").submit(function (e) {
                 e.preventDefault();

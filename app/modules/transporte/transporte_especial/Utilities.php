@@ -465,7 +465,8 @@ class Utilities {
       "seguro_contractual" => filter_var($seguroContractual, FILTER_SANITIZE_STRING),
       "seguro_extracontractual" => filter_var($seguroExtraContractual, FILTER_SANITIZE_STRING),
       "tipo_zona" => filter_var($tipoZona, FILTER_SANITIZE_STRING),
-      "fecha_registro" => date("Y-m-d", time())
+      "fecha_registro" => date("Y-m-d", time()),
+      "id_proveedor" => filter_var($proveedorCond, FILTER_SANITIZE_NUMBER_INT)
     ];
 
     $result = $db->insert("tra_vehiculos", $data);
