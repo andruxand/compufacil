@@ -5,8 +5,10 @@ $(document).ready(function() {
 
 	var proveedor = $('#proveedor');
 	var fechas = $('input#daterange');
+	var sede = $('#sede');
 
 	proveedor.select2();
+	sede.select2();
 
 	fechas.daterangepicker({
 		locale: configDataPicker
@@ -20,7 +22,9 @@ $(document).ready(function() {
 
 	CargaResutlados('no');
 
-	function CargaResutlados(is_custom_search, proveedor = '', fechaIni = '', fechaFin = ''){
+	function CargaResutlados(is_custom_search, proveedor = '', fechaIni = '', fechaFin = '', sede = ''){
+
+		console.log('sede: ' + sede);
 
 		var dataTable = $('#results').DataTable( {
 			"processing": true,
@@ -34,14 +38,16 @@ $(document).ready(function() {
         	],
        		buttons: [
             	{ extend: "print", text: "Vista Impresión", exportOptions: { columns: ':visible' } },
-            	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" }
+            	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" },
+            	{ extend: "excel", text: "Excel", exportOptions: { columns: ':visible' } },
+            	{ extend: "csv", text: "CSV", exportOptions: { columns: ':visible' } },
        		],
 			//"sort": false,
    			//"order" : ["ieo", "tipo_racion"],
 	        "ajax": {
 	        	url: "../ajax.php",
 	        	type: "post",
-	        	data: { action: 'listar_raciones_general', is_custom_search: is_custom_search, proveedor: proveedor, fechaIni: fechaIni, fechaFin: fechaFin },
+	        	data: { action: 'listar_raciones_general', is_custom_search: is_custom_search, proveedor: proveedor, fechaIni: fechaIni, fechaFin: fechaFin, sede_id: sede },
 	        	error: function(e){  // error handling
 	        		$('#loader-error').fadeIn(200);
     				$('#loader-icon').removeClass('fa-spin').addClass('text-danger');
@@ -94,7 +100,7 @@ $(document).ready(function() {
 	$('#buscar').click(function(){
 		
 		$('#results').DataTable().destroy();
-		CargaResutlados('yes', proveedor.val(), fechaInicial, fechaFinal);
+		CargaResutlados('yes', proveedor.val(), fechaInicial, fechaFinal, sede.val());
 		console.log(fechaInicial + ' - ' + fechaFinal);
 
 	});
@@ -104,6 +110,7 @@ $(document).ready(function() {
 		$("#results").DataTable().destroy();
 		CargaResutlados('no');
 		proveedor.val('').trigger('change.select2');
+		sede.val('').trigger('change.select2');
 		fechas.val('');
 		fechaInicial = '';
 		fechaFinal = '';

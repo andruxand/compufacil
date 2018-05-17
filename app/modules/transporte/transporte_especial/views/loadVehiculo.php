@@ -19,9 +19,9 @@
             <h4>Recomendaciones</h4>
             <ul>
                 <li>Debe ser un archivo separado por punto y coma (.csv)</li>
-                <li>Debe tener la siguiente estructura (placa; tipo_vehículo; fecha_soat; fecha_tecnicomecanico;
-                    tarjeta_operacion)
+                <li>Debe tener la siguiente estructura (nit_proveedor; marca_vehiculo; placa; tipo_vehículo; propietario; soat; tecnico_mecanica; fecha_soat; fecha_tecnicomecanica; tarjeta_operacion; tipo_zona)
                 </li>
+                <li>Debe tener en cuenta que el NIT de proveedor de cada registro del CSV debe existir como proveedor en el sistema previamente</li>
                 <li>El archivo puede tener un tamaño máximo de 2MB</li>
             </ul>
         </div>

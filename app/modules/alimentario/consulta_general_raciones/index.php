@@ -19,6 +19,31 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label class="mb-2 mr-sm-2" for="sede"><strong>Sedes</strong></label>
+                                <select class="form-control-custom" id="sede" name="sede">
+                                    <option value="">TODOS</option>
+                                    <?php 
+                                        $sql = " SELECT ms.id, ms.descripcion
+                                                FROM mat_sedes ms, ali_contrato ac
+                                                WHERE ac.sede_id = ms.id 
+                                                GROUP BY ms.id";
+                                        $resultado = $db->sql_exec($sql);
+                                        while($row = mysqli_fetch_object($resultado)){
+                                            $selected = "";
+                                            if( isset($_POST['id']) ){
+                                                if( $_POST['id'] ==  $row->proveedor){
+                                                    $selected = 'selected="selected"';
+                                                }
+                                            }
+                                    ?>
+                                        <option value="<?= $row->id; ?>" <?= $selected; ?> ><?= $row->descripcion; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="proveedor"><strong>Zonas</strong></label>
                                 <select class="form-control-custom" id="proveedor" name="proveedor">
                                     <option value="">TODOS</option>

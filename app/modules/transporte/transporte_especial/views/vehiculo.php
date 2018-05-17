@@ -98,8 +98,8 @@
                     <div class="form-group">
                         <label for="">Tipo de Zona</label>
                         <select class="form-control" name="tipoZona" id="tipoZona" required>
-                            <option value="Urbana">Urbana</option>
-                            <option value="Rural">Rural</option>
+                            <option value="URBANA">Urbana</option>
+                            <option value="RURAL">Rural</option>
                         </select>
                     </div>
                 </div>
@@ -227,11 +227,23 @@
                     });
                     return false;
                 }
+
+                $.ajax({
+                    url: 'index.php?router=get-data-route&id=' + idRoute,
+                    method: 'GET'
+                }).then(function (response) {
+                    $("#num-pasajeros-disp").empty()
+                    $("#num-pasajeros-disp").append("<b>Cupos Disponibles:</b>" + response.num_pasajeros_disp)
+                }).catch(function (error) {
+                    console.log(error)
+                })
+
                 $("#alert-success").text(response.message).show("slow", function () {
                     setTimeout(function () {
                         $("#alert-success").hide('slow');
                     }, 5000)
                 });
+
                 disabledFieldsVehiculo()
                 $("#btn-edit-vehiculo").show()
                 $("#btn-save-vehiculo, #btn-cancel-update-vehiculo").hide()

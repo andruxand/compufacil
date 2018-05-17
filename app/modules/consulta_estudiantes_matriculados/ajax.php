@@ -48,10 +48,11 @@
                                     LEFT OUTER JOIN mat_sedes_jornadas          sj   ON  par.id_sedes_jornadas         =   sj.id
                                     LEFT OUTER JOIN mat_jornadas                jor  ON   sj.id_jornadas               =  jor.id
 
-                                    LEFT OUTER JOIN mat_ie_usuarios us     ON inst.coddane = us.institucion_coddane
+                                    #LEFT OUTER JOIN mat_ie_usuarios us     ON inst.coddane = us.institucion_coddane
 
                                     WHERE 
-                                        sec.descripcion = 'OFICIAL' ";
+                                        1=1";
+                                        #sec.descripcion = 'OFICIAL' ";
                                     /*AND  us.user_id     = $userId
 
                                     AND inst.descripcion like '%xinstitucion%'

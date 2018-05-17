@@ -1,4 +1,4 @@
-<div class="card" id="card-route">
+<div class="card border-dark-blue" id="card-route">
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
@@ -156,7 +156,7 @@
             $("#hora_llegada").val('')
             $("#hora_partida").val('')
             $("#secuencia").val('')
-            $("#load-modal").modal('show');
+            $("#load-modal-paradas").modal('show');
         })
 
         $("#btn-exit-data-route").click(function (e) {

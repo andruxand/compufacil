@@ -61,7 +61,7 @@
                             <div class="col-xs-12 col-sm-4 col-md-3">
                                 <div class="form-group">
                                     <label class="mb-2 mr-sm-2" for="grupo">Año lectivo</label>
-                                    <select id="vigencia" class="form-control" name="vigencia" required>
+                                    <select id="vigencia" class="form-control" name="vigencia">
                                         <option value=""       >Seleccionar Vigencia </option>
                                         <option value="2016"   >2016</option>
                                         <option value="2017"   >2017</option>

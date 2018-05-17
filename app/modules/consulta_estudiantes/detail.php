@@ -34,6 +34,8 @@
             <div class="tab-pane fade" id="nav-alimentacion-content" role="tabpanel"
                  aria-labelledby="nav-home-tab">
                 <div class="container">
+                    <br>
+                    <br>
                     <div class="row">
                         <div class="col-md-12 text-center"><label class="label"><b>Recibe alimentación complementaria: </b>Sí</label></div>
                     </div>
@@ -76,7 +78,7 @@
         // }
 
         var tempInfoEstu = function tempInfoEstu(obj) {
-            return "<div class=\"container\">\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Fecha de nacimiento: </b>" + obj.fecha_nacimiento + "</label></div>\n                            <div class=\"col-md-3\"><label class=\"label\"><b>Sexo: </b>" + obj.genero + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Direcci\xF3n de residencia: </b>" + obj.direccion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Barrio: </b>" + obj.barrio + "</label></div>\n                            <div class=\"col-md-3\"><label class=\"label\"><b>Comuna: </b>" + obj.comuna + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Instituci\xF3n educativa: </b>" + obj.institucion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Sede: </b>" + obj.sede + "</label></div>\n                            <div class=\"col-md-3\"><label class=\"label\"><b>Grado: </b>" + obj.grado + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Jornada: </b>" + obj.jornada + "</label></div>\n                        </div>\n                    </div>";
+            return "<br><br><div class=\"container\">\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Fecha de nacimiento: </b>" + obj.fecha_nacimiento + "</label></div>\n                            <div class=\"col-md-3\"><label class=\"label\"><b>Sexo: </b>" + obj.genero + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Direcci\xF3n de residencia: </b>" + (obj.direccion ? obj.direccion : 'Sin asignar') + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Barrio: </b>" + obj.barrio + "</label></div>\n                            <div class=\"col-md-3\"><label class=\"label\"><b>Comuna: </b>" + obj.comuna + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Instituci\xF3n educativa: </b>" + obj.institucion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Sede: </b>" + obj.sede + "</label></div>\n                            <div class=\"col-md-3\"><label class=\"label\"><b>Grado: </b>" + obj.grado + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Jornada: </b>" + obj.jornada + "</label></div>\n                        </div>\n                    </div>";
         };
 
         // const tempInfoAcu = function (obj) {
@@ -96,7 +98,7 @@
         // }
 
         var tempInfoAcu = function tempInfoAcu(obj) {
-            return '<div class="container">\n                        <div class="row">\n                            <div class="col-md-3"><label class="label"><b>Tipo de documento: </b>' + (obj.tipoDocumentoAcu ? obj.tipoDocumentoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-3"><label class="label"><b>No. documento: </b>' + (obj.numDocumentoAcu ? obj.numDocumentoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-3"><label class="label"><b>Nombres: </b>' + (obj.nombresAcu ? obj.nombresAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-3"><label class="label"><b>Apellidos: </b>' + obj.apellidosAcu + '</label></div>\n                        </div>\n                        <div class="row">\n                            <div class="col-md-4"><label class="label"><b>Parentesco: </b>' + (obj.parentescoAcu ? obj.parentescoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-4"><label class="label"><b>Correo electr\xF3nico: </b>' + (obj.correoAcu ? obj.correoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-4"><label class="label"><b>Celular: </b>' + (obj.celularAcu ? obj.celularAcu : 'Sin asignar') + '</label></div>\n                        </div>\n                    </div>';
+            return '<br><br><div class="container">\n                        <div class="row">\n                            <div class="col-md-3"><label class="label"><b>Tipo de documento: </b>' + (obj.tipoDocumentoAcu ? obj.tipoDocumentoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-3"><label class="label"><b>No. documento: </b>' + (obj.numDocumentoAcu ? obj.numDocumentoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-3"><label class="label"><b>Nombres: </b>' + (obj.nombresAcu ? obj.nombresAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-3"><label class="label"><b>Apellidos: </b>' + (obj.apellidosAcu ? obj.apellidosAcu : 'Sin asignar') + '</label></div>\n                        </div>\n                        <div class="row">\n                            <div class="col-md-4"><label class="label"><b>Parentesco: </b>' + (obj.parentescoAcu ? obj.parentescoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-4"><label class="label"><b>Correo electr\xF3nico: </b>' + (obj.correoAcu ? obj.correoAcu : 'Sin asignar') + '</label></div>\n                            <div class="col-md-4"><label class="label"><b>Celular: </b>' + (obj.celularAcu ? obj.celularAcu : 'Sin asignar') + '</label></div>\n                        </div>\n                    </div>';
         };
 
         $.ajax({
@@ -132,7 +134,7 @@
         // }
 
         var tempInfoMio = function tempInfoMio(obj) {
-            return "<div class=\"container\">\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>No. tarjeta MIO: </b>" + obj.nro_tarjeta + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>SEM: </b>" + obj.nro_sem + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Caracterizaci\xF3n: </b>" + obj.caracterizacion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Fecha asignaci\xF3n: </b>" + obj.fecha_asignacion + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Saldo: </b>" + obj.saldo + "</label></div>\n                        </div>\n                    </div>";
+            return "<br><br><div class=\"container\">\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>No. tarjeta MIO: </b>" + obj.nro_tarjeta + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>SEM: </b>" + obj.nro_sem + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Caracterizaci\xF3n: </b>" + obj.caracterizacion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Fecha asignaci\xF3n: </b>" + obj.fecha_asignacion + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Saldo: </b>" + obj.saldo + "</label></div>\n                        </div>\n                    </div>";
         };
 
         //$("#nav-trans-mio-tab").click(function () {
@@ -145,7 +147,7 @@
                         if (response.data) {
                             $("#nav-trans-mio-content").html(tempInfoMio(response.data))
                         } else {
-                            $("#nav-trans-mio-content").html("<h4>Actualmente el estudiante no posee transporte MIO</h4>")
+                            $("#nav-trans-mio-content").html("<br><br><h4>Actualmente el estudiante no posee transporte MIO</h4>")
                         }
                     }
                 }).catch(function (error) {
@@ -168,7 +170,7 @@
         // }
 
         var tempInfoEsp = function tempInfoEsp(obj) {
-            return "<div class=\"container\">\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Ruta:  </b>" + obj.nombre_ruta + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Caracterizaci\xF3n: </b>" + obj.caracterizacion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Fecha asignaci\xF3n: </b>" + obj.fecha_asignacion + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Vijencia: </b>" + obj.vijencia + "</label></div>\n                        </div>\n                    </div>";
+            return "<br><br><div class=\"container\">\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Ruta:  </b>" + obj.nombre_ruta + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Caracterizaci\xF3n: </b>" + obj.caracterizacion + "</label></div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Fecha asignaci\xF3n: </b>" + obj.fecha_asignacion + "</label></div>\n                            <div class=\"col-md-4\"><label class=\"label\"><b>Vijencia: </b>" + obj.vijencia + "</label></div>\n                        </div>\n                    </div>";
         };
 
         //$("#nav-trans-especial-tab").click(function () {
@@ -181,7 +183,7 @@
                         if (response.data) {
                             $("#nav-trans-especial-content").html(tempInfoEsp(response.data))
                         } else {
-                            $("#nav-trans-especial-content").html("<h4>Actualmente el estudiante no posee transporte especial</h4>")
+                            $("#nav-trans-especial-content").html("<br><br><h4>Actualmente el estudiante no posee transporte especial</h4>")
                         }
                     }
                 }).catch(function (error) {

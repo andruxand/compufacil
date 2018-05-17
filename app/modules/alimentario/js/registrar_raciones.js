@@ -10,7 +10,7 @@ function consultar_raciones(id){
         data: {action: 'consultar_raciones', dane: id},
     })
     .done(function(data) {
-    	console.log(data);
+    	console.log(data.datos_racion.confirm_coordinador);
         if ( data.success ) {
 	        console.log( "La solicitud se ha completado correctamente." );
 	        $('#proveedor').text(data.proveedor);
@@ -33,11 +33,34 @@ function consultar_raciones(id){
 
 	        	$('#existe-racion').show();
 
+	        	$('#certificar_racion').show();
+	        	$('#certificar_racion').attr('disabled', true);
+
 	        	$('#racion-pp').attr("readonly", true);
 		        $('#racion-s').attr("readonly", true);
 		        $('#observaciones').attr("readonly", true);
-		        $('#confirm').attr("disabled", true);
-		        $('#confirm').attr("checked", true);
+
+		        if(data.datos_racion.confirm_coordinador == 1){
+			        $('#confirm_coordinador').attr("disabled", true);
+			        $('#confirm_coordinador').attr("checked", true);
+			        $('#confirma-coordinador').text('Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+		    	}
+
+		    	if(data.datos_racion.confirm_personero == 1){
+			        $('#confirm_personero').attr("disabled", true);
+			        $('#confirm_personero').attr("checked", true);
+			        $('#confirma-personero').text('Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+		    	}
+
+		    	if(data.datos_racion.confirm_proveedor == 1){
+			        $('#confirm_proveedor').attr("disabled", true);
+			        $('#confirm_proveedor').attr("checked", true);
+			        $('#confirma-proveedor').text('Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+		    	}
+
+		    	if(data.datos_racion.habilita_cert === true){
+		    		$('#certificar_racion').hide();
+		    	}
 
 		        $('#id_registro_racion').val(data.datos_racion.id_racion);
 	        	$('#racion-pp').val(data.datos_racion.primaria);
@@ -64,6 +87,9 @@ function consultar_raciones(id){
 		        $('#racion-total').val(total_raciones);
 		        $('#registrar_raciones').attr("disabled", true);
 
+		        $('#confirm_personero').attr("disabled", true);
+		        $('#certificar_racion').hide();
+
 	    	}
 
 	    }else{
@@ -73,9 +99,6 @@ function consultar_raciones(id){
 	    $('#fullpage-loader').fadeOut(200);
     })
     .fail(function(XMLHttpRequest, textStatus, errorThrown) {
-
-    	$(".alert-danger").show();
-	    $("#danger-msg").text(data.message);
 
 	    if ( console && console.log ) {
 	        console.log( "La solicitud a fallado: " +  textStatus);
@@ -104,7 +127,7 @@ function registra_raciones(datos){
 	        $('#racion-pp').attr("readonly", true);
 		    $('#racion-s').attr("readonly", true);
 		    $('#observaciones').attr("readonly", true);
-		    $('#confirm').attr("disabled", true);
+		    $('#confirm_coordinador').attr("disabled", true);
 
 		    $('#registrar_raciones').hide();
 		    $('#cancelar-registro').hide();
@@ -245,13 +268,43 @@ $(document).ready(function() {
             $( '#area-impresion' ).printArea( options );
     });
 
-    $('#confirm').on("change", function(e){
+    $('#confirm_coordinador').on("change", function(e){
 
     	if( $(this).is(':checked') ) {
 	         $('#registrar_raciones').attr('disabled', false);
+	         $('#confirma-coordinador').text('Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
 	         console.log('habilita registro');
 	    } else {
 	        $('#registrar_raciones').attr('disabled', true);
+	        $('#confirma-coordinador').text('No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+	        console.log('NO habilita registro');
+	    }
+
+	});
+
+	$('#confirm_personero').on("change", function(e){
+
+    	if( $(this).is(':checked') ) {
+	         $('#certificar_racion').attr('disabled', false);
+	         $('#confirma-personero').text('Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+	         console.log('habilita registro');
+	    } else {
+	        $('#certificar_racion').attr('disabled', true);
+	        $('#confirma-personero').text('No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+	        console.log('NO habilita registro');
+	    }
+
+	});
+
+	$('#confirm_proveedor').on("change", function(e){
+
+    	if( $(this).is(':checked') ) {
+	         $('#certificar_racion').attr('disabled', false);
+	         $('#confirma-proveedor').text('Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
+	         console.log('habilita registro');
+	    } else {
+	        $('#certificar_racion').attr('disabled', true);
+	        $('#confirma-proveedor').text('No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.');
 	        console.log('NO habilita registro');
 	    }
 
@@ -259,6 +312,8 @@ $(document).ready(function() {
 
     $('#registrar_raciones').on("click", function(e){
     	var data = $('#raciones-form').serialize();
+
+    	console.log(data);
 
     	$(".alert").hide();
     	$(this).attr('disabled', true);
@@ -353,7 +408,48 @@ $(document).ready(function() {
 	});
 
     $('#buscar_raciones').on("click", function(){
-		consulta_mensual_raciones($('#contrato').text(), $('#mes').val());
+		consulta_mensual_raciones($('#dane').text(), $('#mes').val());
+	});
+
+	$('#certificar_racion').on("click", function(e){
+
+		e.preventDefault();
+
+		var datos = $('#raciones-form').serialize();
+		//datos += "&action=registrar_raciones";
+
+		$('.alert').hide();
+
+		$.ajax({
+	        url: 'ajax.php',
+	        type: 'POST',
+	        dataType: 'json',
+	        data: datos + '&action=certificar_raciones',
+	    })
+	    .done(function(data) {
+	        console.log(data);
+
+	        if ( data.success ) {
+
+		        console.log( "La solicitud se ha completado correctamente." );
+		        $('#' + data.campo).attr('disabled', true);
+		        $(".alert-success").show();
+		        $("#success-msg").text(data.message);
+		        $("#certificar_racion").hide();
+
+		    }else{
+		        console.log( "La solicitud NO se ha completado correctamente." );
+		    }
+
+			$('#fullpage-loader').fadeOut(200);
+
+	    })
+	    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+		    if ( console && console.log ) {
+		        console.log( "La solicitud a fallado: " +  textStatus);
+		    }    
+		});
+		
 	});
 
 });

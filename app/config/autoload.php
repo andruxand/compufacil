@@ -14,7 +14,7 @@ if(isset($_SERVER['HTTPS'])){
 }
 
 //url a website
-(!defined('SITE_URI')) ? define('SITE_URI', $protocol . $_SERVER['HTTP_HOST'] . '/joomla/') : NULL;
+(!defined('SITE_URI')) ? define('SITE_URI', $protocol . $_SERVER['HTTP_HOST'] . '/apr_aprender/inscripcion/') : NULL;
 
 //se declara ruta del vendor
 (!defined('APP_RESOURCES')) ? define('APP_RESOURCES', SITE_URI . 'app/resources/') : NULL;
@@ -61,17 +61,25 @@ require_once ( APP_LIBS_PATH . DS . "BaseDatos.php" );
 $db = new BaseDatos();
 
 //Obtenemos el usuario conectado
-$user = JFactory::getUser();
+$current_userID = 49; //& JFactory::getUser()->id;
 
 //Obtenemos la sesion
 $sess = JSession::getInstance('none', array());
 $idSessUser = $sess->getId();
 
-$current_userID = 49;
-
-//$current_roles = $db->loadRoles( $user->id );
-
 $current_roles = $db->loadRoles( $current_userID );
+
+// permisos para roles
+$isRector = array(00);
+$isCoordinador = array(00);
+$isPersonero = array(00);
+$isProveedor = array(15);
+
+$permiteAdd = array();
+$permiteAdd = array_merge($permiteAdd, $isCoordinador, $isPersonero, $isProveedor);
+
+$permiteView = array();
+$permiteView = array_merge($permiteView, $isCoordinador, $isRector);
 
 if(!$current_roles){
 

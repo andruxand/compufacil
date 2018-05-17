@@ -175,15 +175,17 @@
 
                                     </tbody>
                                 </table>
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" name="registrar_anexos" id="registrar_anexos" class="btn btn-dark-blue mb-2">
+                                        <span class="oi oi-check text-blue" title="icon name" aria-hidden="true"></span>
+                                        Registrar
+                                    </button>
+                                    <input type="hidden" value="registra_entrega_raciones" name="action" id="action" >
+                                </div> 
+                                <hr>
+                                <div id="observaciones"></div>
                             </div> 
-
-                            <div class="col-md-12 text-right">
-                                <button type="submit" name="registrar_anexos" id="registrar_anexos" class="btn btn-dark-blue mb-2">
-                                    <span class="oi oi-check text-blue" title="icon name" aria-hidden="true"></span>
-                                    Registrar
-                                </button>
-                                <input type="hidden" value="registra_entrega_raciones" name="action" id="action" >
-                            </div>     
+    
                         </form>
                     
                 </div>

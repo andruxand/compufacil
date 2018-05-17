@@ -1,3 +1,40 @@
+   <?php 
+
+        require_once '../../../config/autoload.php'; 
+
+        if( $db->verifyRoles($current_roles, $isCoordinador) ){
+
+            $disabledField = "";
+
+        }else{
+
+            $disabledField = "disabled";
+
+        }
+
+        if( $db->verifyRoles($current_roles, $isPersonero) ){
+
+            $disabledFieldPersonero = "";
+
+        }else{
+
+            $disabledFieldPersonero = "disabled";
+
+        }
+
+        if( $db->verifyRoles($current_roles, $isProveedor) ){
+
+            $disabledFieldProveedor = "";
+
+        }else{
+
+            $disabledFieldProveedor = "disabled";
+
+        }
+
+
+    ?>
+
     <script src="js/registrar_raciones.js" type="text/javascript"></script>
     <script type="text/javascript">
         
@@ -15,7 +52,11 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <span class="oi oi-info" title="icon name" aria-hidden="true"></span>
-                La información se registrará con fecha <strong><?= date("d-m-Y"); ?></strong>
+                <?php if( $db->verifyRoles($current_roles, $isCoordinador) ){ ?>
+                    La información se registrará con fecha <strong><?= date("d-m-Y"); ?></strong>
+                <?php }else{ ?>
+                    Aún no se ha registrado raciones para hoy. <strong><?= date("d-m-Y"); ?></strong>
+                <?php } ?>
         </div>
 
         <div style="display: none;" id="existe-racion" class="alert alert-info alert-dismissible fade show animated bounceInDown" role="alert">
@@ -151,13 +192,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="primaria"><strong>Jornada Única</strong></label>
-                                <input class="form-control" type="number" name="racion-pp" id="racion-pp">
+                                <input class="form-control" type="number" name="racion-pp" id="racion-pp" <?= $disabledField ?> >
                             </div>  
                         </div> 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="mb-2 mr-sm-2" for="secundaria"><strong>Complemento Alimentario</strong></label>
-                                <input class="form-control" type="number" name="racion-s" id="racion-s">
+                                <input class="form-control" type="number" name="racion-s" id="racion-s" <?= $disabledField ?> >
                             </div>  
                         </div>
                         <div class="col-md-4">
@@ -177,35 +218,93 @@
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <div class = "custom-switch custom-switch-label-yesno">
-                                    <input class="custom-switch-input" value="1" id="confirm" type="checkbox">
-                                    <label class="custom-switch-btn" for="confirm"> </label>
-                                    <div class="custom-switch-content-checked font-color">
-                                        <strong>Certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.</strong>
+                                <!--<div class = "custom-switch custom-switch-label-yesno">-->
+                                    <label class="mb-2 mr-sm-2" for="observaciones"><strong>Certifica Coordinador</strong></label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input class="custom-control-input" value="1" name="confirm_coordinador" id="confirm_coordinador" type="checkbox" <?= $disabledField; ?> >
+                                        <label style="line-height: 24px;" id="confirma-coordinador" class="custom-control-label font-color" for="confirm_coordinador">
+                                            No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.
+                                        </label>
                                     </div>
-                                    <div class="custom-switch-content-unchecked font-color">
-                                        <strong>No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.</strong>
+                                    
+                                    <!-- <label class="custom-switch-btn" for="confirm"> </label> -->
+                                <!--</div>-->
+                            </div>  
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <!--<div class = "custom-switch custom-switch-label-yesno">-->
+                                    <label class="mb-2 mr-sm-2" for="observaciones"><strong>Certifica Personero</strong></label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input class="custom-control-input" value="1" name="confirm_personero" id="confirm_personero" type="checkbox" <?= $disabledFieldPersonero; ?> >
+                                        <label style="line-height: 24px;" id="confirma-personero" class="custom-control-label font-color" for="confirm_personero">
+                                            No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.
+                                        </label>
                                     </div>
-                                </div>
+                                    
+                                    <!-- <label class="custom-switch-btn" for="confirm"> </label> -->
+                                <!--</div>-->
+                            </div>  
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <!--<div class = "custom-switch custom-switch-label-yesno">-->
+                                    <label class="mb-2 mr-sm-2" for="observaciones"><strong>Certifica Proveedor</strong></label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input class="custom-control-input" value="1" name="confirm_proveedor" id="confirm_proveedor" type="checkbox" <?= $disabledFieldProveedor; ?> >
+                                        <label style="line-height: 24px;" id="confirma-proveedor" class="custom-control-label font-color" for="confirm_proveedor">
+                                            No certifico que las raciones fueron entregadas a los niños y niñas inscritos en el programa.
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- <label class="custom-switch-btn" for="confirm"> </label> -->
+                                <!--</div>-->
                             </div>  
                         </div>
                         
 
                         <div class="col-md-12 text-right">
+
+                            <?php 
+                                if( ($db->verifyRoles($current_roles, $isPersonero)) || ($db->verifyRoles($current_roles, $isProveedor)) ){
+                            ?>
+                            <button name="certificar_racion" id="certificar_racion" class="btn btn-dark-blue mb-2">
+                                <span class="oi oi-check text-blue" title="icon name" aria-hidden="true"></span>
+                                Certificar
+                            </button>
+                            <?php
+                                }
+                            ?> 
+
+                            <?php 
+                                if( $db->verifyRoles($current_roles, $isCoordinador) ){
+                            ?>
                             <button name="registrar_raciones" id="registrar_raciones" class="btn btn-dark-blue mb-2">
                                 <span class="oi oi-check text-blue" title="icon name" aria-hidden="true"></span>
                                 Registrar
                             </button>
+                            <?php
+                                }
+                            ?> 
 
                             <button style="display: none;" name="cancelar-registro" id="cancelar-registro" class="btn btn-dark-blue mb-2">
                                 <span class="oi oi-x text-blue" title="icon name" aria-hidden="true"></span>
                                 Cancelar
                             </button>
 
-                            <button style="display: none;" name="editar-registro" id="editar-registro" class="btn btn-dark-blue mb-2">
-                                <span class="oi oi-pencil text-blue" title="icon name" aria-hidden="true"></span>
-                                Editar Registro
-                            </button>
+
+                            <?php 
+                                if( $db->verifyRoles($current_roles, $isCoordinador) ){
+                            ?>
+                                <button style="display: none;" name="editar-registro" id="editar-registro" class="btn btn-dark-blue mb-2">
+                                    <span class="oi oi-pencil text-blue" title="icon name" aria-hidden="true"></span>
+                                    Editar Registro
+                                </button>
+                            <?php
+                                }
+                            ?>    
                         </div>        
 
                     </form>

@@ -81,6 +81,10 @@ if (isset($_GET['router'])) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::createAuxiliar($db, $_POST);
         else throw new InvalidArgumentException("No tiene permiso para esta acción");
         exit;
+      case "create-proveedor":
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::createProveedor($db, $_POST);
+        else throw new InvalidArgumentException("No tiene permiso para esta acción");
+        exit;  
       case "load-conductores":
         if ($_SERVER['REQUEST_METHOD'] == 'POST') echo Utilities::loadConductor($db, $_FILES);
         else throw new InvalidArgumentException("No tiene permiso para esta acción");
@@ -177,7 +181,7 @@ include('../../../hooks/head.php')
 </div>
 
 
-<div class="modal fade bd-modal-lg" tabindex="-1" id="load-modal" role="dialog" aria-labelledby="myLargeModalLabel"
+<div class="modal fade bd-modal-lg" tabindex="-1" id="load-modal-paradas" role="dialog" aria-labelledby="myLargeModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

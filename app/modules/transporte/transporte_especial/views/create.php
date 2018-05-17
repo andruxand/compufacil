@@ -27,7 +27,7 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label for="ieo">Institución educativa</label>
+            <label for="ieo">Sede institución educativa</label>
             <select name="ieo" id="ieo" class="form-control" required>
             </select>
         </div>
@@ -72,6 +72,7 @@
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="#" id="btn-create-proveedor">Crear Proveedor</a>
                     <a class="dropdown-item" href="#" id="btn-create-vehiculo">Crear vehículo</a>
                     <a class="dropdown-item" href="#" id="btn-create-conductor">Crear conductor</a>
                     <a class="dropdown-item" href="#" id="btn-create-auxiliar">Crear auxiliar</a>
@@ -90,7 +91,7 @@
             <div class="modal-header">
                 <span class="oi oi-browser icon-window" title="icon name" aria-hidden="true"></span>
                 <h4 class="modal-title" id="myLargeModalLabel">
-                    Parada
+                    Creación
                 </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -127,14 +128,12 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input type="text" name="hora_llegada[]" class="form-control time" placeholder="Hora llegada"
-                           required/>
+                    <input type="text" name="hora_llegada[]" class="form-control time" placeholder="Hora llegada"/>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input type="text" name="hora_partida[]" class="form-control time" placeholder="Hora partida"
-                           required/>
+                    <input type="text" name="hora_partida[]" class="form-control time" placeholder="Hora partida"/>
                 </div>
             </div>
             <div class="col-md-1">
@@ -212,12 +211,14 @@
         })
 
         $("#newRoute").submit(function (e) {
+            var disabled = $("#newRoute").find(':input:disabled').removeAttr('disabled');
             $.ajax({
                 url: 'index.php?router=create-ruta',
                 method: 'POST',
                 data: $("#newRoute").serialize()
             }).then(function (response) {
                 if (!response.success) {
+                    disabled.attr('disabled',true);
                     $("#alert-error").text(response.message).show("slow", function () {
                         setTimeout(function () {
                             $("#alert-error").hide('slow');
@@ -225,6 +226,7 @@
                     });
                     return false;
                 }
+                disabled.attr('disabled',true);
                 $("#alert-success").text(response.message).show("slow", function () {
                     setTimeout(function () {
                         $("#alert-success").hide('slow');
@@ -357,8 +359,8 @@
                     <div class="form-group">
                         <label for="">Tipo de Zona</label>
                         <select class="form-control" name="tipoZona" id="tipoZona" required>
-                            <option value="Urbana">Urbana</option>
-                            <option value="Rural">Rural</option>
+                            <option value="URBANA">Urbana</option>
+                            <option value="RURAL">Rural</option>
                         </select>
                     </div>
                 </div>
@@ -497,7 +499,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="">Licencia de conducción No.</label>
-                        <input type="text" class="form-control" name="licenciaConduccion" id="licenciaConduccion" required maxlength="45"/>
+                        <input type="number" class="form-control" name="licenciaConduccion" id="licenciaConduccion" required maxlength="45"/>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -530,9 +532,10 @@
             $("#formCreateConductor").submit(function (e) {
                 e.preventDefault()
 
-                let dateLicen = new Date($("#fechavencilince").val())
-                let dateNow = new Date()
-                if(dateLicen.toGMTString() < dateNow.toGMTString()) alert("Tenga en cuenta que la licencia de conducción ya está vencida");
+                let dateLicen = moment.unix(new Date(moment($("#fechavencilince").val()).format('YYYY-MM-DD 23:59')))
+                let dateNow = moment.unix(new Date())
+
+                if(dateLicen < dateNow) alert("Tenga en cuenta que la licencia de conducción ya está vencida");
 
                 $.ajax({
                     url: 'index.php?router=create-conductor',
@@ -679,6 +682,128 @@
             });
         });
 
+        const tempProv = `<form action="" id="formCreateProveedor">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="">Nombre Proveedor</label>
+                        <input type="text" class="form-control" name="nombreProveedor" id="nombreProveedor" required/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">NIT</label>
+                        <input type="number" class="form-control" name="nitProveedor" id="nitProveedor" maxlength="10" required/>
+                    </div>
+                </div>
+            </div> 
+            <div class="row">   
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Tipo de Documento Representante legal</label>
+                        <select class="form-control" name="tipoDocumentoProveedor" id="tipoDocumentoProveedor" required>
+                            <option value="1">Cédula de ciudadanía</option>
+                            <option value="2">Nuip</option>
+                            <option value="3">Cédula extranjera</option>
+                            <option value="4">Tarjeta de identidad</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Documento Representante Legal</label>
+                        <input type="number" class="form-control" name="documentProveedor" id="documentProveedor" required maxlength="12"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Nombre Representante Legal</label>
+                        <input type="text" class="form-control" name="representanteNomProveedor" id="representanteNomProveedor" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">    
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Tipo Contrato</label>
+                        <select class="form-control" name="tipocontratoProveedor" id="tipocontratoProveedor" required>
+                            <option value="1">Prestación de Servicios</option>
+                            <option value="2">Convenio de Asociación</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Contrato</label>
+                        <input type="text" class="form-control" name="contratoProveedor" id="contratoProveedor" required maxlength="45" required/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Cupos Contratados</label>
+                        <input type="number" class="form-control" name="cuposProveedor" id="cuposProveedor" maxlength="45" required/>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="">Observaciones</label>
+                        <textarea class="form-control" name="observacionesProveedor" id="observacionesProveedor" rows="4"/></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="submit" class="btn btn-dark-blue" id="btn-create-proveedor">Guardar</button>
+                    <button type="button" class="btn btn-dark-blue" data-dismiss="modal">Salir</button>
+                </div>
+            </div>
+        </form>`;
+        $("#btn-create-proveedor").click(function (e) {
+            e.preventDefault()
+            $("#body-modal-forms").html(tempProv)
+            $("#modal-forms").modal('show')
+            $("#formCreateProveedor").submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: 'index.php?router=create-proveedor',
+                    method: 'POST',
+                    data: $(this).serialize()
+                }).then(function (response) {
+                    if (!response.success) {
+                        $("#alert-error").text(error).show("slow", function () {
+                            setTimeout(function () {
+                                $("#alert-error").hide('slow');
+                            }, 5000)
+                        });
+                    } else {
+                        $("#alert-success").text(response.message).show("slow", function () {
+                            setTimeout(function () {
+                                $("#alert-success").hide('slow');
+                            }, 5000)
+                        });
+                    }
+                    getProveedores()
+                    $("#modal-forms").modal('hide')
+                    $("#body-modal-forms").html('')
+                }).catch(function (error) {
+                    $("#alert-success").text(response.message).show("slow", function () {
+                        setTimeout(function () {
+                            $("#alert-success").hide('slow');
+                        }, 5000)
+                    });
+                    $("#modal-forms").modal('hide')
+                    $("#body-modal-forms").html('')
+                })
+            });
+        });
+
 
         function getVehiculos() {
             $.ajax({
@@ -717,6 +842,20 @@
                 $("#auxiliar").select2({
                     data: response,
                     placeholder: 'Seleccione un auxiliar',
+                    language: 'es',
+                    theme: 'bootstrap'
+                })
+            })
+        }
+
+        function getProveedores() {
+            $.ajax({
+                url: 'index.php?router=get-proveedores',
+                method: 'GET'
+            }).then(function (response) {
+                $("#proveedor").select2({
+                    data: response,
+                    placeholder: 'Seleccione un proveedor',
                     language: 'es',
                     theme: 'bootstrap'
                 })

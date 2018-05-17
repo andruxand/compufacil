@@ -19,8 +19,10 @@ $(document).ready(function() {
 	            }
         	],
        		buttons: [
-            	{ extend: "print", text: "Vista Impresión", exportOptions: { columns: ':visible' } },
-            	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" }
+            	{{ extend: "print", text: "Vista Impresión", exportOptions: { columns: ':visible' } },
+            	{ extend: "colvis", columns: ":not(.noVis)", text: "Mostrar/Ocultar Columnas" },
+            	{ extend: "excel", text: "Excel", exportOptions: { columns: ':visible' } },
+            	{ extend: "csv", text: "CSV", exportOptions: { columns: ':visible' } },
        		],
 			//"sort": false,
    			//"order" : ["ieo", "tipo_racion"],
@@ -40,7 +42,9 @@ $(document).ready(function() {
 				}
 	        },
 	        "columns": [
-	            { "data": "ieo" },
+	            { "data": "nombre_proveedor" },
+	            { "data": "nit" },
+	            { "data": "numero_contrato" },
 	            { "data": "tipo_racion" },
 	            { "data": "raciones_primaria" },
 	            { "data": "raciones_secundaria" },

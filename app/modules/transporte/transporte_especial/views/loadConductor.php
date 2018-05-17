@@ -19,7 +19,8 @@
             <h4>Recomendaciones</h4>
             <ul>
                 <li>Debe ser un archivo separado por punto y coma (.csv)</li>
-                <li>Debe tener la siguiente estructura (documento; primernombre; segundonombre; primerapellido; segundoapellido; licencia)</li>
+                <li>Debe tener la siguiente estructura (tipodoc_id, documento, primernombre, segundonombre, primerapellido, segundoapellido, direccion, celular, licencia, categoria, fecha_vencimiento)</li>
+                <li>Debe tener en cuenta que el TIPO DE DOCUMENTO de auxiliar de cada registro del CSV debe existir como tipos de documento en el sistema previamente</li>
                 <li>El archivo puede tener un tamaño máximo de 2MB</li>
             </ul>
         </div>

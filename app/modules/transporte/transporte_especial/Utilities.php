@@ -11,10 +11,13 @@ class Utilities {
   public static function consultarRutas($db, $parameter) {
     $db->conectar();
     $parameter = filter_var($parameter, FILTER_SANITIZE_STRING);
-    $sql = "SELECT id, nombre_ruta "
-      . "FROM tra_rutas "
-      . "WHERE nombre_ruta LIKE '%{$parameter}%' "
-      . "LIMIT 15";
+    $sql = "SELECT tr.id, CONCAT(ms.descripcion , ' (', CONCAT(tr.nombre_ruta, ')', '') ) nombre_ruta 
+            FROM tra_rutas tr, mat_sedes ms
+            WHERE 
+            ms.id = tr.institucion_id
+            AND ( tr.nombre_ruta LIKE '%{$parameter}%'
+                  OR ms.descripcion like '%{$parameter}%' )
+            LIMIT 15";
 
     $resultado = $db->sql_exec($sql);
 
@@ -123,10 +126,14 @@ class Utilities {
     $hora_partida = filter_var($hora_partida, FILTER_SANITIZE_STRING);
 
 
-    $valid = "SELECT secuencia FROM tra_recorridos WHERE secuencia = {$secuencia} AND ruta = {$id_ruta}";
+    $valid = "SELECT secuencia FROM tra_recorridos WHERE secuencia = {$secuencia} AND ruta = {$id_ruta} AND id <> {$id_parada} ";
 
-    if ($db->sql_exec($valid)) {
-      throw new InvalidArgumentException("No puede guardar una parada con una secuencia existente");
+    $query = $db->sql_exec($valid);
+
+    if ($query) {
+      if($query->num_rows > 0){
+        throw new InvalidArgumentException("No puede guardar una parada con una secuencia existente");
+      }
     }
 
     $sql = "UPDATE tra_recorridos "
@@ -180,7 +187,7 @@ class Utilities {
   public static function getIeo($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT * FROM mat_instituciones WHERE descripcion LIKE '%{$parameter}%' OR coddane LIKE '%{$parameter}%' LIMIT 15";
+    $sql = "SELECT * FROM mat_sedes WHERE descripcion LIKE '%{$parameter}%' OR coddane LIKE '%{$parameter}%' LIMIT 15";
 
     $resultado = $db->sql_exec($sql);
 
@@ -429,14 +436,22 @@ class Utilities {
   public static function getDataRoute($db, $parameter) {
     $db->conectar();
 
-    $sql = "SELECT ruta.*, provee.nombre_proveedor, ieo.descripcion as ieo, vehi.num_pasajeros as num_pasajeros_disp  FROM tra_rutas as ruta " .
-      "INNER JOIN tra_proveedor as provee " .
-      " ON ruta.numero_contrato = provee.id " .
-      "INNER JOIN mat_instituciones as ieo " .
-      "ON ruta.institucion_id = ieo.id " .
-      "INNER JOIN tra_vehiculos as vehi " .
-      "ON ruta.vehiculo_id = vehi.id " .
-      "WHERE ruta.id = {$parameter}";
+    $sql = " SELECT ruta.*, provee.nombre_proveedor, ieo.descripcion as ieo,
+              CASE
+                WHEN (vehi.num_pasajeros - IFNULL(COUNT(ate.id_ruta), 0) <= 0) THEN '0' ELSE vehi.num_pasajeros - IFNULL(COUNT(ate.id_ruta), 0)
+              END  num_pasajeros_disp,
+              IFNULL(COUNT(ate.id_ruta), 0) pasajeros
+              FROM tra_rutas as ruta 
+              LEFT JOIN tra_vehiculos as vehi 
+              ON ruta.vehiculo_id = vehi.id
+              LEFT JOIN tra_AsignaTransEspec ate
+              ON ruta.id = ate.id_ruta 
+              LEFT JOIN tra_proveedor as provee 
+              ON ruta.numero_contrato = provee.id
+              LEFT JOIN mat_sedes as ieo 
+              ON ruta.institucion_id = ieo.id 
+              WHERE ruta.id = {$parameter}
+              GROUP BY ruta.id ";
 
     $resul = $db->sql_exec($sql);
 
@@ -534,9 +549,36 @@ class Utilities {
     return json_encode(["success" => $result, "message" => "El auxiliar fue creado exitosamente"]);
   }
 
+  public static function createProveedor($db, $paramaters) {
+    $db->conectar();
+
+    extract($paramaters);
+
+    $data = [
+      "nombre_proveedor" => filter_var($nombreProveedor, FILTER_SANITIZE_STRING),
+      "nit" => filter_var($nitProveedor, FILTER_SANITIZE_STRING),
+      "tipo_doc" => filter_var($tipoDocumentoProveedor, FILTER_SANITIZE_STRING),
+      "numero_documento" => filter_var($documentProveedor, FILTER_SANITIZE_STRING),
+      "representante_legal" => filter_var($representanteNomProveedor, FILTER_SANITIZE_STRING),
+      "tipo_contrato" => filter_var($tipocontratoProveedor, FILTER_SANITIZE_STRING),
+      "numero_contrato" => filter_var($contratoProveedor, FILTER_SANITIZE_STRING),
+      "cupos_contratados" => filter_var($cuposProveedor, FILTER_SANITIZE_STRING),
+      "observaciones" => filter_var($observacionesProveedor, FILTER_SANITIZE_STRING),
+      "fecha_creacion" => date("Y-m-d H:i:s", time()),
+    ];
+
+    $result = $db->insert("tra_proveedor", $data);
+
+    if (!$result) {
+      throw new InvalidArgumentException("No se pudo guardar el proveedor correctamente");
+    }
+
+    return json_encode(["success" => $result, "message" => "El proveedor fue creado exitosamente"]);
+  }
+
   public static function loadConductor($db, $files) {
-    if (isset($files["lConductor"])) {
-      $file = $files["lConductor"];
+    if (isset($_FILES["lConductor"])) {
+      $file = $_FILES["lConductor"];
 
       $types = array("application/vnd.ms-excel", "text/csv", "text/plain", "application/excel");
       if (!in_array($file["type"], $types)) throw new InvalidArgumentException("El tipo del archivo no es válido");
@@ -544,12 +586,18 @@ class Utilities {
 
       $result = false;
       $nameFile = "loadConductor_" . time();
-      $route = "//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
-      if (move_uploaded_file($file["tmp_name"], $route)) {
-        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE tra_conductores FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
-          "LINES TERMINATED BY '\r\n' (documento, primernombre, segundonombre, primerapellido, segundoapellido, licencia)";
+      $route = $file["tmp_name"]; //"//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
+      //if (move_uploaded_file($file["tmp_name"], $route)) {
+        $sql = "LOAD DATA LOCAL INFILE '" . $route . "'
+                INTO TABLE tra_conductores
+                FIELDS TERMINATED BY ';'
+                OPTIONALLY ENCLOSED BY '\"'
+                LINES TERMINATED BY '\n'
+                (@tipodoc_id, documento, primernombre, segundonombre, primerapellido, segundoapellido, direccion, celular, licencia, categoria, fecha_vencimiento)
+                SET tipodoc_id = (SELECT id FROM tra_tipodoc WHERE descripcion LIKE '@tipodoc_id' LIMIT 1 ),
+                    fecha_registro = NOW() ";
         $result = $db->sql_exec($sql);
-      }
+      //}
 
       if ($result) {
         return json_encode(["success" => $result, "message" => "La carga masiva de los conductores fue exitosa"]);
@@ -562,8 +610,10 @@ class Utilities {
   }
 
   public static function loadVehiculo($db, $files) {
-    if (isset($files["lVehiculo"])) {
-      $file = $files["lVehiculo"];
+    $db->conectar();
+
+    if (isset($_FILES["lVehiculo"])) {
+      $file = $_FILES['lVehiculo'];
 
       $types = array("application/vnd.ms-excel", "text/csv", "text/plain", "application/excel");
       if (!in_array($file["type"], $types)) throw new InvalidArgumentException("El tipo del archivo no es válido");
@@ -571,17 +621,24 @@ class Utilities {
 
       $result = false;
       $nameFile = "loadVehiculo_" . time();
-      $route = "//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
-      if (move_uploaded_file($file["tmp_name"], $route)) {
-        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE tra_vehiculos FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
-          "LINES TERMINATED BY '\r\n' (placa, tipo_vehiculo, fecha_soat, fecha_tecnico, tarjeta_operacion)";
+      $route = $file["tmp_name"];//str_replace("\"", "//", $file["tmp_name"]); //"//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
+     // if (move_uploaded_file($file["tmp_name"], $route)) {
+        $sql = "LOAD DATA LOCAL INFILE '" . $route . "'
+                INTO TABLE tra_vehiculos
+                FIELDS TERMINATED BY ';'
+                OPTIONALLY ENCLOSED BY '\"'
+                LINES TERMINATED BY '\n'
+                (@id_proveedor, marca_vehiculo, placa, @tipo_vehiculo, propietario, soat, tecnico_mecanica, fecha_soat, fecha_tecnico, tarjeta_operacion, tipo_zona)
+                SET tipo_vehiculo = CASE WHEN @tipo_vehiculo = 'BUSETA' THEN 3 ELSE CASE WHEN @tipo_vehiculo = 'BUS' THEN 1 ELSE 2 END END,
+                    id_proveedor = (SELECT id FROM tra_proveedor WHERE nit = @id_proveedor LIMIT 1 ),
+                    fecha_registro = NOW() ";
         $result = $db->sql_exec($sql);
-      }
+      //}
 
       if ($result) {
-        return json_encode(["success" => $result, "message" => "La carga masiva de los vehiculos fue exitosa"]);
+        return json_encode(["success" => $result, "message" => "La carga masiva de los vehiculos fue exitosa: " . $db->db_info ]);
       } else {
-        throw new InvalidArgumentException("Ha ocurrido un error cargando los conductores");
+        throw new InvalidArgumentException("Ha ocurrido un error cargando los vehiculos: " . $db->db_error );
       }
     }
 
@@ -589,8 +646,8 @@ class Utilities {
   }
 
   public static function loadAuxiliar($db, $files) {
-    if (isset($files["lAuxiliar"])) {
-      $file = $files["lAuxiliar"];
+    if (isset($_FILES["lAuxiliar"])) {
+      $file = $_FILES["lAuxiliar"];
 
       $types = array("application/vnd.ms-excel", "text/csv", "text/plain", "application/excel");
       if (!in_array($file["type"], $types)) throw new InvalidArgumentException("El tipo del archivo no es válido");
@@ -598,17 +655,23 @@ class Utilities {
 
       $result = false;
       $nameFile = "loadAuxiliar_" . time();
-      $route = "//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
-      if (move_uploaded_file($file["tmp_name"], $route)) {
-        $sql = "LOAD DATA INFILE '{$route}' INTO TABLE tra_auxiliar FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\"' " .
-          "LINES TERMINATED BY '\r\n' (documento, primernombre, segundonombre, primerapellido, segundoapellido)";
+      $route = $file["tmp_name"]; //"//var//www//html//apr_aprender//inscripcion//components//com_rsform//uploads//{$nameFile}.csv";
+      //if (move_uploaded_file($file["tmp_name"], $route)) {
+        $sql = "LOAD DATA LOCAL INFILE '" . $route . "'
+                INTO TABLE tra_auxiliar
+                FIELDS TERMINATED BY ';'
+                OPTIONALLY ENCLOSED BY '\"'
+                LINES TERMINATED BY '\n'
+                (@tipodoc_id, documento, primernombre, segundonombre, primerapellido, segundoapellido, direccion, celular, formacion)
+                SET tipodoc_id = (SELECT id FROM tra_tipodoc WHERE descripcion LIKE '@tipodoc_id' LIMIT 1 ),
+                    fecha_registro = NOW() ";
         $result = $db->sql_exec($sql);
-      }
+      //}
 
       if ($result) {
-        return json_encode(["success" => $result, "message" => "La carga masiva de los auxiliares fue exitosa"]);
+        return json_encode(["success" => $result, "message" => "La carga masiva de los auxiliares fue exitosa: " . $db->db_info ]);
       } else {
-        throw new InvalidArgumentException("Ha ocurrido un error cargando los conductores");
+        throw new InvalidArgumentException("Ha ocurrido un error cargando los conductores: " . $db->db_error );
       }
     }
   }

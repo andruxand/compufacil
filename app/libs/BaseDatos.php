@@ -6,6 +6,7 @@ class BaseDatos {
   protected $conexion;
   protected $db;
   public $db_error = '';
+  public $db_info = '';
 
   public function conectar() {
 
@@ -32,6 +33,7 @@ class BaseDatos {
   function query_exec($query) {
     if ($this->conectar()) {
       $result = mysqli_query($this->conexion, $query);
+      $this->db_info = mysqli_info($this->conexion);
       if (!$result) {
         $this->db_error = mysqli_error($this->conexion);
       }
@@ -148,6 +150,33 @@ class BaseDatos {
     }
 
   }
+
+  function verifyRoles($userRoles, $roles){
+
+    $existe = 0;
+
+    foreach ($userRoles as $value1) {
+
+      foreach ($roles as $value2) {
+            
+        if ($value1 == $value2){
+          $existe++;
+        }
+
+      }
+
+    }
+
+    if($existe > 0){
+      return true;
+    }else{
+      return false;  
+    }
+    
+
+
+  }
+
 
 }
 

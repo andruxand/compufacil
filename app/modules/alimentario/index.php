@@ -3,13 +3,6 @@
     require_once "../../config/autoload.php";
     include('../../hooks/head.php');
 
-    if(in_array(8, $current_roles)){
-        //echo "Usted tiene permisos para rol 1";
-    }else{
-        //echo "No tiene permisos para el rol 1";
-    }
-    //echo $current_roles[0] . " - " . $current_roles[1];
-
 ?>
 <div class="invisible" id="title-export">Lista de Instituciones Con Contratos</div>
 <script src="js/script.js" type="text/javascript"></script>
@@ -30,13 +23,29 @@
                                 <select class="form-control-custom" id="institucion" name="institucion">
                                     <option value="">TODOS</option>
                                     <?php 
-                                        $sql = "SELECT sc.coddane DANE, CONCAT(sc.coddane, ' - ', CONCAT(i.descripcion, ' / ', sc.descripcion) ) NOMBRE
-                                                FROM mat_instituciones i, ali_contrato c, mat_sedes sc
-                                                WHERE
-                                                sc.id_instituciones = i.id
-                                                AND c.sede_id = sc.id 
-                                                AND c.user_id = ".$current_userID."
-                                                ORDER BY NOMBRE ASC";
+
+                                        if( $db->verifyRoles($current_roles, $isRector) ){
+
+                                            $sql = "SELECT sc.coddane DANE, CONCAT(sc.coddane, ' - ', CONCAT(i.descripcion, ' / ', sc.descripcion) ) NOMBRE
+                                                    FROM mat_instituciones i, ali_contrato c, mat_sedes sc, mat_ie_usuarios mie
+                                                    WHERE
+                                                    i.coddane = mie.institucion_coddane
+                                                    AND sc.id_instituciones = i.id
+                                                    AND c.sede_id = sc.id 
+                                                    AND mie.user_id  = ".$current_userID."
+                                                    GROUP BY sc.coddane ";
+                                        }else{
+
+                                            $sql = "SELECT sc.coddane DANE, CONCAT(sc.coddane, ' - ', CONCAT(i.descripcion, ' / ', sc.descripcion) ) NOMBRE
+                                                    FROM mat_instituciones i, ali_contrato c, mat_sedes sc
+                                                    WHERE
+                                                    sc.id_instituciones = i.id
+                                                    AND c.sede_id = sc.id 
+                                                    AND c.user_id = ".$current_userID."
+                                                    GROUP BY sc.coddane";   
+
+                                        }
+
                                         $resultado = $db->sql_exec($sql);
                                         while($row = mysqli_fetch_object($resultado)){
                                             $selected = "";
@@ -59,7 +68,7 @@
                                 Reiniciar
                             </button>
 
-                            <button type="submit" name="buscar" id="buscar" class="btn btn-dark-blue mb-2">
+                            <button type="submit" name="buscar" id="buscar" class="btn btn-dark-blue mb-2 ajax-loader">
                                 <span class="oi oi-magnifying-glass text-blue" title="icon name" aria-hidden="true"></span>
                                 Buscar
                             </button>

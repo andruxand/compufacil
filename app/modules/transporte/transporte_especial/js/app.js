@@ -84,12 +84,12 @@ $(document).ready(function () {
                             $("#alert-error").hide('slow');
                         }, 5000)
                     });
-                    $("#load-modal").modal('hide');
+                    $("#load-modal-paradas").modal('hide');
                     return false;
                 }
 
                 getRecorridos($("#searchRoute").val())
-                $("#load-modal").modal('hide');
+                $("#load-modal-paradas").modal('hide');
                 cleanFields();
                 $("#alert-success").text(response.message).show("slow", function () {
                     setTimeout(function () {
@@ -171,8 +171,11 @@ $(document).ready(function () {
                 if (response) {
                     var len = response.length;
                     var html = "";
+                    var horario = ""
                     if (len > 0) {
                         for (let i = 0; i < len; i++) {
+                            horario = "";
+                            horario = (response[i].hora_partida !== "") ? " hasta " : "";
                             html += "<tr>" +
                                 "<td>" +
                                 response[i].secuencia +
@@ -184,7 +187,7 @@ $(document).ready(function () {
                                 response[i].direccion +
                                 "</td>" +
                                 "<td>" +
-                                response[i].hora_llegada + " hasta " + response[i].hora_partida +
+                                response[i].hora_llegada + horario + response[i].hora_partida +
                                 "</td>" +
                                 "<td>" +
                                 "<button type='button' class='btn btn-info btn-edit' " +
@@ -208,8 +211,11 @@ $(document).ready(function () {
                             getParada(this);
                         });
                         $(".btn-delete").click(function (e) {
-                            deleteParada(this)
+                            deleteParada(this);
                         });
+                    }else{
+                        $("#bodyTableRecorrido").html(html); 
+                        $(".table-responsive").removeClass('animated fadeIn').addClass('d-none');
                     }
                 }
             },
@@ -240,7 +246,7 @@ $(document).ready(function () {
         });
 
         $(e).attr('data-id')
-        $("#load-modal").modal('show');
+        $("#load-modal-paradas").modal('show');
     }
 
     function deleteParada(e) {

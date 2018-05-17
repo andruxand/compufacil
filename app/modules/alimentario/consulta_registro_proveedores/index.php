@@ -4,14 +4,14 @@
     include('../../../hooks/head.php');
 
 ?>
-<div class="invisible" id="title-export">Consulta Registro De Proveedores</div>
+<div class="invisible" id="title-export">Consulta Registro De Operadores</div>
 <script src="js/consulta_registro_proveedores.js" type="text/javascript"></script>
 
     <div class="container-fluid" id="alimentario">
         <!-- Bloque para cuando se haya seleccionado la ruta y el operador -->
         <div class="card border-dark-blue">
             <div class="card-header-dark-blue">
-                CONSULTA REGISTRO DE PROVEEDORES
+                CONSULTA REGISTRO DE OPERADORES
             </div>
             <div class="card-body">
                 <div class="col-md-12">
@@ -19,7 +19,7 @@
 
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Proveedor y/o NIT</strong></label>
+                                <label class="mb-2 mr-sm-2" for="proveedor"><strong>Operador y/o NIT</strong></label>
                                 <select class="form-control-custom" id="proveedor" name="proveedor">
                                     <option value="">TODOS</option>
                                     <?php 
@@ -87,10 +87,12 @@
                             <div class="table-responsive">
                                 <table id="results" class="table table-hover table-sm display" style="width:100%">
                                     <thead>
-                                        <th class="text-center" scope="col">IEO</th>
+                                        <th class="text-center" scope="col">Nombre Operador</th>
+                                        <th class="text-center" scope="col">NIT</th>
+                                        <th class="text-center" scope="col">Número Contrato</th>
                                         <th class="text-center" scope="col">Tipo Ración</th>
-                                        <th class="text-center" scope="col">Raciones Primaria</th>
-                                        <th class="text-center" scope="col">Raciones Secundaria</th>
+                                        <th class="text-center" scope="col">Jornada Única</th>
+                                        <th class="text-center" scope="col">Complemento Alimentario</th>
                                         <th class="text-center" scope="col">Total Raciones</th>
                                     </thead>
                                     <tbody>

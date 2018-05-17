@@ -54,6 +54,7 @@ function consulta_entrega_raciones_por_usuario(mes){
 	        console.log( "La solicitud se ha completado correctamente." );
 	        console.log(data);
 	        var partialTable = '';
+	        var partialTableObs = '';
 	        var esIntitucion = '';
 	        var tipoFila = '';
 
@@ -83,24 +84,80 @@ function consulta_entrega_raciones_por_usuario(mes){
 				}  
 
 			    partialTable += ' </td></tr>';
-    			/*for(var s in data.instituciones[i].sedes) {
-    				console.log("nuevo campo dos" + data.instituciones[i].sedes[s].institucion); 
-    				partialTable += ' <tr> ' +
-				                	 ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].institucion + '</td> ' +
-				                     ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].tipo_racion + '</td> ' +
-				                     ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].raciones_primaria + '</td> ' +
-				                     ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].raciones_secundaria + '</td> ' +
-				                     ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].dias_atendidos + '</td> ' +
-				                     ' <td class="text-center" scope="col">' + data.instituciones[i].sedes[s].total_raciones + '</td> ' +
-				                     ' <td class="text-center" scope="col"> ' +
-			                    		'<input class="file-input" type="file" name="' + data.instituciones[i].sedes[s].institucion + '" '+
-				                		' id="' + data.instituciones[i].sedes[s].institucion + '" accept="image/*,.doc,.docx,application/msword, ' +
-				                		'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.ms-excel" ></td>' +      
-				                   ' </tr>';
-    			}*/
 			}
 
 			$('#results tbody').html(partialTable);
+
+			var currentSede_id; 
+			if(data.observaciones){
+				var check = "<span class='oi oi-check text-blue' title='icon name' aria-hidden='true'></span>";
+				var noCheck = "<span class='oi oi-x text-blue' title='icon name' aria-hidden='true'></span>";
+
+				for(var i in data.observaciones) {
+
+					if(data.observaciones[i].sede_id !== currentSede_id){
+
+						partialTableObs += '<table id="results-observations" class="table table-hover table-sm table-bordered">'+
+                                    '<thead>'+
+                                    '	<tr>'+
+                                    '        <th class="text-center" colspan="5" scope="col">' + data.observaciones[i].sede + '</th>'+
+                                    '    </tr>'+
+                                    '    <tr>'+
+                                    '        <th class="text-center" scope="col">OBSERVACIONES</th>'+
+                                    '       <th class="text-center" scope="col">CERTIFICA COORDINADOR</th>'+
+                                    '        <th class="text-center" scope="col">CERTIFICA PERSONERO</th>'+
+                                    '        <th class="text-center" scope="col">CERTIFICA PROVEEDOR</th>'+
+                                    '        <th class="text-center" scope="col">FECHA_REGISTRO</th>'+
+                                    '    </tr>'+
+                                    '</thead>'+
+                                    '<tbody>';
+
+					}
+
+					var checkCoordinador = "";
+					var checkPersonero = "";
+					var checkProveedor = "";
+
+					if(data.observaciones[i].confirm_coordinador == 1){
+						checkCoordinador = check;	
+					}else{
+						checkCoordinador = noCheck;	
+					}
+
+					if(data.observaciones[i].confirm_personero == 1){
+						checkPersonero = check;	
+					}else{
+						checkPersonero = noCheck;	
+					}
+
+					if(data.observaciones[i].confirm_proveedor == 1){
+						checkProveedor = check;	
+					}else{
+						checkProveedor = noCheck;	
+					}
+
+					partialTableObs += ' <tr> ' +
+				                    ' <td class="text-center" scope="col">' + data.observaciones[i].observaciones + '</td> ' +
+				                    ' <td class="text-center" scope="col">' + checkCoordinador + '</td> ' +
+				                    ' <td class="text-center" scope="col">' + checkPersonero + '</td> ' +
+				                    ' <td class="text-center" scope="col">' + checkProveedor + '</td> ' +
+				                    ' <td class="text-center" scope="col">' + data.observaciones[i].fecha_registro + '</td></tr>';
+
+				    currentSede_id = data.observaciones[i].sede_id;                
+
+					if(data.observaciones[i].sede_id !== currentSede_id){
+
+						partialTableObs += '</tbody>'+
+                                       '</table>';
+
+					}
+
+				    
+				}
+
+			}	
+
+			$('#observaciones').html(partialTableObs);
 
 	    }else{
 	        console.log( "La solicitud NO se ha completado correctamente." );
@@ -112,7 +169,7 @@ function consulta_entrega_raciones_por_usuario(mes){
     })
     .fail(function(XMLHttpRequest, textStatus, errorThrown) {
 	    if ( console && console.log ) {
-	        console.log( "La solicitud a fallado: " +  textStatus);
+	        console.log( "La solicitud a fallado: " +  errorThrown);
 	    }    
 	});
 

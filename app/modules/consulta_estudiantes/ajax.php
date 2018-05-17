@@ -22,9 +22,9 @@ switch ($_GET["router"]) {
                                     jor.descripcion jornada,
                                     inst.descripcion institucion,
                                     se.descripcion sede
-                                    FROM 
+                                    FROM
                                     mat_estudiantes                             est
-                                    LEFT OUTER JOIN mat_matriculas              mtr  ON  mtr.id_estudiantes            =  est.id
+                                    INNER JOIN mat_matriculas              mtr  ON  mtr.id_estudiantes            =  est.id
                                     LEFT OUTER JOIN mat_paralelos               par  ON  mtr.id_paralelos              =  par.id
                                     LEFT OUTER JOIN mat_sedes_niveles           sn   ON  par.id_sedes_niveles          =   sn.id
                                     LEFT OUTER JOIN mat_sedes                   se   ON   sn.id_sedes                  =   se.id
@@ -38,27 +38,32 @@ switch ($_GET["router"]) {
 
                                     LEFT OUTER JOIN mat_ie_usuarios us     ON inst.coddane = us.institucion_coddane
 
-                                    WHERE 
-                                        est.estado = 'MATRICULADO'  ";
+                                    WHERE
+                                        1=1
+                                        #est.estado = 'MATRICULADO'  ";
 
     if (!empty($_POST["documento"])) {
       $sql .= ' AND est.numero_identificacion LIKE "' . $_POST["documento"] . '"';
     }
 
     if (!empty($_POST["nombre1"])) {
-      $sql .= ' AND est.nombre1 LIKE "' . $_POST["nombre1"] . '%"';
+      $sql .= ' AND est.nombre1 LIKE "' . $_POST["nombre1"] . '"';
     }
 
     if (!empty($_POST["nombre2"])) {
-      $sql .= ' AND est.nombre2 LIKE "' . $_POST["nombre1"] . '%"';
+      $sql .= ' AND est.nombre2 LIKE "' . $_POST["nombre2"] . '"';
     }
 
     if (!empty($_POST["apellido1"])) {
-      $sql .= ' AND est.apellido1 LIKE "' . $_POST["apellido1"] . '%"';
+      $sql .= ' AND est.apellido1 LIKE "' . $_POST["apellido1"] . '"';
     }
 
     if (!empty($_POST["apellido2"])) {
-      $sql .= ' AND est.apellido2 LIKE "' . $_POST["apellido2"] . '%"';
+      $sql .= ' AND est.apellido2 LIKE "' . $_POST["apellido2"] . '"';
+    }
+
+    if (!empty($_POST["grado"])) {
+      $sql .= ' AND niv.descripcion LIKE "' . $_POST["grado"] . '"';
     }
 
     if (!empty($_POST["vigencia"])) {
@@ -90,13 +95,15 @@ switch ($_GET["router"]) {
         $data = array();
 
         while ($row = mysqli_fetch_array($estudiantes)) {
+          // preparing an array
+
           $nestedData[] = array(
             $columns[0] => $row["documento"],
             $columns[1] => $row["nombre"],
             $columns[2] => $row["grado"],
-            $columns[3] => $row["institucion"],
-            $columns[4] => $row["sede"],
-            $columns[5] => $row["jornada"],
+            $columns[3] => $row["sede"],
+            $columns[4] => $row["jornada"],
+            $columns[5] => $row["institucion"],
             $columns[6] => "<button type='button' class='btn btn-outline-primary showDetail' id='showDetail' data-id='{$row["idEstudiante"]}'>Ver Detalle</button>"
           );
 
@@ -112,6 +119,7 @@ switch ($_GET["router"]) {
         );
 
         echo json_encode($json_data);
+        //echo $sql;
 
       } else {
         $json_data = array(
